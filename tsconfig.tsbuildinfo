@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/battlelog.tsx","./src/components/board.tsx","./src/components/cell.tsx","./src/components/characterlist.tsx","./src/components/ordersetter.tsx","./src/data/characters.ts","./src/logic/battle.ts","./src/types/game.ts"],"version":"5.7.3"}
