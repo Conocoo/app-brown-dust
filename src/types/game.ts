@@ -1,17 +1,6 @@
 /** 캐릭터 유형 (4종) */
 export type CharacterType = 'attacker' | 'defender' | 'support' | 'mage'
 
-/** 캐릭터 기본 정보 (템플릿) */
-export interface CharacterTemplate {
-  id: string
-  name: string
-  type: CharacterType
-  maxHp: number
-  atk: number
-  def: number
-  emoji: string
-}
-
 /** 전투 중 캐릭터 상태 */
 export interface BattleCharacter {
   templateId: string
@@ -22,6 +11,9 @@ export interface BattleCharacter {
   atk: number
   def: number
   emoji: string
+  critRate: number
+  critDamage: number
+  grazeRate: number
   team: 'player' | 'enemy'
   row: number
   col: number
@@ -29,6 +21,8 @@ export interface BattleCharacter {
   isCasting: boolean
   /** 행동 순서 (0부터 시작) */
   order: number
+  /** 스킬 ID 목록 */
+  skillIds: string[]
 }
 
 /** 전투 로그 종류 */
@@ -46,6 +40,12 @@ export interface BattleLogEntry {
   defenderMaxHp?: number
   defeated?: boolean
   message?: string
+  /** 스킬명 (없으면 일반공격) */
+  skillName?: string
+  /** 치명타 발동 여부 */
+  isCritical?: boolean
+  /** 스침 발동 여부 */
+  isGraze?: boolean
 }
 
 /** 게임 상태 */

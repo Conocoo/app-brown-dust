@@ -40,18 +40,28 @@ export default function BattleLog({ logs, visibleCount }: BattleLogProps) {
           if (log.type === 'support') {
             return (
               <div key={originalIdx} className={`log-entry log-support ${teamClass}`}>
-                <span className="log-team-label">{teamLabel}</span> {log.message}
+                <span className="log-team-label">{teamLabel}</span>
+                {log.skillName && <span className="log-skill-badge log-skill-support">{log.skillName}</span>}
+                {' '}{log.message}
+                {log.isCritical && <span className="log-crit">치명타!</span>}
               </div>
             )
           }
 
           return (
             <div key={originalIdx} className={`log-entry ${teamClass} ${log.defeated ? 'log-defeat' : ''}`}>
-              <span className="log-team-label">{teamLabel}</span>{' '}
+              <span className="log-team-label">{teamLabel}</span>
+              {log.skillName
+                ? <span className="log-skill-badge log-skill-attack">{log.skillName}</span>
+                : <span className="log-skill-badge log-skill-normal">일반공격</span>
+              }
+              {' '}
               <span>
                 {log.attacker} → {log.defender}에게{' '}
                 <strong>{log.damage}</strong> 데미지!
               </span>
+              {log.isCritical && <span className="log-crit">치명타!</span>}
+              {log.isGraze && <span className="log-graze">스침</span>}
               {log.defeated && <span className="log-ko"> 쓰러짐!</span>}
             </div>
           )

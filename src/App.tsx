@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import type { BattleCharacter, GamePhase, BattleLogEntry } from './types/game'
-import { characters } from './data/characters'
+import { getAllMercenaries, getMercenaryById } from './data/mercenaries'
 import { simulateBattle } from './logic/battle'
 import Board from './components/Board'
 import CharacterList from './components/CharacterList'
@@ -18,7 +18,7 @@ function createEmptyGrid(): (BattleCharacter | null)[][] {
 
 /** 상대 팀을 랜덤 배치 */
 function placeEnemies(grid: (BattleCharacter | null)[][]): void {
-  const shuffled = [...characters].sort(() => Math.random() - 0.5)
+  const shuffled = [...getAllMercenaries()].sort(() => Math.random() - 0.5)
   const count = Math.min(3, shuffled.length)
   const positions: { row: number; col: number }[] = []
 
@@ -41,11 +41,15 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
       atk: tmpl.atk,
       def: tmpl.def,
       emoji: tmpl.emoji,
+      critRate: tmpl.critRate,
+      critDamage: tmpl.critDamage,
+      grazeRate: tmpl.grazeRate,
       team: 'enemy',
       row: pos.row,
       col: pos.col,
       isCasting: false,
       order: i,
+      skillIds: tmpl.skillIds,
     }
   }
 }
@@ -109,7 +113,7 @@ export default function App() {
 
       // 빈 셀에 선택된 캐릭터 배치
       if (selectedCharId) {
-        const tmpl = characters.find((c) => c.id === selectedCharId)
+        const tmpl = getMercenaryById(selectedCharId)
         if (!tmpl) return
         setGrid((prev) => {
           const next = prev.map((r) => [...r])
@@ -122,11 +126,15 @@ export default function App() {
             atk: tmpl.atk,
             def: tmpl.def,
             emoji: tmpl.emoji,
+            critRate: tmpl.critRate,
+            critDamage: tmpl.critDamage,
+            grazeRate: tmpl.grazeRate,
             team: 'player',
             row,
             col,
             isCasting: false,
             order: -1,
+            skillIds: tmpl.skillIds,
           }
           return next
         })
@@ -190,7 +198,7 @@ export default function App() {
         if (dragSource.type === 'character') {
           // 목록에서 드래그 → 빈 셀에 배치
           if (targetCell !== null) return next
-          const tmpl = characters.find((c) => c.id === dragSource.id)
+          const tmpl = getMercenaryById(dragSource.id)
           if (!tmpl) return next
           next[row][col] = {
             templateId: tmpl.id,
@@ -201,11 +209,15 @@ export default function App() {
             atk: tmpl.atk,
             def: tmpl.def,
             emoji: tmpl.emoji,
+            critRate: tmpl.critRate,
+            critDamage: tmpl.critDamage,
+            grazeRate: tmpl.grazeRate,
             team: 'player',
             row,
             col,
             isCasting: false,
             order: -1,
+            skillIds: tmpl.skillIds,
           }
         } else if (dragSource.type === 'cell') {
           // 셀에서 셀로 이동
@@ -471,7 +483,7 @@ export default function App() {
       {phase === 'placing' && (
         <>
           <CharacterList
-            characters={characters}
+            characters={getAllMercenaries()}
             placedIds={placedIds}
             selectedId={selectedCharId}
             onSelect={handleSelectCharacter}
@@ -549,7 +561,7 @@ export default function App() {
 
 /** templateId에서 캐릭터 이름 찾기 */
 function getNameFromTemplate(templateId: string): string {
-  const found = characters.find((c) => c.id === templateId)
+  const found = getMercenaryById(templateId)
   return found?.name ?? templateId
 }
 

@@ -1,7 +1,7 @@
-import type { CharacterTemplate } from '../types/game'
+import type { MercenaryTemplate } from '../types/mercenary'
 
 interface CharacterListProps {
-  characters: CharacterTemplate[]
+  characters: MercenaryTemplate[]
   placedIds: string[]
   selectedId: string | null
   onSelect: (id: string) => void

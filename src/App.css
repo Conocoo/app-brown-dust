@@ -520,6 +520,53 @@ h1 {
   font-weight: bold;
 }
 
+.log-skill-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin: 0 4px;
+  vertical-align: middle;
+}
+
+.log-skill-normal {
+  background: #3a3a4a;
+  color: #ccc;
+}
+
+.log-skill-attack {
+  background: #4a2a1a;
+  color: #ff9944;
+}
+
+.log-skill-support {
+  background: #1a3a2a;
+  color: #44cc88;
+}
+
+.log-crit {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+  background: #5a1a1a;
+  color: #ff4444;
+}
+
+.log-graze {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: bold;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+  background: #2a2a3a;
+  color: #8888aa;
+}
+
 .log-loading {
   text-align: center;
   color: #888;
