@@ -11,6 +11,6 @@ export const tank: MercenaryTemplate = {
   emoji: '🛡️',
   critRate: 5,
   critDamage: 0,
-  grazeRate: 20,
+  agility: 20,
   skillIds: ['power_strike_1', 'power_strike_2', 'power_strike_3', 'power_strike_4'],
 }

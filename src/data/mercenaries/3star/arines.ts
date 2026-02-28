@@ -1,16 +1,17 @@
 import type { MercenaryTemplate } from '../../../types/mercenary'
 
-export const healer: MercenaryTemplate = {
-  id: 'healer',
-  name: '성직자',
+export const arines: MercenaryTemplate = {
+  id: 'arines',
+  name: '아리네스',
   type: 'support',
   star: 3,
-  maxHp: 100,
+  maxHp: 5189,
   atk: 0,
-  def: 12,
+  supportPower: 203,
+  def: 5,
   emoji: '💚',
-  critRate: 10,
+  critRate: 0,
   critDamage: 0,
-  grazeRate: 10,
+  agility: 5,
   skillIds: ['bless_1', 'bless_2', 'bless_3', 'bless_4'],
 }

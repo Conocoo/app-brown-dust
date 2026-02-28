@@ -1,8 +1,10 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import type { BattleCharacter, GamePhase, BattleLogEntry } from './types/game'
+import type { BattleCharacter, GamePhase, BattleLogEntry, StatusEffect, Rune } from './types/game'
 import { getAllMercenaries, getMercenaryById } from './data/mercenaries'
 import { simulateBattle } from './logic/battle'
+import { applyRunes } from './logic/rune'
 import Board from './components/Board'
+import CharacterInfo from './components/CharacterInfo'
 import CharacterList from './components/CharacterList'
 import OrderSetter from './components/OrderSetter'
 import BattleLog from './components/BattleLog'
@@ -32,24 +34,31 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
   for (let i = 0; i < count; i++) {
     const pos = shuffledPositions[i]
     const tmpl = shuffled[i]
+    const runed = applyRunes(tmpl, tmpl.runes)
     grid[pos.row][pos.col] = {
       templateId: tmpl.id,
       name: tmpl.name,
       type: tmpl.type,
-      hp: tmpl.maxHp,
-      maxHp: tmpl.maxHp,
-      atk: tmpl.atk,
-      def: tmpl.def,
+      hp: runed.maxHp,
+      maxHp: runed.maxHp,
+      atk: runed.atk,
+      supportPower: tmpl.supportPower ?? 0,
+      def: runed.def,
       emoji: tmpl.emoji,
-      critRate: tmpl.critRate,
-      critDamage: tmpl.critDamage,
-      grazeRate: tmpl.grazeRate,
+      critRate: runed.critRate,
+      critDamage: runed.critDamage,
+      agility: tmpl.agility,
       team: 'enemy',
       row: pos.row,
       col: pos.col,
       isCasting: false,
       order: i,
       skillIds: tmpl.skillIds,
+      attackTarget: tmpl.attackTarget ?? 'enemy_front',
+      attackRange: tmpl.attackRange ?? 'single',
+      rangeSize: tmpl.rangeSize,
+      statusEffects: [],
+      runes: tmpl.runes ?? [],
     }
   }
 }
@@ -100,12 +109,16 @@ export default function App() {
   // 격자 좌클릭
   const handleCellClick = useCallback(
     (row: number, col: number) => {
-      if (phase !== 'placing') return
+      // 배치 단계 외: 캐릭터 있으면 selectedCell만 변경 (정보 패널용)
+      if (phase !== 'placing') {
+        if (grid[row][col]) setSelectedCell({ row, col })
+        return
+      }
       if (col >= PLAYER_COLS) return
 
       const existing = grid[row][col]
 
-      // 이미 배치된 캐릭터 좌클릭 → 선택 (정보 표시는 이후 구현)
+      // 이미 배치된 캐릭터 좌클릭 → 선택
       if (existing && existing.team === 'player') {
         setSelectedCell({ row, col })
         return
@@ -115,26 +128,33 @@ export default function App() {
       if (selectedCharId) {
         const tmpl = getMercenaryById(selectedCharId)
         if (!tmpl) return
+        const runed = applyRunes(tmpl, tmpl.runes)
         setGrid((prev) => {
           const next = prev.map((r) => [...r])
           next[row][col] = {
             templateId: tmpl.id,
             name: tmpl.name,
             type: tmpl.type,
-            hp: tmpl.maxHp,
-            maxHp: tmpl.maxHp,
-            atk: tmpl.atk,
-            def: tmpl.def,
+            hp: runed.maxHp,
+            maxHp: runed.maxHp,
+            atk: runed.atk,
+            supportPower: tmpl.supportPower ?? 0,
+            def: runed.def,
             emoji: tmpl.emoji,
-            critRate: tmpl.critRate,
-            critDamage: tmpl.critDamage,
-            grazeRate: tmpl.grazeRate,
+            critRate: runed.critRate,
+            critDamage: runed.critDamage,
+            agility: tmpl.agility,
             team: 'player',
             row,
             col,
             isCasting: false,
             order: -1,
             skillIds: tmpl.skillIds,
+            attackTarget: tmpl.attackTarget ?? 'enemy_front',
+            attackRange: tmpl.attackRange ?? 'single',
+            rangeSize: tmpl.rangeSize,
+            statusEffects: [],
+            runes: tmpl.runes ?? [],
           }
           return next
         })
@@ -200,24 +220,31 @@ export default function App() {
           if (targetCell !== null) return next
           const tmpl = getMercenaryById(dragSource.id)
           if (!tmpl) return next
+          const runed = applyRunes(tmpl, tmpl.runes)
           next[row][col] = {
             templateId: tmpl.id,
             name: tmpl.name,
             type: tmpl.type,
-            hp: tmpl.maxHp,
-            maxHp: tmpl.maxHp,
-            atk: tmpl.atk,
-            def: tmpl.def,
+            hp: runed.maxHp,
+            maxHp: runed.maxHp,
+            atk: runed.atk,
+            supportPower: tmpl.supportPower ?? 0,
+            def: runed.def,
             emoji: tmpl.emoji,
-            critRate: tmpl.critRate,
-            critDamage: tmpl.critDamage,
-            grazeRate: tmpl.grazeRate,
+            critRate: runed.critRate,
+            critDamage: runed.critDamage,
+            agility: tmpl.agility,
             team: 'player',
             row,
             col,
             isCasting: false,
             order: -1,
             skillIds: tmpl.skillIds,
+            attackTarget: tmpl.attackTarget ?? 'enemy_front',
+            attackRange: tmpl.attackRange ?? 'single',
+            rangeSize: tmpl.rangeSize,
+            statusEffects: [],
+            runes: tmpl.runes ?? [],
           }
         } else if (dragSource.type === 'cell') {
           // 셀에서 셀로 이동
@@ -275,21 +302,29 @@ export default function App() {
       for (const row of next) {
         for (let i = 0; i < row.length; i++) {
           if (row[i]) {
-            row[i] = { ...row[i]!, hp: row[i]!.maxHp, isCasting: false }
+            row[i] = { ...row[i]!, hp: row[i]!.maxHp, isCasting: false, statusEffects: [] }
           }
         }
       }
-      const state = new Map<string, { hp: number; isCasting: boolean }>()
+      const state = new Map<string, { hp: number; isCasting: boolean; statusEffects: StatusEffect[] }>()
       for (const row of next) {
         for (const cell of row) {
           if (cell) {
-            state.set(`${cell.team}-${cell.templateId}`, { hp: cell.maxHp, isCasting: false })
+            state.set(`${cell.team}-${cell.templateId}`, { hp: cell.maxHp, isCasting: false, statusEffects: [] })
           }
         }
       }
       for (let i = 0; i < upTo && i < logs.length; i++) {
         const log = logs[i]
         if (log.type === 'attack' && log.defender && log.defenderHpAfter !== undefined) {
+          state.forEach((val, key) => {
+            const name = key.split('-').slice(1).join('-')
+            if (log.defender!.includes(getNameFromTemplate(name))) {
+              val.hp = log.defenderHpAfter!
+            }
+          })
+        }
+        if (log.type === 'reflect' && log.defender && log.defenderHpAfter !== undefined) {
           state.forEach((val, key) => {
             const name = key.split('-').slice(1).join('-')
             if (log.defender!.includes(getNameFromTemplate(name))) {
@@ -305,6 +340,10 @@ export default function App() {
             }
           })
         }
+        if (log.targetKey && log.targetStatusEffects !== undefined) {
+          const s = state.get(log.targetKey)
+          if (s) s.statusEffects = [...log.targetStatusEffects]
+        }
       }
       for (const row of next) {
         for (let i = 0; i < row.length; i++) {
@@ -312,7 +351,7 @@ export default function App() {
             const key = `${row[i]!.team}-${row[i]!.templateId}`
             const s = state.get(key)
             if (s) {
-              row[i] = { ...row[i]!, hp: s.hp, isCasting: s.isCasting }
+              row[i] = { ...row[i]!, hp: s.hp, isCasting: s.isCasting, statusEffects: s.statusEffects }
             }
           }
         }
@@ -437,6 +476,29 @@ export default function App() {
     setVisibleLogCount(battleLogs.length)
   }, [battleLogs.length])
 
+  // 룬 변경 (배치 단계 전용)
+  const handleRuneChange = useCallback((row: number, col: number, runes: Rune[]) => {
+    setGrid((prev: (BattleCharacter | null)[][]) => {
+      const next = prev.map((r: (BattleCharacter | null)[]) => [...r])
+      const char = next[row][col]
+      if (!char) return next
+      const tmpl = getMercenaryById(char.templateId)
+      if (!tmpl) return next
+      const runed = applyRunes(tmpl, runes)
+      next[row][col] = {
+        ...char,
+        hp: runed.maxHp,
+        maxHp: runed.maxHp,
+        atk: runed.atk,
+        def: runed.def,
+        critRate: runed.critRate,
+        critDamage: runed.critDamage,
+        runes,
+      }
+      return next
+    })
+  }, [])
+
   // 다시 하기
   const handleReset = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current)
@@ -464,9 +526,20 @@ export default function App() {
     }
   }, [])
 
+  const selectedCharacter = selectedCell ? grid[selectedCell.row][selectedCell.col] : null
+
   return (
     <div className="app">
       <h1>브라운더스트 전투 시뮬레이터</h1>
+
+      <CharacterInfo
+        character={selectedCharacter}
+        isBattle={phase === 'battling' || phase === 'result'}
+        isPlacing={phase === 'placing'}
+        onRuneChange={selectedCell
+          ? (runes) => handleRuneChange(selectedCell.row, selectedCell.col, runes)
+          : undefined}
+      />
 
       <Board
         grid={grid}

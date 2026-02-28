@@ -11,6 +11,6 @@ export const warrior: MercenaryTemplate = {
   emoji: '⚔️',
   critRate: 15,
   critDamage: 0,
-  grazeRate: 0,
+  agility: 0,
   skillIds: ['power_strike_1', 'power_strike_2', 'power_strike_3', 'power_strike_4'],
 }

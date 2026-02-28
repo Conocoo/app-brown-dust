@@ -1,7 +1,7 @@
 import type { MercenaryTemplate } from '../../types/mercenary'
 import { warrior } from './3star/warrior'
 import { archer } from './3star/archer'
-import { healer } from './3star/healer'
+import { arines } from './3star/arines'
 import { tank } from './3star/tank'
 import { mage } from './5star/mage'
 
@@ -13,7 +13,7 @@ function register(merc: MercenaryTemplate) {
 
 register(warrior)
 register(archer)
-register(healer)
+register(arines)
 register(tank)
 register(mage)
 

@@ -41,7 +41,7 @@ export default function CharacterList({
               <span className="card-name">{char.name}</span>
               <div className="card-stats">
                 <span>❤️ {char.maxHp}</span>
-                <span>⚔️ {char.atk}</span>
+                <span>{char.type === 'support' ? `💚 ${char.supportPower ?? 0}` : `⚔️ ${char.atk}`}</span>
                 <span>🛡️ {char.def}</span>
               </div>
               {isPlaced && <span className="card-badge">배치됨</span>}

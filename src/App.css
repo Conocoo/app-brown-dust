@@ -10,6 +10,274 @@ h1 {
   color: #f0c040;
 }
 
+/* ===== 캐릭터 정보 패널 ===== */
+.character-info {
+  background: #0d1b2a;
+  border: 1px solid #2a4a6a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  text-align: left;
+  min-height: 52px;
+}
+
+.character-info-empty {
+  color: #4a6a8a;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+}
+
+.ci-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ci-emoji {
+  font-size: 1.2rem;
+}
+
+.ci-name {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #e0e8f0;
+}
+
+.ci-type-badge {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+.ci-type-attacker { background: #6b1e1e; color: #ffaaaa; }
+.ci-type-defender { background: #1a3a6b; color: #aaccff; }
+.ci-type-support  { background: #1a5a2a; color: #aaffcc; }
+.ci-type-mage     { background: #4a1a6b; color: #ddaaff; }
+
+.ci-order {
+  margin-left: auto;
+  font-size: 0.7rem;
+  color: #f0c040;
+}
+
+.ci-hp-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.ci-hp-bar {
+  flex: 1;
+  height: 6px;
+  background: #1a2a3a;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.ci-hp-bar-fill {
+  height: 100%;
+  background: #3a9a4a;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+.ci-hp-text {
+  font-size: 0.7rem;
+  color: #99bbcc;
+  white-space: nowrap;
+}
+
+.ci-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-bottom: 6px;
+}
+
+.ci-stat {
+  font-size: 0.72rem;
+  color: #99bbcc;
+}
+
+.ci-stat-label {
+  color: #6699aa;
+  margin-right: 2px;
+}
+
+.ci-effects {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.ci-effect-badge {
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+.ci-effect-badge.buff {
+  background: #1a3a6b;
+  color: #88ccff;
+  border: 1px solid #2a5a9b;
+}
+
+.ci-effect-badge.debuff {
+  background: #6b1e1e;
+  color: #ffaaaa;
+  border: 1px solid #9b2a2a;
+}
+
+/* ===== 룬 슬롯 ===== */
+.ci-runes {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #1a2a3a;
+}
+
+.ci-rune-empty {
+  width: 100%;
+  padding: 5px 8px;
+  background: transparent;
+  border: 1px dashed #2a4a6a;
+  border-radius: 4px;
+  color: #4a6a8a;
+  font-size: 0.7rem;
+  cursor: pointer;
+  text-align: left;
+}
+.ci-rune-empty:hover {
+  border-color: #4a8aaa;
+  color: #7aaabb;
+}
+
+.ci-rune-equipped {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #0d1f30;
+  border: 1px solid #1e3a5a;
+  border-radius: 4px;
+}
+
+.ci-rune-summary {
+  flex: 1;
+  font-size: 0.68rem;
+  color: #88bbdd;
+}
+
+.btn-rune-edit,
+.btn-rune-remove {
+  padding: 2px 7px;
+  font-size: 0.65rem;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.btn-rune-edit {
+  background: #1a3a5a;
+  color: #88ccff;
+  border: 1px solid #2a5a8a;
+}
+.btn-rune-edit:hover { background: #2a4a6a; }
+
+.btn-rune-remove {
+  background: #4a1a1a;
+  color: #ffaaaa;
+  border: 1px solid #7a2a2a;
+}
+.btn-rune-remove:hover { background: #6a1a1a; }
+
+/* 룬 인라인 에디터 */
+.ci-rune-editor {
+  padding: 8px 10px;
+  background: #0a1520;
+  border: 1px solid #2a5a8a;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ci-rune-editor-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ci-rune-editor-label {
+  font-size: 0.68rem;
+  color: #6699aa;
+  width: 38px;
+  flex-shrink: 0;
+}
+
+.ci-rune-editor-row select {
+  flex: 1;
+  background: #0d1b2a;
+  color: #c0d8e8;
+  border: 1px solid #2a4a6a;
+  border-radius: 3px;
+  padding: 2px 4px;
+  font-size: 0.68rem;
+}
+
+.ci-rune-type-btns {
+  display: flex;
+  gap: 4px;
+}
+.ci-rune-type-btns button {
+  padding: 2px 10px;
+  font-size: 0.68rem;
+  background: #0d1b2a;
+  color: #6699aa;
+  border: 1px solid #2a4a6a;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.ci-rune-type-btns button.active {
+  background: #1a3a5a;
+  color: #88ccff;
+  border-color: #2a6a9a;
+}
+
+.ci-rune-editor-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+.btn-rune-apply {
+  padding: 3px 12px;
+  font-size: 0.7rem;
+  background: #1a5a2a;
+  color: #aaffcc;
+  border: 1px solid #2a8a3a;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.btn-rune-apply:hover:not(:disabled) { background: #2a7a3a; }
+.btn-rune-apply:disabled { opacity: 0.4; cursor: default; }
+
+.btn-rune-cancel {
+  padding: 3px 10px;
+  font-size: 0.7rem;
+  background: #1a2a3a;
+  color: #8899aa;
+  border: 1px solid #2a3a4a;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.btn-rune-cancel:hover { background: #2a3a4a; }
+
 /* ===== 보드 ===== */
 .board {
   margin-bottom: 24px;

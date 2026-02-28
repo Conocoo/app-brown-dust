@@ -11,6 +11,6 @@ export const archer: MercenaryTemplate = {
   emoji: '🏹',
   critRate: 20,
   critDamage: 10,
-  grazeRate: 5,
+  agility: 15,
   skillIds: ['power_strike_1', 'power_strike_2', 'power_strike_3', 'power_strike_4'],
 }

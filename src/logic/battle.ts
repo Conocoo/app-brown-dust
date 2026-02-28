@@ -8,9 +8,9 @@ export function simulateBattle(
   playerTeam: BattleCharacter[],
   enemyTeam: BattleCharacter[]
 ): BattleLogEntry[] {
-  // 전투용 복사본
-  const players = playerTeam.map((c) => ({ ...c }))
-  const enemies = enemyTeam.map((c) => ({ ...c }))
+  // 전투용 복사본 (statusEffects 독립 배열로 복사)
+  const players = playerTeam.map((c) => ({ ...c, statusEffects: [...c.statusEffects] }))
+  const enemies = enemyTeam.map((c) => ({ ...c, statusEffects: [...c.statusEffects] }))
   const logs: BattleLogEntry[] = []
 
   const alive = (team: BattleCharacter[]) => team.filter((c) => c.hp > 0)

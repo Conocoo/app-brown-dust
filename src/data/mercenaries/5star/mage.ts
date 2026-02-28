@@ -11,6 +11,6 @@ export const mage: MercenaryTemplate = {
   emoji: '🔮',
   critRate: 25,
   critDamage: 20,
-  grazeRate: 0,
+  agility: 0,
   skillIds: ['magic_bolt', 'power_strike_1', 'power_strike_2', 'power_strike_3'],
 }
