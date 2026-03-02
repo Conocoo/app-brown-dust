@@ -43,9 +43,11 @@ export default function Cell({
           {character.imageId ? (
             <img className="cell-img" src={`/images/images_th/char${character.imageId}icon.png`} alt={character.name} />
           ) : (
-            <span className="cell-emoji">{character.emoji}</span>
+            <>
+              <span className="cell-emoji">{character.emoji}</span>
+              <span className="cell-name">{character.name}</span>
+            </>
           )}
-          <span className="cell-name">{character.name}</span>
           {isDefeated ? (
             <span className="cell-defeated-mark">X</span>
           ) : (

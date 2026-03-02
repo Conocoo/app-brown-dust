@@ -1,12 +1,33 @@
 import { useState, useEffect } from 'react'
 import type { BattleCharacter, Rune, RuneStat } from '../types/game'
 import { RUNE_VALUES } from '../data/runeValues'
+import { getSkillById } from '../data/skills'
+import type { Skill, SkillTiming } from '../types/skill'
 
 interface Props {
   character: BattleCharacter | null
   isBattle: boolean
   isPlacing?: boolean
   onRuneChange?: (runes: Rune[]) => void
+}
+
+const TIMING_LABEL: Record<SkillTiming, string> = {
+  before_attack: '공격 전',
+  after_attack: '공격 후',
+  passive: '패시브',
+}
+
+function skillEffectDesc(skill: Skill): string {
+  return skill.effects.map((e) => {
+    const parts: string[] = []
+    if (e.atkScaling) parts.push(`ATK×${e.value}%`)
+    else if (e.value) parts.push(`${e.value}%`)
+    if (e.duration) parts.push(`${e.duration}턴`)
+    if (e.dmgTakenUp) parts.push(`받피+${e.dmgTakenUp}%`)
+    if (e.type === 'on_kill_heal_percent') parts.push(`처치 시 HP${e.value}% 회복`)
+    if (e.buffType === 'shield') parts.push('보호막')
+    return parts.join(' ')
+  }).join(', ')
 }
 
 const TYPE_LABEL: Record<string, string> = {
@@ -118,157 +139,191 @@ export default function CharacterInfo({ character, isBattle, isPlacing, onRuneCh
 
   return (
     <div className="character-info">
-      <div className="ci-header">
+      {/* 좌: 큰 초상화 */}
+      <div className="ci-portrait">
         {character.imageId ? (
-          <img className="ci-img" src={`/images/images/char${character.imageId}icon.png`} alt={character.name} />
+          <img src={`/images/images/char${character.imageId}icon.png`} alt={character.name} />
         ) : (
-          <span className="ci-emoji">{character.emoji}</span>
-        )}
-        <span className="ci-name">{character.name}</span>
-        <span className={`ci-type-badge ci-type-${character.type}`}>
-          {TYPE_LABEL[character.type] ?? character.type}
-        </span>
-        {character.order >= 0 && (
-          <span className="ci-order">순서 {character.order + 1}</span>
+          <span className="ci-portrait-emoji">{character.emoji}</span>
         )}
       </div>
 
-      <div className="ci-hp-row">
-        <div className="ci-hp-bar">
-          <div className="ci-hp-bar-fill" style={{ width: `${hpPercent}%` }} />
+      {/* 중앙: 이름 + 스탯 + 룬 */}
+      <div className="ci-center">
+        <div className="ci-header">
+          <span className="ci-name">{character.name}</span>
+          <span className={`ci-type-badge ci-type-${character.type}`}>
+            {TYPE_LABEL[character.type] ?? character.type}
+          </span>
+          {character.order >= 0 && (
+            <span className="ci-order">순서 {character.order + 1}</span>
+          )}
         </div>
-        <span className="ci-hp-text">
-          {character.hp} / {character.maxHp}
-        </span>
-      </div>
 
-      <div className="ci-stats">
-        {character.type === 'support'
-          ? <span className="ci-stat"><span className="ci-stat-label">지원력</span> {character.supportPower}%</span>
-          : <span className="ci-stat"><span className="ci-stat-label">ATK</span> {character.atk}</span>
-        }
-        <span className="ci-stat"><span className="ci-stat-label">DEF</span> {character.def}%</span>
-        <span className="ci-stat"><span className="ci-stat-label">치명</span> {character.critRate}%</span>
-        <span className="ci-stat"><span className="ci-stat-label">치명피해</span> {character.critDamage}%</span>
-        <span className="ci-stat"><span className="ci-stat-label">민첩</span> {character.agility}</span>
-      </div>
+        <div className="ci-stats">
+          <div className="ci-stats-row">
+            {character.type === 'support'
+              ? <span className="ci-stat"><span className="ci-stat-icon">💚</span> {character.supportPower}%</span>
+              : <span className="ci-stat"><span className="ci-stat-icon">⚔️</span> {character.atk}</span>
+            }
+            <span className="ci-stat"><span className="ci-stat-icon">❤️</span> {character.maxHp}</span>
+            <span className="ci-stat"><span className="ci-stat-icon">🛡️</span> {character.def}%</span>
+          </div>
+          <div className="ci-stats-row">
+            <span className="ci-stat"><span className="ci-stat-label">적중</span> {character.critRate}%</span>
+            <span className="ci-stat"><span className="ci-stat-label">치명</span> {character.critDamage}%</span>
+            <span className="ci-stat"><span className="ci-stat-label">민첩</span> {character.agility}%</span>
+          </div>
+        </div>
 
-      {showRunes && (
-        <div className="ci-runes">
-          {([0, 1] as const).map((slot) => {
-            const rune = character.runes[slot]
+        {isBattle && (
+          <div className="ci-hp-row">
+            <div className="ci-hp-bar">
+              <div className="ci-hp-bar-fill" style={{ width: `${hpPercent}%` }} />
+            </div>
+            <span className="ci-hp-text">{character.hp} / {character.maxHp}</span>
+          </div>
+        )}
 
-            // 에디터 열린 상태 (배치 단계 전용)
-            if (isPlacing && editingSlot === slot) {
-              return (
-                <div key={slot} className="ci-rune-editor">
-                  <div className="ci-rune-editor-row">
-                    <span className="ci-rune-editor-label">타입</span>
-                    <div className="ci-rune-type-btns">
-                      <button
-                        className={draftType === 'single' ? 'active' : ''}
-                        onClick={() => { setDraftType('single'); setDraftMain2('') }}
-                      >단일</button>
-                      <button
-                        className={draftType === 'dual' ? 'active' : ''}
-                        onClick={() => setDraftType('dual')}
-                      >듀얼</button>
-                    </div>
-                  </div>
+        {showRunes && (
+          <div className="ci-runes">
+            {([0, 1] as const).map((slot) => {
+              const rune = character.runes[slot]
 
-                  <div className="ci-rune-editor-row">
-                    <span className="ci-rune-editor-label">메인</span>
-                    <select value={draftMain} onChange={(e) => setDraftMain(e.target.value as RuneStat | '')}>
-                      <option value="">선택</option>
-                      {ALL_STATS.map((s) => (
-                        <option key={s} value={s}>
-                          {STAT_LABELS[s]} → {RUNE_VALUES[s][draftType === 'single' ? 'single' : 'dualA']}
-                          {(s === 'hp_flat' || s === 'atk_flat') ? '' : '%'}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {draftType === 'dual' && (
+              if (isPlacing && editingSlot === slot) {
+                return (
+                  <div key={slot} className="ci-rune-editor">
                     <div className="ci-rune-editor-row">
-                      <span className="ci-rune-editor-label">메인B</span>
-                      <select value={draftMain2} onChange={(e) => setDraftMain2(e.target.value as RuneStat | '')}>
+                      <span className="ci-rune-editor-label">타입</span>
+                      <div className="ci-rune-type-btns">
+                        <button
+                          className={draftType === 'single' ? 'active' : ''}
+                          onClick={() => { setDraftType('single'); setDraftMain2('') }}
+                        >단일</button>
+                        <button
+                          className={draftType === 'dual' ? 'active' : ''}
+                          onClick={() => setDraftType('dual')}
+                        >듀얼</button>
+                      </div>
+                    </div>
+
+                    <div className="ci-rune-editor-row">
+                      <span className="ci-rune-editor-label">메인</span>
+                      <select value={draftMain} onChange={(e) => setDraftMain(e.target.value as RuneStat | '')}>
                         <option value="">선택</option>
-                        {ALL_STATS.filter((s) => s !== draftMain).map((s) => (
+                        {ALL_STATS.map((s) => (
                           <option key={s} value={s}>
-                            {STAT_LABELS[s]} → {RUNE_VALUES[s].dualB}
+                            {STAT_LABELS[s]} → {RUNE_VALUES[s][draftType === 'single' ? 'single' : 'dualA']}
                             {(s === 'hp_flat' || s === 'atk_flat') ? '' : '%'}
                           </option>
                         ))}
                       </select>
                     </div>
-                  )}
 
-                  <div className="ci-rune-editor-row">
-                    <span className="ci-rune-editor-label">서브</span>
-                    <select value={draftSub} onChange={(e) => setDraftSub(e.target.value as RuneStat | '')}>
-                      <option value="">없음</option>
-                      {ALL_STATS.filter((s) => s !== excludedFromSub).map((s) => (
-                        <option key={s} value={s}>
-                          {STAT_LABELS[s]} → {RUNE_VALUES[s].sub}
-                          {(s === 'hp_flat' || s === 'atk_flat') ? '' : '%'}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                    {draftType === 'dual' && (
+                      <div className="ci-rune-editor-row">
+                        <span className="ci-rune-editor-label">메인B</span>
+                        <select value={draftMain2} onChange={(e) => setDraftMain2(e.target.value as RuneStat | '')}>
+                          <option value="">선택</option>
+                          {ALL_STATS.filter((s) => s !== draftMain).map((s) => (
+                            <option key={s} value={s}>
+                              {STAT_LABELS[s]} → {RUNE_VALUES[s].dualB}
+                              {(s === 'hp_flat' || s === 'atk_flat') ? '' : '%'}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
 
-                  <div className="ci-rune-editor-actions">
-                    <button className="btn-rune-apply" onClick={applyRune} disabled={!canApply}>
-                      장착
-                    </button>
-                    <button className="btn-rune-cancel" onClick={() => setEditingSlot(null)}>
-                      닫기
-                    </button>
+                    <div className="ci-rune-editor-row">
+                      <span className="ci-rune-editor-label">서브</span>
+                      <select value={draftSub} onChange={(e) => setDraftSub(e.target.value as RuneStat | '')}>
+                        <option value="">없음</option>
+                        {ALL_STATS.filter((s) => s !== excludedFromSub).map((s) => (
+                          <option key={s} value={s}>
+                            {STAT_LABELS[s]} → {RUNE_VALUES[s].sub}
+                            {(s === 'hp_flat' || s === 'atk_flat') ? '' : '%'}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="ci-rune-editor-actions">
+                      <button className="btn-rune-apply" onClick={applyRune} disabled={!canApply}>장착</button>
+                      <button className="btn-rune-cancel" onClick={() => setEditingSlot(null)}>닫기</button>
+                    </div>
                   </div>
+                )
+              }
+
+              if (rune) {
+                return (
+                  <div key={slot} className="ci-rune-equipped">
+                    <span className="ci-rune-summary">{runeSummary(rune)}</span>
+                    {isPlacing && (
+                      <>
+                        <button className="btn-rune-edit" onClick={() => openEditor(slot, rune)}>변경</button>
+                        <button className="btn-rune-remove" onClick={() => removeRune(slot)}>제거</button>
+                      </>
+                    )}
+                  </div>
+                )
+              }
+
+              if (isPlacing) {
+                return (
+                  <button key={slot} className="ci-rune-empty" onClick={() => openEditor(slot, null)}>
+                    슬롯 {slot + 1} — 빈 슬롯 (클릭하여 장착)
+                  </button>
+                )
+              }
+
+              return null
+            })}
+          </div>
+        )}
+
+        {isBattle && character.statusEffects.length > 0 && (
+          <div className="ci-effects">
+            {character.statusEffects.map((e) => (
+              <span key={e.id} className={`ci-effect-badge ${e.category}`}>
+                {e.type}
+                {e.value !== 0 && ` ${e.value}`}
+                {` (${e.remainingTurns}턴)`}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* 우: 스킬 슬롯 */}
+      <div className="ci-right">
+        <div className="ci-skills">
+          {Array.from({ length: 4 }, (_, i) => {
+            const skillId = character.skillIds[i]
+            const skill = skillId ? getSkillById(skillId) : undefined
+            if (!skill) {
+              return (
+                <div key={i} className="ci-skill-slot ci-skill-slot-empty">
+                  <span>+</span>
                 </div>
               )
             }
-
-            // 장착된 룬 표시
-            if (rune) {
-              return (
-                <div key={slot} className="ci-rune-equipped">
-                  <span className="ci-rune-summary">{runeSummary(rune)}</span>
-                  {isPlacing && (
-                    <>
-                      <button className="btn-rune-edit" onClick={() => openEditor(slot, rune)}>변경</button>
-                      <button className="btn-rune-remove" onClick={() => removeRune(slot)}>제거</button>
-                    </>
-                  )}
+            return (
+              <div key={skill.id} className={`ci-skill-slot ci-skill-timing-${skill.timing}`}>
+                <span className="ci-skill-name">{skill.name}</span>
+                <div className="ci-skill-tooltip">
+                  <div className="ci-skill-tooltip-header">
+                    <strong>{skill.name}</strong>
+                    <span className="ci-skill-timing-badge">{TIMING_LABEL[skill.timing]}</span>
+                  </div>
+                  <div className="ci-skill-tooltip-desc">{skillEffectDesc(skill)}</div>
                 </div>
-              )
-            }
-
-            // 빈 슬롯 (배치 단계에서만 표시)
-            if (isPlacing) {
-              return (
-                <button key={slot} className="ci-rune-empty" onClick={() => openEditor(slot, null)}>
-                  슬롯 {slot + 1} — 빈 슬롯 (클릭하여 장착)
-                </button>
-              )
-            }
-
-            return null
+              </div>
+            )
           })}
         </div>
-      )}
-
-      {isBattle && character.statusEffects.length > 0 && (
-        <div className="ci-effects">
-          {character.statusEffects.map((e) => (
-            <span key={e.id} className={`ci-effect-badge ${e.category}`}>
-              {e.type}
-              {e.value !== 0 && ` ${e.value}`}
-              {` (${e.remainingTurns}턴)`}
-            </span>
-          ))}
-        </div>
-      )}
+      </div>
     </div>
   )
 }

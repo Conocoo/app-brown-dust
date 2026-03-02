@@ -544,7 +544,42 @@ export default function App() {
     }
   }, [])
 
-  const selectedCharacter = selectedCell ? grid[selectedCell.row][selectedCell.col] : null
+  // 정보 패널에 표시할 캐릭터: 그리드 선택 > 목록 선택
+  const selectedCharacter: BattleCharacter | null = (() => {
+    if (selectedCell) return grid[selectedCell.row][selectedCell.col]
+    if (selectedCharId) {
+      const tmpl = getMercenaryById(selectedCharId)
+      if (!tmpl) return null
+      const runed = applyRunes(tmpl, tmpl.runes)
+      return {
+        templateId: tmpl.id,
+        name: tmpl.name,
+        type: tmpl.type,
+        hp: runed.maxHp,
+        maxHp: runed.maxHp,
+        atk: runed.atk,
+        supportPower: tmpl.supportPower ?? 0,
+        def: runed.def,
+        emoji: tmpl.emoji,
+        imageId: tmpl.imageId,
+        critRate: runed.critRate,
+        critDamage: runed.critDamage,
+        agility: tmpl.agility,
+        team: 'player' as const,
+        row: -1,
+        col: -1,
+        isCasting: false,
+        order: -1,
+        skillIds: tmpl.skillIds,
+        attackTarget: tmpl.attackTarget ?? 'enemy_front',
+        attackRange: tmpl.attackRange ?? 'single',
+        rangeSize: tmpl.rangeSize,
+        statusEffects: [],
+        runes: tmpl.runes ?? [],
+      }
+    }
+    return null
+  })()
 
   return (
     <div className="app">

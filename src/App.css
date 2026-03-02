@@ -1,5 +1,5 @@
 .app {
-  max-width: 1100px;
+  max-width: 1400px;
   padding: 20px;
   text-align: center;
 }
@@ -11,6 +11,7 @@ h1 {
 }
 
 /* ===== 캐릭터 정보 패널 ===== */
+/* ===== CharacterInfo: 가로형 3단 레이아웃 ===== */
 .character-info {
   background: #0d1b2a;
   border: 1px solid #2a4a6a;
@@ -18,7 +19,10 @@ h1 {
   padding: 10px 14px;
   margin-bottom: 12px;
   text-align: left;
-  min-height: 52px;
+  min-height: 80px;
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
 }
 
 .character-info-empty {
@@ -28,22 +32,43 @@ h1 {
   align-items: center;
 }
 
+/* 좌: 큰 초상화 */
+.ci-portrait {
+  flex-shrink: 0;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #16213e;
+  border: 2px solid #2a4a6a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ci-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ci-portrait-emoji {
+  font-size: 2.4rem;
+}
+
+/* 중앙: 이름 + 스탯 + 룬 */
+.ci-center {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .ci-header {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
-}
-
-.ci-emoji {
-  font-size: 1.2rem;
-}
-
-.ci-img {
-  width: 28px;
-  height: 28px;
-  object-fit: cover;
-  border-radius: 4px;
 }
 
 .ci-name {
@@ -69,11 +94,37 @@ h1 {
   color: #f0c040;
 }
 
+/* 스탯 2줄 */
+.ci-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ci-stats-row {
+  display: flex;
+  gap: 14px;
+}
+
+.ci-stat {
+  font-size: 0.75rem;
+  color: #c0d8e8;
+}
+
+.ci-stat-icon {
+  margin-right: 2px;
+}
+
+.ci-stat-label {
+  color: #6699aa;
+  margin-right: 2px;
+}
+
+/* HP 바 (전투 중만 표시) */
 .ci-hp-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
 }
 
 .ci-hp-bar {
@@ -97,28 +148,11 @@ h1 {
   white-space: nowrap;
 }
 
-.ci-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px 12px;
-  margin-bottom: 6px;
-}
-
-.ci-stat {
-  font-size: 0.72rem;
-  color: #99bbcc;
-}
-
-.ci-stat-label {
-  color: #6699aa;
-  margin-right: 2px;
-}
-
+/* 상태효과 */
 .ci-effects {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin-top: 4px;
 }
 
 .ci-effect-badge {
@@ -138,6 +172,105 @@ h1 {
   background: #6b1e1e;
   color: #ffaaaa;
   border: 1px solid #9b2a2a;
+}
+
+/* 우: 스킬 슬롯 */
+.ci-right {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.ci-skills {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.ci-skill-slot {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+  border: 1px solid #334455;
+  overflow: visible;
+}
+
+.ci-skill-slot-empty {
+  background: #1a2233;
+  color: #445566;
+  font-size: 1.2rem;
+}
+
+.ci-skill-timing-after_attack {
+  background: linear-gradient(135deg, #4a1a1a, #6a2a2a);
+  border-color: #8a3a3a;
+}
+
+.ci-skill-timing-before_attack {
+  background: linear-gradient(135deg, #1a2a4a, #2a3a6a);
+  border-color: #3a4a8a;
+}
+
+.ci-skill-timing-passive {
+  background: linear-gradient(135deg, #1a3a1a, #2a5a2a);
+  border-color: #3a7a3a;
+}
+
+.ci-skill-name {
+  font-size: 0.55rem;
+  color: #e0e8f0;
+  text-align: center;
+  line-height: 1.2;
+  padding: 2px;
+  word-break: keep-all;
+}
+
+.ci-skill-tooltip {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  background: #0d1b2a;
+  border: 1px solid #2a4a6a;
+  border-radius: 6px;
+  padding: 8px 10px;
+  min-width: 160px;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.ci-skill-slot:hover .ci-skill-tooltip {
+  display: block;
+}
+
+.ci-skill-tooltip-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 0.72rem;
+  color: #e0e8f0;
+}
+
+.ci-skill-timing-badge {
+  font-size: 0.6rem;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: #2a3a5a;
+  color: #88aacc;
+}
+
+.ci-skill-tooltip-desc {
+  font-size: 0.65rem;
+  color: #99bbcc;
+  line-height: 1.4;
 }
 
 /* ===== 룬 슬롯 ===== */
@@ -346,7 +479,7 @@ h1 {
 /* ===== 셀 ===== */
 .cell {
   aspect-ratio: 1;
-  min-height: 77px;
+  min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -384,10 +517,11 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1px;
+  gap: 2px;
   width: 100%;
-  padding: 2px;
+  padding: 4px;
   position: relative;
+  overflow: hidden;
 }
 
 .cell-status {
@@ -408,10 +542,12 @@ h1 {
 }
 
 .cell-img {
-  width: 48px;
-  height: 48px;
+  width: 64px;
+  height: 64px;
   object-fit: cover;
-  object-position: center 70%;
+  object-position: center bottom;
+  transform: scale(1.8);
+  transform-origin: center bottom;
   border-radius: 4px;
 }
 
@@ -427,8 +563,8 @@ h1 {
 
 /* HP 바 */
 .hp-bar {
-  width: 80%;
-  height: 4px;
+  width: 85%;
+  height: 5px;
   background: #333;
   border-radius: 3px;
   overflow: hidden;
