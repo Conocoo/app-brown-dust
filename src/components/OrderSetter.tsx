@@ -47,7 +47,7 @@ export default function OrderSetter({ characters, onOrderSet }: OrderSetterProps
           >
             {char.order >= 0 && <span className="order-number">{char.order + 1}</span>}
             {char.imageId ? (
-              <img className="order-img" src={`/images/images/char${char.imageId}icon.png`} alt={char.name} />
+              <img className="order-img" src={`/images/portraits/char${char.imageId}icon.png`} alt={char.name} />
             ) : (
               <span className="order-emoji">{char.emoji}</span>
             )}

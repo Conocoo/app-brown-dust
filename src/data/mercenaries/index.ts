@@ -4,6 +4,7 @@ import { liznet } from './3star/liznet'
 import { arines } from './3star/arines'
 import { carlson } from './3star/carlson'
 import { maria } from './3star/maria'
+import { maya } from './3star/maya'
 
 const mercenaryMap = new Map<string, MercenaryTemplate>()
 
@@ -16,6 +17,7 @@ register(liznet)
 register(arines)
 register(carlson)
 register(maria)
+register(maya)
 
 export function getMercenaryById(id: string): MercenaryTemplate | undefined {
   return mercenaryMap.get(id)

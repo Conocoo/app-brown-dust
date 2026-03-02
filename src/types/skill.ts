@@ -22,6 +22,8 @@ export interface SkillEffect {
   atkScaling?: boolean
   /** 부가 효과: 받는 피해량 증가 (%). 상태효과에 함께 저장됨 */
   dmgTakenUp?: number
+  /** 이 효과 적용 후 연쇄 발동할 스킬 ID */
+  triggerSkill?: string
 }
 
 /** 스킬 정의 */

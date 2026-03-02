@@ -38,7 +38,7 @@ export default function CharacterList({
               }}
             >
               {char.imageId ? (
-                <img className="card-img" src={`/images/images/char${char.imageId}icon.png`} alt={char.name} />
+                <img className="card-img" src={`/images/portraits/char${char.imageId}icon.png`} alt={char.name} />
               ) : (
                 <span className="card-emoji">{char.emoji}</span>
               )}

@@ -1,6 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import type { BattleCharacter, GamePhase, BattleLogEntry, StatusEffect, Rune } from './types/game'
 import { getAllMercenaries, getMercenaryById } from './data/mercenaries'
+import { resolveSkills } from './data/skills'
 import { simulateBattle } from './logic/battle'
 import { applyRunes } from './logic/rune'
 import Board from './components/Board'
@@ -54,7 +55,7 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
       col: pos.col,
       isCasting: false,
       order: i,
-      skillIds: tmpl.skillIds,
+      skills: resolveSkills(tmpl.skills),
       attackTarget: tmpl.attackTarget ?? 'enemy_front',
       attackRange: tmpl.attackRange ?? 'single',
       rangeSize: tmpl.rangeSize,
@@ -117,7 +118,11 @@ export default function App() {
         if (grid[row][col]) setSelectedCell({ row, col })
         return
       }
-      if (col >= PLAYER_COLS) return
+      // 적 진영 클릭 → 정보 보기만
+      if (col >= PLAYER_COLS) {
+        if (grid[row][col]) setSelectedCell({ row, col })
+        return
+      }
 
       const existing = grid[row][col]
 
@@ -134,6 +139,7 @@ export default function App() {
         const runed = applyRunes(tmpl, tmpl.runes)
         setGrid((prev) => {
           const next = prev.map((r) => [...r])
+          const currentPlayerCount = prev.flat().filter((c): c is BattleCharacter => c !== null && c.team === 'player').length
           next[row][col] = {
             templateId: tmpl.id,
             name: tmpl.name,
@@ -152,8 +158,8 @@ export default function App() {
             row,
             col,
             isCasting: false,
-            order: -1,
-            skillIds: tmpl.skillIds,
+            order: currentPlayerCount,
+            skills: resolveSkills(tmpl.skills),
             attackTarget: tmpl.attackTarget ?? 'enemy_front',
             attackRange: tmpl.attackRange ?? 'single',
             rangeSize: tmpl.rangeSize,
@@ -179,7 +185,18 @@ export default function App() {
       if (existing && existing.team === 'player') {
         setGrid((prev) => {
           const next = prev.map((r) => [...r])
+          const removedOrder = next[row][col]?.order ?? -1
           next[row][col] = null
+          // 제거된 순번 이후의 플레이어 순번을 재정렬
+          if (removedOrder >= 0) {
+            for (const r of next) {
+              for (let i = 0; i < r.length; i++) {
+                if (r[i] && r[i]!.team === 'player' && r[i]!.order > removedOrder) {
+                  r[i] = { ...r[i]!, order: r[i]!.order - 1 }
+                }
+              }
+            }
+          }
           return next
         })
         if (selectedCell?.row === row && selectedCell?.col === col) {
@@ -231,6 +248,7 @@ export default function App() {
           const tmpl = getMercenaryById(dragSource.id)
           if (!tmpl) return next
           const runed = applyRunes(tmpl, tmpl.runes)
+          const currentPlayerCount = prev.flat().filter((c): c is BattleCharacter => c !== null && c.team === 'player').length
           next[row][col] = {
             templateId: tmpl.id,
             name: tmpl.name,
@@ -249,8 +267,8 @@ export default function App() {
             row,
             col,
             isCasting: false,
-            order: -1,
-            skillIds: tmpl.skillIds,
+            order: currentPlayerCount,
+            skills: resolveSkills(tmpl.skills),
             attackTarget: tmpl.attackTarget ?? 'enemy_front',
             attackRange: tmpl.attackRange ?? 'single',
             rangeSize: tmpl.rangeSize,
@@ -284,7 +302,18 @@ export default function App() {
       if (source && source.type === 'cell' && !dropSucceededRef.current) {
         setGrid((prev) => {
           const next = prev.map((r) => [...r])
+          const removedOrder = next[source.row][source.col]?.order ?? -1
           next[source.row][source.col] = null
+          // 제거된 순번 이후의 플레이어 순번을 재정렬
+          if (removedOrder >= 0) {
+            for (const r of next) {
+              for (let i = 0; i < r.length; i++) {
+                if (r[i] && r[i]!.team === 'player' && r[i]!.order > removedOrder) {
+                  r[i] = { ...r[i]!, order: r[i]!.order - 1 }
+                }
+              }
+            }
+          }
           return next
         })
         setSelectedCell((prev) =>
@@ -299,10 +328,10 @@ export default function App() {
     return () => document.removeEventListener('dragend', handleDragEnd)
   }, [])
 
-  // 배치 완료 → 순서 지정 단계로
+  // 배치 완료 → 순서 지정 단계로 (배치 순서 유지)
   const handleGoToOrdering = useCallback(() => {
     if (placedPlayers.length === 0) return
-    const chars = placedPlayers.map((c) => ({ ...c, order: -1 }))
+    const chars = placedPlayers.map((c) => ({ ...c }))
     setPlayerOrder(chars)
     setPhase('ordering')
   }, [placedPlayers])
@@ -570,7 +599,7 @@ export default function App() {
         col: -1,
         isCasting: false,
         order: -1,
-        skillIds: tmpl.skillIds,
+        skills: resolveSkills(tmpl.skills),
         attackTarget: tmpl.attackTarget ?? 'enemy_front',
         attackRange: tmpl.attackRange ?? 'single',
         rangeSize: tmpl.rangeSize,

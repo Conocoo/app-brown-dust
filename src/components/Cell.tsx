@@ -40,8 +40,11 @@ export default function Cell({
           <div className="cell-status">
             {character.isCasting && !isDefeated && <span className="status-casting" title="캐스팅 중">*</span>}
           </div>
+          {character.order >= 0 && (
+            <span className="cell-order">{character.order + 1}</span>
+          )}
           {character.imageId ? (
-            <img className="cell-img" src={`/images/images_th/char${character.imageId}icon.png`} alt={character.name} />
+            <img className="cell-img" src={`/images/thumbnails/char${character.imageId}icon.png`} alt={character.name} />
           ) : (
             <>
               <span className="cell-emoji">{character.emoji}</span>

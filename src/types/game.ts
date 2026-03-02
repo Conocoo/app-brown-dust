@@ -1,3 +1,5 @@
+import type { Skill } from './skill'
+
 /** 캐릭터 유형 (4종) */
 export type CharacterType = 'attacker' | 'defender' | 'support' | 'mage'
 
@@ -53,8 +55,8 @@ export interface BattleCharacter {
   isCasting: boolean
   /** 행동 순서 (0부터 시작) */
   order: number
-  /** 스킬 ID 목록 */
-  skillIds: string[]
+  /** 해석된 스킬 목록 */
+  skills: Skill[]
   /** 적 타겟 선택 방식 */
   attackTarget: AttackTargetType
   /** 공격 범위 패턴 */

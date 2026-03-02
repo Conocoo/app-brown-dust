@@ -9,11 +9,11 @@ export const maria: MercenaryTemplate = {
   atk: 2626,
   def: 0,
   emoji: '🔮',
-  imageId: '1024',
+  imageId: '835',
   critRate: 35,
   critDamage: 75,
   agility: 15,
   attackRange: 'back_n',
   rangeSize: 3,
-  skillIds: [],
+  skills: [],
 }

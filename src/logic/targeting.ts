@@ -95,6 +95,13 @@ export function resolveEnemyTarget(
   attacker: BattleCharacter,
   enemies: BattleCharacter[]
 ): BattleCharacter | null {
+  const alive = enemies.filter((e) => e.hp > 0)
+  if (alive.length === 0) return null
+
+  // 일점사: focus_fire 상태의 적이 있으면 최우선 타겟
+  const focusTarget = alive.find((e) => e.statusEffects.some((s) => s.type === 'focus_fire'))
+  if (focusTarget) return focusTarget
+
   switch (attacker.attackTarget) {
     case 'enemy_second':
       return findTargetSecond(attacker, enemies)

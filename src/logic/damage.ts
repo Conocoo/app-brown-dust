@@ -32,6 +32,18 @@ export function getEffectiveCritRate(char: BattleCharacter): number {
   return Math.max(0, char.critRate + bonus - penalty)
 }
 
+/** 버프/디버프 반영한 유효 치명피해 */
+export function getEffectiveCritDamage(char: BattleCharacter): number {
+  const penalty = sumEffectValue(char.statusEffects, 'crit_damage_down')
+  return Math.max(0, char.critDamage - penalty)
+}
+
+/** 버프/디버프 반영한 유효 민첩 */
+export function getEffectiveAgility(char: BattleCharacter): number {
+  const penalty = sumEffectValue(char.statusEffects, 'agility_down')
+  return Math.max(0, char.agility - penalty)
+}
+
 /** 보호막 감소율 계산 (곱연산, 상한 -70%) */
 export function calcShieldReduction(defender: BattleCharacter): number {
   const shields = defender.statusEffects.filter((e) => e.type === 'shield')

@@ -1,8 +1,8 @@
 import type { BattleCharacter, BattleLogEntry, StatusEffect } from '../types/game'
 import type { Skill, SkillEffect } from '../types/skill'
-import { getSkillById } from '../data/skills'
 import { findNextAlly, resolveEnemyTarget, getTargetsInRange } from './targeting'
-import { calculateFullDamage, getEffectiveCritRate, getEffectiveAtk } from './damage'
+import { calculateFullDamage, getEffectiveCritRate, getEffectiveCritDamage, getEffectiveAgility, getEffectiveAtk } from './damage'
+import { getSkillById } from '../data/skills'
 
 // ─── 유틸 ───
 
@@ -27,10 +27,11 @@ function rollCritGraze(attacker: BattleCharacter, defender: BattleCharacter): Cr
   let multiplier = 1.0
   const critRate = getEffectiveCritRate(attacker)
   const isCritical = Math.random() * 100 < critRate
-  const isGraze = Math.random() * 100 < defender.agility
+  const agility = getEffectiveAgility(defender)
+  const isGraze = Math.random() * 100 < agility
 
   if (isCritical) {
-    multiplier *= 2.0 + attacker.critDamage / 100
+    multiplier *= 2.0 + getEffectiveCritDamage(attacker) / 100
   }
   if (isGraze) {
     multiplier *= 0.65
@@ -115,12 +116,22 @@ function applyStatusEffect(
   const isBuff = !effect.debuffClass
   const category = isBuff ? 'buff' : 'debuff' as const
 
+  // 이로운 효과 금지: buff_block 상태면 새 버프 차단
+  if (isBuff && target.statusEffects.some((e) => e.type === 'buff_block')) {
+    logs.push({
+      type: 'immune',
+      message: `${charLabel(target)} → 이로운 효과 금지! (버프 차단)`,
+    })
+    return
+  }
+
   // 면역 판정
   if (checkImmunity(target, effect, logs)) return
 
   // 민첩에 의한 디버프 턴수 감소 (50%)
   let duration = effect.duration
-  if (category === 'debuff' && target.agility > 0) {
+  const targetAgility = getEffectiveAgility(target)
+  if (category === 'debuff' && targetAgility > 0) {
     duration = Math.max(1, Math.round(duration * 0.5))
   }
 
@@ -340,7 +351,7 @@ function applyEffect(
   switch (effect.type) {
     case 'damage': {
       const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
-      const damage = calculateFullDamage(actor, target, effect.value, multiplier)
+      const damage = calculateFullDamage(actor, target, effect.value / 100, multiplier)
       target.hp = Math.max(0, target.hp - damage)
       logs.push({
         type: 'attack',
@@ -394,6 +405,15 @@ function applyEffect(
     }
     case 'dispel': {
       applyDispel(target, false, actor, logs, skill.name)
+      // triggerSkill: 무효화 후 연쇄 스킬 발동
+      if (effect.triggerSkill) {
+        const triggered = getSkillById(effect.triggerSkill)
+        if (triggered) {
+          for (const te of triggered.effects) {
+            applyEffect(te, triggered, actor, target, logs)
+          }
+        }
+      }
       return
     }
     case 'dispel_enhance': {
@@ -606,9 +626,7 @@ export function executeTurn(
     return
   }
 
-  const skills = actor.skillIds
-    .map((id) => getSkillById(id))
-    .filter((s): s is Skill => s !== undefined)
+  const skills = actor.skills
 
   const canUseSkills = !isSilenced(actor) && !isCharmed(actor)
 
@@ -648,9 +666,7 @@ export function applyPassiveSkills(
 ): void {
   for (const actor of allCharacters) {
     if (actor.hp <= 0) continue
-    const skills = actor.skillIds
-      .map((id) => getSkillById(id))
-      .filter((s): s is Skill => s !== undefined)
+    const skills = actor.skills
 
     for (const skill of skills) {
       if (skill.timing === 'passive') {

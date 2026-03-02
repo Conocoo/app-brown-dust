@@ -26,6 +26,9 @@ export default function BattleLog({ logs, visibleCount }: BattleLogProps) {
             )
           }
 
+          // 내부용 로그는 표시하지 않음
+          if (log.type === 'status_update') return null
+
           const teamClass = log.attackerTeam === 'player' ? 'log-player-action' : 'log-enemy-action'
           const teamLabel = log.attackerTeam === 'player' ? '[아군]' : '[적군]'
 
@@ -48,12 +51,26 @@ export default function BattleLog({ logs, visibleCount }: BattleLogProps) {
             )
           }
 
+          // buff, debuff, immune: message 기반 표시
+          if (log.type === 'buff' || log.type === 'debuff' || log.type === 'immune') {
+            return (
+              <div key={originalIdx} className={`log-entry ${teamClass} ${log.defeated ? 'log-defeat' : ''}`}>
+                {log.attackerTeam && <span className="log-team-label">{teamLabel}</span>}
+                {' '}{log.message}
+                {log.defeated && <span className="log-ko"> 쓰러짐!</span>}
+              </div>
+            )
+          }
+
+          // attack, reflect: 공격 템플릿
           return (
             <div key={originalIdx} className={`log-entry ${teamClass} ${log.defeated ? 'log-defeat' : ''}`}>
               <span className="log-team-label">{teamLabel}</span>
-              {log.skillName
-                ? <span className="log-skill-badge log-skill-attack">{log.skillName}</span>
-                : <span className="log-skill-badge log-skill-normal">일반공격</span>
+              {log.type === 'reflect'
+                ? <span className="log-skill-badge log-skill-normal">반격</span>
+                : log.skillName
+                  ? <span className="log-skill-badge log-skill-attack">{log.skillName}</span>
+                  : <span className="log-skill-badge log-skill-normal">일반공격</span>
               }
               {' '}
               <span>

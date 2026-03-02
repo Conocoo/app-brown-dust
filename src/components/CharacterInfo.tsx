@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { BattleCharacter, Rune, RuneStat } from '../types/game'
 import { RUNE_VALUES } from '../data/runeValues'
-import { getSkillById } from '../data/skills'
 import type { Skill, SkillTiming } from '../types/skill'
 
 interface Props {
@@ -142,7 +141,7 @@ export default function CharacterInfo({ character, isBattle, isPlacing, onRuneCh
       {/* 좌: 큰 초상화 */}
       <div className="ci-portrait">
         {character.imageId ? (
-          <img src={`/images/images/char${character.imageId}icon.png`} alt={character.name} />
+          <img src={`/images/portraits/char${character.imageId}icon.png`} alt={character.name} />
         ) : (
           <span className="ci-portrait-emoji">{character.emoji}</span>
         )}
@@ -300,8 +299,7 @@ export default function CharacterInfo({ character, isBattle, isPlacing, onRuneCh
       <div className="ci-right">
         <div className="ci-skills">
           {Array.from({ length: 4 }, (_, i) => {
-            const skillId = character.skillIds[i]
-            const skill = skillId ? getSkillById(skillId) : undefined
+            const skill: Skill | undefined = character.skills[i]
             if (!skill) {
               return (
                 <div key={i} className="ci-skill-slot ci-skill-slot-empty">

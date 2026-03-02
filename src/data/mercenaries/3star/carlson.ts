@@ -9,9 +9,9 @@ export const carlson: MercenaryTemplate = {
   atk: 874,
   def: 12,
   emoji: '🛡️',
-  imageId: '1005',
+  imageId: '825',
   critRate: 10,
   critDamage: 50,
   agility: 0,
-  skillIds: [],
+  skills: [],
 }

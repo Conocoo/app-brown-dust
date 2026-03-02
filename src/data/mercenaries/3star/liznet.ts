@@ -16,5 +16,5 @@ export const liznet: MercenaryTemplate = {
   attackTarget: 'enemy_second',
   attackRange: 'back_n',
   rangeSize: 1,
-  skillIds: [],
+  skills: [],
 }
