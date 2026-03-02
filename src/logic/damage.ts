@@ -45,10 +45,11 @@ export function calcShieldReduction(defender: BattleCharacter): number {
   return Math.max(0.3, multiplier)
 }
 
-/** 받는 피해량 증가 반영 */
+/** 받는 피해량 증가 반영 (dmg_taken_up 효과 + 복합 상태효과의 dmgTakenUp 합산) */
 export function getDmgTakenMultiplier(defender: BattleCharacter): number {
   const increase = sumEffectValue(defender.statusEffects, 'dmg_taken_up')
-  return 1 + increase / 100
+  const bundled = defender.statusEffects.reduce((sum, e) => sum + (e.dmgTakenUp ?? 0), 0)
+  return 1 + (increase + bundled) / 100
 }
 
 /**

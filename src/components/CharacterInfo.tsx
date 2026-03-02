@@ -119,7 +119,11 @@ export default function CharacterInfo({ character, isBattle, isPlacing, onRuneCh
   return (
     <div className="character-info">
       <div className="ci-header">
-        <span className="ci-emoji">{character.emoji}</span>
+        {character.imageId ? (
+          <img className="ci-img" src={`/images/images/char${character.imageId}icon.png`} alt={character.name} />
+        ) : (
+          <span className="ci-emoji">{character.emoji}</span>
+        )}
         <span className="ci-name">{character.name}</span>
         <span className={`ci-type-badge ci-type-${character.type}`}>
           {TYPE_LABEL[character.type] ?? character.type}
@@ -140,7 +144,7 @@ export default function CharacterInfo({ character, isBattle, isPlacing, onRuneCh
 
       <div className="ci-stats">
         {character.type === 'support'
-          ? <span className="ci-stat"><span className="ci-stat-label">지원력</span> {character.supportPower}</span>
+          ? <span className="ci-stat"><span className="ci-stat-label">지원력</span> {character.supportPower}%</span>
           : <span className="ci-stat"><span className="ci-stat-label">ATK</span> {character.atk}</span>
         }
         <span className="ci-stat"><span className="ci-stat-label">DEF</span> {character.def}%</span>

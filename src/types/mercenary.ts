@@ -15,6 +15,8 @@ export interface MercenaryTemplate {
   supportPower?: number
   def: number
   emoji: string
+  /** 이미지 파일 ID (char{imageId}icon.png) */
+  imageId?: string
   /** 치명타 확률 (%) */
   critRate: number
   /** 치명타 추가 피해 (%). 기본 2x + critDamage/100 */

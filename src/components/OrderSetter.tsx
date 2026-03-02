@@ -46,7 +46,11 @@ export default function OrderSetter({ characters, onOrderSet }: OrderSetterProps
             onContextMenu={(e) => handleRightClick(e, char)}
           >
             {char.order >= 0 && <span className="order-number">{char.order + 1}</span>}
-            <span className="order-emoji">{char.emoji}</span>
+            {char.imageId ? (
+              <img className="order-img" src={`/images/images/char${char.imageId}icon.png`} alt={char.name} />
+            ) : (
+              <span className="order-emoji">{char.emoji}</span>
+            )}
             <span className="order-name">{char.name}</span>
             <span className="order-type">
               {char.type === 'attacker' && '공격형'}

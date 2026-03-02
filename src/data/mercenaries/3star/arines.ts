@@ -10,8 +10,11 @@ export const arines: MercenaryTemplate = {
   supportPower: 203,
   def: 5,
   emoji: '💚',
+  imageId: '1004',
   critRate: 0,
   critDamage: 0,
   agility: 5,
-  skillIds: ['bless_1', 'bless_2', 'bless_3', 'bless_4'],
+  attackRange: 'cross',
+  rangeSize: 1,
+  skillIds: [],
 }

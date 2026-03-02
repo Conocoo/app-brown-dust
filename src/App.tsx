@@ -45,6 +45,7 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
       supportPower: tmpl.supportPower ?? 0,
       def: runed.def,
       emoji: tmpl.emoji,
+      imageId: tmpl.imageId,
       critRate: runed.critRate,
       critDamage: runed.critDamage,
       agility: tmpl.agility,
@@ -90,6 +91,8 @@ export default function App() {
 
   // 드래그
   const [dragSource, setDragSource] = useState<DragSource>(null)
+  const dragSourceRef = useRef<DragSource>(null)
+  const dropSucceededRef = useRef(false)
 
   const timerRef = useRef<number | null>(null)
   const battleTeamsRef = useRef<{ players: BattleCharacter[]; enemies: BattleCharacter[] } | null>(null)
@@ -141,6 +144,7 @@ export default function App() {
             supportPower: tmpl.supportPower ?? 0,
             def: runed.def,
             emoji: tmpl.emoji,
+            imageId: tmpl.imageId,
             critRate: runed.critRate,
             critDamage: runed.critDamage,
             agility: tmpl.agility,
@@ -188,13 +192,19 @@ export default function App() {
 
   // 드래그: 목록에서 시작
   const handleDragStartFromList = useCallback((id: string) => {
-    setDragSource({ type: 'character', id })
+    const source: DragSource = { type: 'character', id }
+    setDragSource(source)
+    dragSourceRef.current = source
+    dropSucceededRef.current = false
     setSelectedCharId(id)
   }, [])
 
   // 드래그: 셀에서 시작
   const handleDragStartFromCell = useCallback((row: number, col: number) => {
-    setDragSource({ type: 'cell', row, col })
+    const source: DragSource = { type: 'cell', row, col }
+    setDragSource(source)
+    dragSourceRef.current = source
+    dropSucceededRef.current = false
   }, [])
 
   // 드래그: 셀 위로
@@ -231,6 +241,7 @@ export default function App() {
             supportPower: tmpl.supportPower ?? 0,
             def: runed.def,
             emoji: tmpl.emoji,
+            imageId: tmpl.imageId,
             critRate: runed.critRate,
             critDamage: runed.critDamage,
             agility: tmpl.agility,
@@ -257,16 +268,33 @@ export default function App() {
 
         return next
       })
+      dropSucceededRef.current = true
       setDragSource(null)
+      dragSourceRef.current = null
       setSelectedCharId(null)
       setSelectedCell({ row, col })
     },
     [phase, dragSource]
   )
 
-  // 드래그 종료
+  // 드래그 종료: 보드 밖에 드롭하면 용병 제거
   useEffect(() => {
-    const handleDragEnd = () => setDragSource(null)
+    const handleDragEnd = () => {
+      const source = dragSourceRef.current
+      if (source && source.type === 'cell' && !dropSucceededRef.current) {
+        setGrid((prev) => {
+          const next = prev.map((r) => [...r])
+          next[source.row][source.col] = null
+          return next
+        })
+        setSelectedCell((prev) =>
+          prev?.row === source.row && prev?.col === source.col ? null : prev
+        )
+      }
+      setDragSource(null)
+      dragSourceRef.current = null
+      dropSucceededRef.current = false
+    }
     document.addEventListener('dragend', handleDragEnd)
     return () => document.removeEventListener('dragend', handleDragEnd)
   }, [])
@@ -316,21 +344,11 @@ export default function App() {
       }
       for (let i = 0; i < upTo && i < logs.length; i++) {
         const log = logs[i]
-        if (log.type === 'attack' && log.defender && log.defenderHpAfter !== undefined) {
-          state.forEach((val, key) => {
-            const name = key.split('-').slice(1).join('-')
-            if (log.defender!.includes(getNameFromTemplate(name))) {
-              val.hp = log.defenderHpAfter!
-            }
-          })
-        }
-        if (log.type === 'reflect' && log.defender && log.defenderHpAfter !== undefined) {
-          state.forEach((val, key) => {
-            const name = key.split('-').slice(1).join('-')
-            if (log.defender!.includes(getNameFromTemplate(name))) {
-              val.hp = log.defenderHpAfter!
-            }
-          })
+        if ((log.type === 'attack' || log.type === 'reflect') && log.defenderHpAfter !== undefined) {
+          if (log.targetKey) {
+            const s = state.get(log.targetKey)
+            if (s) s.hp = log.defenderHpAfter
+          }
         }
         if (log.type === 'casting' && log.message) {
           state.forEach((val, key) => {
@@ -644,13 +662,16 @@ function replayHp(
   enemies: BattleCharacter[],
   logs: BattleLogEntry[]
 ): void {
+  const all = [...players, ...enemies]
+  const byKey = new Map<string, BattleCharacter>()
+  for (const c of all) {
+    byKey.set(`${c.team}-${c.templateId}`, c)
+  }
   for (const log of logs) {
-    if (log.type !== 'attack' || !log.defender || log.defenderHpAfter === undefined) continue
-    const all = [...players, ...enemies]
-    for (const c of all) {
-      if (log.defender.includes(c.name)) {
-        c.hp = log.defenderHpAfter
-      }
+    if ((log.type !== 'attack' && log.type !== 'reflect') || log.defenderHpAfter === undefined) continue
+    if (log.targetKey) {
+      const c = byKey.get(log.targetKey)
+      if (c) c.hp = log.defenderHpAfter
     }
   }
 }

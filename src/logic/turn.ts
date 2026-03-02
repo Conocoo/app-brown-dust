@@ -2,7 +2,7 @@ import type { BattleCharacter, BattleLogEntry, StatusEffect } from '../types/gam
 import type { Skill, SkillEffect } from '../types/skill'
 import { getSkillById } from '../data/skills'
 import { findNextAlly, resolveEnemyTarget, getTargetsInRange } from './targeting'
-import { calculateFullDamage, getEffectiveCritRate } from './damage'
+import { calculateFullDamage, getEffectiveCritRate, getEffectiveAtk } from './damage'
 
 // ─── 유틸 ───
 
@@ -124,15 +124,21 @@ function applyStatusEffect(
     duration = Math.max(1, Math.round(duration * 0.5))
   }
 
+  // atkScaling: value를 시전자 ATK의 %로 계산
+  const value = effect.atkScaling
+    ? Math.round(getEffectiveAtk(actor) * effect.value / 100)
+    : effect.value
+
   const se: StatusEffect = {
     id: nextEffectId(),
     type: effect.type,
-    value: effect.value,
+    value,
     remainingTurns: duration,
     category,
     buffType: isBuff ? effect.buffType : undefined,
     debuffClass: !isBuff ? effect.debuffClass : undefined,
     ignoreImmunity: effect.ignoreImmunity,
+    dmgTakenUp: effect.dmgTakenUp,
   }
 
   target.statusEffects.push(se)
@@ -160,7 +166,7 @@ function processTurnStart(
 
   for (const effect of actor.statusEffects) {
     // 지속 피해 (DoT)
-    if (effect.type === 'burn' || effect.type === 'bleed' || effect.type === 'poison') {
+    if (effect.type === 'burn' || effect.type === 'bleed' || effect.type === 'poison' || effect.type === 'advanced_burn') {
       actor.hp = Math.max(0, actor.hp - effect.value)
       logs.push({
         type: 'debuff',
@@ -278,6 +284,7 @@ function processCounterAttack(
       defenderMaxHp: attacker.maxHp,
       defeated: attacker.hp <= 0,
       message: `${charLabel(defender)} → ${charLabel(attacker)}에게 ${counterDamage} 반격!`,
+      targetKey: `${attacker.team}-${attacker.templateId}`,
     })
   }
 
@@ -347,6 +354,7 @@ function applyEffect(
         skillName: skill.name,
         isCritical,
         isGraze,
+        targetKey: `${target.team}-${target.templateId}`,
       })
       return
     }
@@ -394,6 +402,19 @@ function applyEffect(
     }
     case 'cleanse': {
       applyCleanse(target, actor, logs, skill.name)
+      return
+    }
+    case 'on_kill_heal_percent': {
+      // 중복 등록 방지 (범위공격 시 타겟별로 호출되므로 1번만 등록)
+      if (!actor.statusEffects.some((e) => e.type === 'pending_kill_heal')) {
+        actor.statusEffects.push({
+          id: nextEffectId(),
+          type: 'pending_kill_heal',
+          value: effect.value,
+          remainingTurns: 0,
+          category: 'buff',
+        })
+      }
       return
     }
   }
@@ -504,6 +525,7 @@ function attackSingleTarget(
     defeated: target.hp <= 0,
     isCritical,
     isGraze,
+    targetKey: `${target.team}-${target.templateId}`,
   })
 
   // 흡혈
@@ -525,6 +547,34 @@ function attackSingleTarget(
   }
 }
 
+// ─── 턴 종료 처리 ───
+
+function processPostTurn(
+  actor: BattleCharacter,
+  aliveBeforeTurn: Set<BattleCharacter>,
+  logs: BattleLogEntry[]
+): void {
+  // 킬 시 회복 (pending_kill_heal)
+  const killHeals = actor.statusEffects.filter((e) => e.type === 'pending_kill_heal')
+  if (killHeals.length > 0) {
+    const anyKilled = [...aliveBeforeTurn].some((e) => e.hp <= 0)
+    if (anyKilled && actor.hp > 0) {
+      for (const heal of killHeals) {
+        const healAmount = Math.round(actor.maxHp * heal.value / 100)
+        actor.hp = Math.min(actor.maxHp, actor.hp + healAmount)
+        logs.push({
+          type: 'buff',
+          attacker: charLabel(actor),
+          attackerTeam: actor.team,
+          message: `${charLabel(actor)} → 적 처치! ${healAmount} 회복! (HP: ${actor.hp})`,
+        })
+      }
+    }
+    // 임시 상태효과 제거
+    actor.statusEffects = actor.statusEffects.filter((e) => e.type !== 'pending_kill_heal')
+  }
+}
+
 // ─── 메인 턴 실행 ───
 
 /** 한 캐릭터의 턴 실행 */
@@ -534,6 +584,9 @@ export function executeTurn(
   enemies: BattleCharacter[],
   logs: BattleLogEntry[]
 ): void {
+  // 턴 시작 전 살아있는 적 스냅샷 (킬 판정용)
+  const aliveBeforeTurn = new Set(enemies.filter((e) => e.hp > 0))
+
   // 1. 턴 시작: 지속 효과 처리
   processTurnStart(actor, logs)
   logs.push({
@@ -581,6 +634,9 @@ export function executeTurn(
       }
     }
   }
+
+  // 6. 턴 종료 처리
+  processPostTurn(actor, aliveBeforeTurn, logs)
 }
 
 /** passive 스킬 일괄 발동 (게임 시작 시) */

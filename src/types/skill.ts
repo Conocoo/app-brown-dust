@@ -18,6 +18,10 @@ export interface SkillEffect {
   debuffClass?: DebuffClass
   /** true면 해로운효과 면역 관통 */
   ignoreImmunity?: boolean
+  /** true면 value를 시전자 ATK의 %로 계산 (예: value 25 → ATK × 25%) */
+  atkScaling?: boolean
+  /** 부가 효과: 받는 피해량 증가 (%). 상태효과에 함께 저장됨 */
+  dmgTakenUp?: number
 }
 
 /** 스킬 정의 */

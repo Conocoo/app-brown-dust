@@ -25,6 +25,8 @@ export interface StatusEffect {
   debuffClass?: DebuffClass
   /** true면 해로운효과 면역 관통 */
   ignoreImmunity?: boolean
+  /** 부가 효과: 받는 피해량 증가 (%). 복합 상태효과에서 사용 */
+  dmgTakenUp?: number
 }
 
 /** 전투 중 캐릭터 상태 */
@@ -39,6 +41,7 @@ export interface BattleCharacter {
   supportPower: number
   def: number
   emoji: string
+  imageId?: string
   critRate: number
   critDamage: number
   /** 민첩 (피격 시 스침 확률 + 데미지 감소 35% + 디버프 턴수 감소 50%) */
