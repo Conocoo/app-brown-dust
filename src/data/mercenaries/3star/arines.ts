@@ -16,5 +16,10 @@ export const arines: MercenaryTemplate = {
   agility: 5,
   attackRange: 'cross',
   rangeSize: 1,
-  skills: [],
+  skills: [
+    { skillId: 'fair_and_square' },
+    { skillId: 'advanced_atk_up' },
+    { skillId: 'cc_immune' },
+    { skillId: 'stat_debuff_immune_grant' },
+  ],
 }

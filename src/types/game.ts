@@ -29,6 +29,8 @@ export interface StatusEffect {
   ignoreImmunity?: boolean
   /** 부가 효과: 받는 피해량 증가 (%). 복합 상태효과에서 사용 */
   dmgTakenUp?: number
+  /** 이 효과 제거 시 함께 제거할 상태효과 type */
+  linkedBuffId?: string
 }
 
 /** 전투 중 캐릭터 상태 */
@@ -63,6 +65,8 @@ export interface BattleCharacter {
   attackRange: AttackRange
   /** 범위 크기 (horizontal, vertical, back_n, front_n, cross, area_n 등에서 사용) */
   rangeSize?: number
+  /** 임시생명력 (피격 시 hp보다 먼저 소진) */
+  tempHp: number
   /** 현재 걸린 상태 효과 */
   statusEffects: StatusEffect[]
   /** 장착된 룬 (스탯 재계산 시 사용) */

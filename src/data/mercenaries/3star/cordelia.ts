@@ -17,7 +17,8 @@ export const cordelia: MercenaryTemplate = {
   rangeSize: 2,
   skills: [
     { skillId: 'advanced_burn', effects: [{ value: 25, duration: 5, dmgTakenUp: 20 }] },
-    { skillId: 'advanced_fatal_strike', effects: [{ value: 50 }, { value: 50 }] },
+    { skillId: 'advanced_fatal_strike', effects: [{ value: 50 }] },
+    { skillId: 'fatal_strike_recovery', effects: [{ value: 50 }] },
     { skillId: 'shield', effects: [{ value: 25, duration: 12 }] },
   ],
 }

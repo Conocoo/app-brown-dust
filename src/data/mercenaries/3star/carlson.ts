@@ -13,5 +13,10 @@ export const carlson: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 0,
-  skills: [],
+  skills: [
+    { skillId: 'advanced_taunt' },
+    { skillId: 'advanced_armor_strike' },
+    { skillId: 'recovery' },
+    { skillId: 'advanced_dot_immune' },
+  ],
 }

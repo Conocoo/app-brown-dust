@@ -8,6 +8,15 @@ import { tauntImmune } from './taunt-immune'
 import { advancedDispel } from './advanced-dispel'
 import { buffBlock } from './buff-block'
 import { atkWeaken } from './atk-weaken'
+import { fatalStrikeRecovery } from './fatal-strike-recovery'
+import { advancedTaunt } from './advanced-taunt'
+import { advancedArmorStrike } from './advanced-armor-strike'
+import { recovery } from './recovery'
+import { advancedDotImmune } from './advanced-dot-immune'
+import { fairAndSquare } from './fair-and-square'
+import { advancedAtkUp } from './advanced-atk-up'
+import { ccImmune } from './cc-immune'
+import { statDebuffImmuneGrant } from './stat-debuff-immune-grant'
 
 const skillMap = new Map<string, Skill>()
 
@@ -23,6 +32,15 @@ register(tauntImmune)
 register(advancedDispel)
 register(buffBlock)
 register(atkWeaken)
+register(fatalStrikeRecovery)
+register(advancedTaunt)
+register(advancedArmorStrike)
+register(recovery)
+register(advancedDotImmune)
+register(fairAndSquare)
+register(advancedAtkUp)
+register(ccImmune)
+register(statDebuffImmuneGrant)
 
 export function getSkillById(id: string): Skill | undefined {
   return skillMap.get(id)

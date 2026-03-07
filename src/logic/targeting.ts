@@ -102,6 +102,12 @@ export function resolveEnemyTarget(
   const focusTarget = alive.find((e) => e.statusEffects.some((s) => s.type === 'focus_fire'))
   if (focusTarget) return focusTarget
 
+  // 도발: taunt 상태의 적이 있으면 우선 타겟 (공격자가 taunt_immune이면 무시)
+  if (!attacker.statusEffects.some((s) => s.type === 'taunt_immune')) {
+    const tauntTarget = alive.find((e) => e.statusEffects.some((s) => s.type === 'taunt'))
+    if (tauntTarget) return tauntTarget
+  }
+
   switch (attacker.attackTarget) {
     case 'enemy_second':
       return findTargetSecond(attacker, enemies)

@@ -59,6 +59,7 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
       attackTarget: tmpl.attackTarget ?? 'enemy_front',
       attackRange: tmpl.attackRange ?? 'single',
       rangeSize: tmpl.rangeSize,
+      tempHp: 0,
       statusEffects: [],
       runes: tmpl.runes ?? [],
     }
@@ -163,6 +164,7 @@ export default function App() {
             attackTarget: tmpl.attackTarget ?? 'enemy_front',
             attackRange: tmpl.attackRange ?? 'single',
             rangeSize: tmpl.rangeSize,
+            tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
           }
@@ -272,6 +274,7 @@ export default function App() {
             attackTarget: tmpl.attackTarget ?? 'enemy_front',
             attackRange: tmpl.attackRange ?? 'single',
             rangeSize: tmpl.rangeSize,
+            tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
           }
@@ -603,6 +606,7 @@ export default function App() {
         attackTarget: tmpl.attackTarget ?? 'enemy_front',
         attackRange: tmpl.attackRange ?? 'single',
         rangeSize: tmpl.rangeSize,
+        tempHp: 0,
         statusEffects: [],
         runes: tmpl.runes ?? [],
       }

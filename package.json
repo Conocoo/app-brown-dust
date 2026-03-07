@@ -6,7 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate": "tsc --noEmit",
+    "create-skill": "node scripts/create-skill.mjs",
+    "create-mercenary": "node scripts/create-mercenary.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

@@ -1,7 +1,7 @@
 import type { BattleCharacter, BattleLogEntry, StatusEffect } from '../types/game'
 import type { Skill, SkillEffect } from '../types/skill'
 import { findNextAlly, resolveEnemyTarget, getTargetsInRange } from './targeting'
-import { calculateFullDamage, getEffectiveCritRate, getEffectiveCritDamage, getEffectiveAgility, getEffectiveAtk } from './damage'
+import { calculateFullDamage, getEffectiveCritRate, getEffectiveCritDamage, getEffectiveAgility, getEffectiveAtk, getEffectiveDef, calcShieldReduction, getDmgTakenMultiplier } from './damage'
 import { getSkillById } from '../data/skills'
 
 // ─── 유틸 ───
@@ -14,6 +14,34 @@ function nextEffectId(): string {
 
 function charLabel(c: BattleCharacter): string {
   return `${c.emoji} ${c.name}`
+}
+
+/** 연동 버프 제거: 상태효과 제거 시 linkedBuffId가 있으면 함께 제거 */
+function removeStatusWithLinked(target: BattleCharacter, effectType: string): void {
+  const effect = target.statusEffects.find((e) => e.type === effectType)
+  if (!effect) return
+  const linkedType = effect.linkedBuffId
+  target.statusEffects = target.statusEffects.filter((e) => e.type !== effectType)
+  if (linkedType) {
+    target.statusEffects = target.statusEffects.filter((e) => e.type !== linkedType)
+  }
+}
+
+/** 데미지 적용 (임시생명력 우선 소진) */
+function applyDamageToCharacter(target: BattleCharacter, damage: number): void {
+  if (target.tempHp > 0) {
+    if (damage <= target.tempHp) {
+      target.tempHp -= damage
+    } else {
+      const overflow = damage - target.tempHp
+      target.tempHp = 0
+      target.hp = Math.max(0, target.hp - overflow)
+      // 임시생명력 소진 → 상태효과 + 연동 버프 제거
+      removeStatusWithLinked(target, 'temp_hp')
+    }
+  } else {
+    target.hp = Math.max(0, target.hp - damage)
+  }
 }
 
 /** 치명타/스침 판정 */
@@ -135,10 +163,12 @@ function applyStatusEffect(
     duration = Math.max(1, Math.round(duration * 0.5))
   }
 
-  // atkScaling: value를 시전자 ATK의 %로 계산
+  // atkScaling / spScaling: value를 시전자 스탯의 %로 계산
   const value = effect.atkScaling
     ? Math.round(getEffectiveAtk(actor) * effect.value / 100)
-    : effect.value
+    : effect.spScaling
+      ? Math.round(actor.supportPower * effect.value / 100)
+      : effect.value
 
   const se: StatusEffect = {
     id: nextEffectId(),
@@ -150,6 +180,7 @@ function applyStatusEffect(
     debuffClass: !isBuff ? effect.debuffClass : undefined,
     ignoreImmunity: effect.ignoreImmunity,
     dmgTakenUp: effect.dmgTakenUp,
+    linkedBuffId: effect.linkedBuffId,
   }
 
   target.statusEffects.push(se)
@@ -178,7 +209,7 @@ function processTurnStart(
   for (const effect of actor.statusEffects) {
     // 지속 피해 (DoT)
     if (effect.type === 'burn' || effect.type === 'bleed' || effect.type === 'poison' || effect.type === 'advanced_burn') {
-      actor.hp = Math.max(0, actor.hp - effect.value)
+      applyDamageToCharacter(actor, effect.value)
       logs.push({
         type: 'debuff',
         defender: charLabel(actor),
@@ -210,8 +241,18 @@ function processTurnStart(
     }
   }
 
-  // 만료된 효과 제거
-  actor.statusEffects = actor.statusEffects.filter((e) => !toRemove.includes(e.id))
+  // 만료된 효과의 연동 버프도 함께 제거
+  const expiredEffects = actor.statusEffects.filter((e) => toRemove.includes(e.id))
+  const linkedRemovals = expiredEffects
+    .filter((e) => e.linkedBuffId)
+    .map((e) => e.linkedBuffId!)
+  // temp_hp 만료 시 tempHp 리셋
+  if (expiredEffects.some((e) => e.type === 'temp_hp')) {
+    actor.tempHp = 0
+  }
+  actor.statusEffects = actor.statusEffects.filter(
+    (e) => !toRemove.includes(e.id) && !linkedRemovals.includes(e.type)
+  )
 }
 
 // ─── 무효화 / 정화 ───
@@ -225,14 +266,24 @@ function applyDispel(
   skillName: string
 ): void {
   const before = target.statusEffects.length
-  target.statusEffects = target.statusEffects.filter((e) => {
-    if (e.category !== 'buff') return true
-    // 강화무효화는 특별 버프 제거 불가
-    if (isEnhanced && e.buffType === 'special') return true
-    // 면역 버프는 무효화로도 제거 불가
-    if (e.type.endsWith('_immune')) return true
-    return false
+  // 제거 대상 버프 수집 (연동 제거용)
+  const toDispel = target.statusEffects.filter((e) => {
+    if (e.category !== 'buff') return false
+    if (isEnhanced && e.buffType === 'special') return false
+    if (e.type.endsWith('_immune')) return false
+    return true
   })
+  const linkedRemovals = toDispel
+    .filter((e) => e.linkedBuffId)
+    .map((e) => e.linkedBuffId!)
+  const dispelIds = new Set(toDispel.map((e) => e.id))
+  // temp_hp 제거 시 tempHp 리셋
+  if (toDispel.some((e) => e.type === 'temp_hp')) {
+    target.tempHp = 0
+  }
+  target.statusEffects = target.statusEffects.filter(
+    (e) => !dispelIds.has(e.id) && !linkedRemovals.includes(e.type)
+  )
   const removed = before - target.statusEffects.length
   if (removed > 0) {
     logs.push({
@@ -284,7 +335,7 @@ function processCounterAttack(
   const counterDmg = defender.statusEffects.find((e) => e.type === 'counter_damage')
   if (counterDmg) {
     const counterDamage = Math.round(damageDealt * counterDmg.value / 100)
-    attacker.hp = Math.max(0, attacker.hp - counterDamage)
+    applyDamageToCharacter(attacker, counterDamage)
     logs.push({
       type: 'reflect',
       attacker: charLabel(defender),
@@ -352,7 +403,32 @@ function applyEffect(
     case 'damage': {
       const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
       const damage = calculateFullDamage(actor, target, effect.value / 100, multiplier)
-      target.hp = Math.max(0, target.hp - damage)
+      applyDamageToCharacter(target, damage)
+      logs.push({
+        type: 'attack',
+        attacker: actorLabel,
+        attackerTeam: actor.team,
+        defender: targetLabel,
+        damage,
+        defenderHpAfter: target.hp,
+        defenderMaxHp: target.maxHp,
+        defeated: target.hp <= 0,
+        skillName: skill.name,
+        isCritical,
+        isGraze,
+        targetKey: `${target.team}-${target.templateId}`,
+      })
+      return
+    }
+    case 'def_scaling_damage': {
+      // 철갑: (공격자 유효DEF / 100) × 공격자 유효ATK × (value / 100), 대상 DEF 무시
+      const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
+      const rawDamage = (getEffectiveDef(actor) / 100) * getEffectiveAtk(actor) * (effect.value / 100)
+      let damage = rawDamage * multiplier
+      damage *= getDmgTakenMultiplier(target)
+      damage *= calcShieldReduction(target)
+      damage = Math.max(0, Math.round(damage))
+      applyDamageToCharacter(target, damage)
       logs.push({
         type: 'attack',
         attacker: actorLabel,
@@ -422,6 +498,16 @@ function applyEffect(
     }
     case 'cleanse': {
       applyCleanse(target, actor, logs, skill.name)
+      return
+    }
+    case 'temp_hp': {
+      // 임시생명력: 시전자 maxHp × supportPower/100 × value/100
+      const tempAmount = Math.round(actor.maxHp * actor.supportPower / 100 * effect.value / 100)
+      target.tempHp = tempAmount
+      // 지속 효과로도 등록 (duration 추적 + 연동 제거용)
+      if (effect.duration) {
+        applyStatusEffect(target, effect, actor, logs, skill.name)
+      }
       return
     }
     case 'on_kill_heal_percent': {
@@ -532,7 +618,7 @@ function attackSingleTarget(
 ): void {
   const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
   const damage = calculateFullDamage(actor, target, 1.0, multiplier)
-  target.hp = Math.max(0, target.hp - damage)
+  applyDamageToCharacter(target, damage)
 
   logs.push({
     type: 'attack',
@@ -641,8 +727,10 @@ export function executeTurn(
     }
   }
 
-  // 4. 일반공격
-  executeNormalAttack(actor, allies, enemies, logs)
+  // 4. 일반공격 (지원형은 공격하지 않음)
+  if (actor.type !== 'support') {
+    executeNormalAttack(actor, allies, enemies, logs)
+  }
 
   // 5. after_attack 스킬
   if (canUseSkills) {
