@@ -34,8 +34,9 @@ export function getEffectiveCritRate(char: BattleCharacter): number {
 
 /** 버프/디버프 반영한 유효 치명피해 */
 export function getEffectiveCritDamage(char: BattleCharacter): number {
+  const bonus = sumEffectValue(char.statusEffects, 'crit_damage_up')
   const penalty = sumEffectValue(char.statusEffects, 'crit_damage_down')
-  return Math.max(0, char.critDamage - penalty)
+  return Math.max(0, char.critDamage + bonus - penalty)
 }
 
 /** 버프/디버프 반영한 유효 민첩 */
