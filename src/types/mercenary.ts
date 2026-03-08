@@ -41,4 +41,6 @@ export interface MercenaryTemplate {
   rangeSize?: number
   /** 장착된 룬 목록 (최대 2개) */
   runes?: Rune[]
+  /** 자폭: 턴 종료 후 자신 즉사 */
+  selfDestruct?: boolean
 }

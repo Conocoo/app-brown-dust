@@ -62,6 +62,7 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
       tempHp: 0,
       statusEffects: [],
       runes: tmpl.runes ?? [],
+      selfDestruct: tmpl.selfDestruct,
     }
   }
 }
@@ -167,6 +168,7 @@ export default function App() {
             tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
+            selfDestruct: tmpl.selfDestruct,
           }
           return next
         })
@@ -277,6 +279,7 @@ export default function App() {
             tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
+            selfDestruct: tmpl.selfDestruct,
           }
         } else if (dragSource.type === 'cell') {
           // 셀에서 셀로 이동
@@ -609,6 +612,7 @@ export default function App() {
         tempHp: 0,
         statusEffects: [],
         runes: tmpl.runes ?? [],
+        selfDestruct: tmpl.selfDestruct,
       }
     }
     return null
