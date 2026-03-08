@@ -31,6 +31,8 @@ export interface StatusEffect {
   dmgTakenUp?: number
   /** 이 효과 제거 시 함께 제거할 상태효과 type */
   linkedBuffId?: string
+  /** 부여할 버프의 지속턴 (pending 상태효과에서 사용) */
+  grantDuration?: number
 }
 
 /** 전투 중 캐릭터 상태 */

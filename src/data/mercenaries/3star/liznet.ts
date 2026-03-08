@@ -16,5 +16,10 @@ export const liznet: MercenaryTemplate = {
   attackTarget: 'enemy_second',
   attackRange: 'back_n',
   rangeSize: 1,
-  skills: [],
+  skills: [
+    { skillId: 'advanced_stun', effects: [{ duration: 12, dmgTakenUp: 65 }] },
+    { skillId: 'advanced_precision_strike', effects: [{ value: 150 }] },
+    { skillId: 'fatal_strike_recovery', effects: [{ value: 50 }] },
+    { skillId: 'crit_damage_sustained_increase' },
+  ],
 }

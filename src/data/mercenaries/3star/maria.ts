@@ -15,5 +15,11 @@ export const maria: MercenaryTemplate = {
   agility: 15,
   attackRange: 'back_n',
   rangeSize: 3,
-  skills: [],
+  skills: [
+    { skillId: 'dispel_skill' },
+    { skillId: 'supreme_fatal_strike', effects: [{ value: 200 }] },
+    { skillId: 'recovery' },
+    { skillId: 'on_kill_atk_up', effects: [{ value: 100, duration: 24 }] },
+    { skillId: 'curse_skill' },
+  ],
 }

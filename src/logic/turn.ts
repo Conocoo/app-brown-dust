@@ -221,6 +221,23 @@ function processTurnStart(
       })
     }
 
+    // 치명피해 지속 증가 (매 턴 스택 추가)
+    if (effect.type === 'crit_damage_up_stacking') {
+      actor.statusEffects.push({
+        id: nextEffectId(),
+        type: 'crit_damage_up',
+        value: effect.value,
+        remainingTurns: effect.remainingTurns,
+        category: 'buff',
+        buffType: 'stat_enhance',
+      })
+      logs.push({
+        type: 'buff',
+        defender: charLabel(actor),
+        message: `${charLabel(actor)} → 치명피해 +${effect.value}% 누적!`,
+      })
+    }
+
     // 재생 (regen)
     if (effect.type === 'regen') {
       const healAmount = effect.value
@@ -420,6 +437,32 @@ function applyEffect(
       })
       return
     }
+    case 'crit_scaling_damage': {
+      // 적중의 강타: critRate/100 × ATK × value/100
+      const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
+      const critRate = getEffectiveCritRate(actor)
+      const rawDamage = (critRate / 100) * getEffectiveAtk(actor) * (effect.value / 100)
+      let damage = rawDamage * multiplier
+      damage *= getDmgTakenMultiplier(target)
+      damage *= calcShieldReduction(target)
+      damage = Math.max(0, Math.round(damage))
+      applyDamageToCharacter(target, damage)
+      logs.push({
+        type: 'attack',
+        attacker: actorLabel,
+        attackerTeam: actor.team,
+        defender: targetLabel,
+        damage,
+        defenderHpAfter: target.hp,
+        defenderMaxHp: target.maxHp,
+        defeated: target.hp <= 0,
+        skillName: skill.name,
+        isCritical,
+        isGraze,
+        targetKey: `${target.team}-${target.templateId}`,
+      })
+      return
+    }
     case 'def_scaling_damage': {
       // 철갑: (공격자 유효DEF / 100) × 공격자 유효ATK × (value / 100), 대상 DEF 무시
       const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
@@ -519,6 +562,20 @@ function applyEffect(
           value: effect.value,
           remainingTurns: 0,
           category: 'buff',
+        })
+      }
+      return
+    }
+    case 'on_kill_atk_up': {
+      // 중복 등록 방지 (범위공격 시 타겟별로 호출되므로 1번만 등록)
+      if (!actor.statusEffects.some((e) => e.type === 'pending_kill_atk_up')) {
+        actor.statusEffects.push({
+          id: nextEffectId(),
+          type: 'pending_kill_atk_up',
+          value: effect.value,
+          remainingTurns: 0,
+          category: 'buff',
+          grantDuration: effect.duration,
         })
       }
       return
@@ -678,6 +735,31 @@ function processPostTurn(
     }
     // 임시 상태효과 제거
     actor.statusEffects = actor.statusEffects.filter((e) => e.type !== 'pending_kill_heal')
+  }
+
+  // 킬 시 공격력 증가 (pending_kill_atk_up) — 중첩 가능
+  const killAtkUps = actor.statusEffects.filter((e) => e.type === 'pending_kill_atk_up')
+  if (killAtkUps.length > 0) {
+    const anyKilled = [...aliveBeforeTurn].some((e) => e.hp <= 0)
+    if (anyKilled && actor.hp > 0) {
+      for (const buff of killAtkUps) {
+        actor.statusEffects.push({
+          id: nextEffectId(),
+          type: 'atk_up',
+          value: buff.value,
+          remainingTurns: buff.grantDuration ?? 24,
+          category: 'buff',
+          buffType: 'stat_enhance',
+        })
+        logs.push({
+          type: 'buff',
+          attacker: charLabel(actor),
+          attackerTeam: actor.team,
+          message: `${charLabel(actor)} → 적 처치! 공격력 +${buff.value}%!`,
+        })
+      }
+    }
+    actor.statusEffects = actor.statusEffects.filter((e) => e.type !== 'pending_kill_atk_up')
   }
 }
 

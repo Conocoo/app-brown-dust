@@ -17,6 +17,13 @@ import { fairAndSquare } from './fair-and-square'
 import { advancedAtkUp } from './advanced-atk-up'
 import { ccImmune } from './cc-immune'
 import { statDebuffImmuneGrant } from './stat-debuff-immune-grant'
+import { advancedStun } from './advanced-stun'
+import { advancedPrecisionStrike } from './advanced-precision-strike'
+import { critDamageSustainedIncrease } from './crit-damage-sustained-increase'
+import { dispelSkill } from './dispel'
+import { supremeFatalStrike } from './supreme-fatal-strike'
+import { onKillAtkUp } from './on-kill-atk-up'
+import { curseSkill } from './curse'
 
 const skillMap = new Map<string, Skill>()
 
@@ -41,6 +48,13 @@ register(fairAndSquare)
 register(advancedAtkUp)
 register(ccImmune)
 register(statDebuffImmuneGrant)
+register(advancedStun)
+register(advancedPrecisionStrike)
+register(critDamageSustainedIncrease)
+register(dispelSkill)
+register(supremeFatalStrike)
+register(onKillAtkUp)
+register(curseSkill)
 
 export function getSkillById(id: string): Skill | undefined {
   return skillMap.get(id)
