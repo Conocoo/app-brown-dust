@@ -1,7 +1,5 @@
 node_modules/
 dist/
-.claude/
 build_output.txt
 dev_output.txt
 tsconfig.tsbuildinfo
-public/images/not_use/

@@ -214,6 +214,14 @@ export function getTargetsInRange(
       break
     }
 
+    case 'small_cross':
+      // 자기 칸 + 상하좌우 1칸 (+ 형태)
+      offsets.push([0, frontDir])
+      offsets.push([0, backDir])
+      offsets.push([-1, 0])
+      offsets.push([1, 0])
+      break
+
     case 'diamond': {
       const radius = 2
       for (let r = -radius; r <= radius; r++) {

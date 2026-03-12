@@ -24,6 +24,9 @@ import { dispelSkill } from './dispel'
 import { supremeFatalStrike } from './supreme-fatal-strike'
 import { onKillAtkUp } from './on-kill-atk-up'
 import { curseSkill } from './curse'
+import { burn } from './burn'
+import { harmfulEffectImmunity } from './harmful-effect-immunity'
+import { advancedSelfdestructStun } from './advanced-selfdestruct-stun'
 
 const skillMap = new Map<string, Skill>()
 
@@ -55,6 +58,9 @@ register(dispelSkill)
 register(supremeFatalStrike)
 register(onKillAtkUp)
 register(curseSkill)
+register(burn)
+register(harmfulEffectImmunity)
+register(advancedSelfdestructStun)
 
 export function getSkillById(id: string): Skill | undefined {
   return skillMap.get(id)

@@ -14,7 +14,7 @@ export type AttackTargetType = 'enemy_front' | 'enemy_second' | 'enemy_back' | '
 
 /** 공격 범위 패턴 (용병 단위) */
 export type AttackRange = 'single' | 'horizontal' | 'vertical' | 'back_n' | 'front_n'
-  | 'cross' | 'x_shape' | 'area_n' | 'diamond'
+  | 'cross' | 'x_shape' | 'area_n' | 'diamond' | 'small_cross'
 
 /** 상태 효과 */
 export interface StatusEffect {
@@ -73,6 +73,8 @@ export interface BattleCharacter {
   statusEffects: StatusEffect[]
   /** 장착된 룬 (스탯 재계산 시 사용) */
   runes: Rune[]
+  /** 자폭: 턴 종료 후 자신 즉사 */
+  selfDestruct?: boolean
 }
 
 /** 전투 로그 종류 */

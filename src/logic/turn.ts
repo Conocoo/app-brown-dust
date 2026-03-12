@@ -823,7 +823,25 @@ export function executeTurn(
     }
   }
 
-  // 6. 턴 종료 처리
+  // 6. 자폭: 모든 스킬 발동 후 자신 즉사
+  if (actor.selfDestruct && actor.hp > 0) {
+    actor.hp = 0
+    logs.push({
+      type: 'attack',
+      attacker: charLabel(actor),
+      attackerTeam: actor.team,
+      defender: charLabel(actor),
+      damage: 0,
+      defenderHpAfter: 0,
+      defenderMaxHp: actor.maxHp,
+      defeated: true,
+      message: `${charLabel(actor)} → 자폭! 즉사!`,
+      targetKey: `${actor.team}-${actor.templateId}`,
+    })
+    return
+  }
+
+  // 7. 턴 종료 처리
   processPostTurn(actor, aliveBeforeTurn, logs)
 }
 
