@@ -1100,196 +1100,286 @@ h1 {
   50% { opacity: 0.4; }
 }
 
-/* ===== Dex (도감) ===== */
+/* ===== Dex (도감) — 브라운더스트 스타일 ===== */
 
 .dex {
   width: 100%;
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
+  padding: 0 12px;
 }
 
+/* --- 헤더 --- */
 .dex-header {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  margin-bottom: 12px;
 }
 
 .dex-header h2 {
   margin: 0;
-  color: #f0c040;
+  color: #e8e8f0;
+  font-size: 1.15em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .dex-count {
-  color: #888;
-  font-size: 0.9em;
+  color: #6a7a9c;
+  font-size: 0.85em;
+  margin-left: auto;
 }
 
 .btn-back {
-  background: #2a3a5c;
-  color: #ccc;
-  border: 1px solid #3a4a6c;
-  padding: 6px 14px;
-  border-radius: 6px;
+  background: transparent;
+  color: #8a9abc;
+  border: none;
+  padding: 6px 10px;
   cursor: pointer;
-  font-size: 0.85em;
+  font-size: 1.1em;
+  border-radius: 6px;
+  transition: all 0.15s;
 }
 
 .btn-back:hover {
-  background: #3a4a6c;
+  background: rgba(255,255,255,0.06);
   color: #fff;
 }
 
+/* --- 필터 탭 --- */
 .dex-filters {
   display: flex;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 4px;
+  margin-bottom: 8px;
+  padding: 4px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+}
+
+.dex-filters-star {
+  margin-bottom: 16px;
 }
 
 .dex-filter-btn {
-  background: #16213e;
-  color: #aaa;
-  border: 1px solid #2a3a5c;
-  padding: 4px 12px;
-  border-radius: 4px;
+  background: transparent;
+  color: #7a8aac;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
   cursor: pointer;
   font-size: 0.85em;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
 }
 
 .dex-filter-btn:hover {
-  background: #2a3a5c;
-  color: #fff;
+  background: rgba(255,255,255,0.06);
+  color: #bcc;
 }
 
 .dex-filter-active {
-  background: #f0c040;
-  color: #1a1a2e;
-  border-color: #f0c040;
-  font-weight: bold;
+  background: linear-gradient(135deg, #4a6adc, #5a7aee);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(74,106,220,0.3);
 }
 
-.dex-layout {
-  display: flex;
-  gap: 16px;
+.dex-filter-icon {
+  font-size: 1em;
 }
 
-.dex-list {
-  width: 280px;
-  min-width: 280px;
-  max-height: 600px;
+.dex-filter-star {
+  font-size: 0.8em;
+  padding: 6px 12px;
+}
+
+/* --- 용병 카드 그리드 --- */
+.dex-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  max-height: calc(100vh - 260px);
   overflow-y: auto;
+  padding: 4px;
+}
+
+.dex-grid-card {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.dex-card {
-  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 10px;
-  background: #16213e;
-  border: 1px solid #2a3a5c;
-  border-radius: 6px;
+  gap: 6px;
   cursor: pointer;
+  transition: transform 0.15s;
 }
 
-.dex-card:hover {
-  background: #1e2d4e;
-  border-color: #4a6a9c;
+.dex-grid-card:hover {
+  transform: translateY(-2px);
 }
 
-.dex-card-selected {
-  background: #1e2d4e;
-  border-color: #f0c040;
+.dex-grid-card-selected .dex-grid-portrait {
+  box-shadow: 0 0 0 2px #f0c040, 0 0 12px rgba(240,192,64,0.3);
 }
 
-.dex-card-portrait {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.dex-grid-portrait {
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(145deg, #1a2244, #0e1630);
+  border: 2px solid #2a3a5c;
+  transition: all 0.15s;
 }
 
-.dex-card-portrait img {
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
+.dex-grid-portrait-3star {
+  border-color: #4a7a4a;
+  background: linear-gradient(145deg, #1a2a1a, #0e1e10);
+}
+
+.dex-grid-portrait-4star {
+  border-color: #5a5aaa;
+  background: linear-gradient(145deg, #1a1a3a, #10102a);
+}
+
+.dex-grid-portrait-5star {
+  border-color: #aa6a3a;
+  background: linear-gradient(145deg, #2a1a1a, #1e1010);
+}
+
+.dex-grid-portrait img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
-.dex-card-emoji {
-  font-size: 1.5em;
+.dex-grid-emoji {
+  font-size: 2.5em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
 }
 
-.dex-card-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.dex-card-name {
-  color: #eee;
-  font-size: 0.95em;
-  font-weight: 500;
-}
-
-.dex-card-type,
-.dex-card-sub {
-  font-size: 0.75em;
-  color: #888;
-}
-
-.dex-card-skill {
-  gap: 8px;
-}
-
-.dex-card-timing {
-  padding: 2px 8px;
+.dex-grid-type-icon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  font-size: 0.85em;
+  background: rgba(0,0,0,0.6);
   border-radius: 4px;
-  font-size: 0.75em;
-  font-weight: 500;
-  flex-shrink: 0;
+  padding: 2px 4px;
+  line-height: 1;
 }
 
-.dex-detail {
-  flex: 1;
-  background: #16213e;
-  border: 1px solid #2a3a5c;
-  border-radius: 8px;
-  padding: 16px;
-  min-height: 400px;
-}
-
-.dex-detail-empty {
-  color: #666;
+.dex-grid-stars {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
   text-align: center;
-  padding-top: 120px;
+  font-size: 0.7em;
+  color: #f0c040;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  letter-spacing: 1px;
 }
 
-/* Mercenary detail */
+.dex-grid-name {
+  color: #ccd;
+  font-size: 0.82em;
+  text-align: center;
+  font-weight: 500;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
+/* --- 모달 (공통) --- */
+.dex-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dex-modal {
+  background: linear-gradient(180deg, #16213e, #0e1630);
+  border: 1px solid #2a3a5c;
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.dex-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #6a7a9c;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.dex-modal-close:hover {
+  color: #fff;
+  background: rgba(255,255,255,0.1);
+}
+
+/* --- 용병 디테일 (모달 내부) --- */
 .dex-merc-header {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .dex-merc-portrait {
-  width: 72px;
-  height: 72px;
+  width: 80px;
+  height: 80px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 2px solid #2a3a5c;
+  background: linear-gradient(145deg, #1a2244, #0e1630);
 }
 
 .dex-merc-portrait img {
-  width: 72px;
-  height: 72px;
-  border-radius: 8px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -1298,49 +1388,89 @@ h1 {
 }
 
 .dex-merc-title h3 {
-  margin: 0 0 4px;
+  margin: 0 0 6px;
   color: #eee;
+  font-size: 1.15em;
 }
 
+/* --- 스탯 그리드 --- */
 .dex-merc-stats {
+  margin-bottom: 20px;
+  padding: 14px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+}
+
+.dex-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.dex-stat-item {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
-  padding: 10px;
-  background: #1a1a2e;
-  border-radius: 6px;
+  align-items: center;
+  gap: 2px;
 }
 
-.dex-stat-row {
+.dex-stat-label {
+  color: #6a7a9c;
+  font-size: 0.72em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.dex-stat-value {
+  color: #e0e0f0;
+  font-size: 1.05em;
+  font-weight: 600;
+}
+
+.dex-stat-row-bottom {
   display: flex;
-  gap: 16px;
+  gap: 8px;
+  justify-content: center;
   flex-wrap: wrap;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-.dex-stat {
-  color: #ccc;
-  font-size: 0.9em;
+.dex-stat-tag {
+  color: #8a9abc;
+  font-size: 0.78em;
+  background: rgba(255,255,255,0.05);
+  padding: 3px 10px;
+  border-radius: 12px;
 }
 
 .dex-stat-warn {
   color: #ff6b6b;
-  font-weight: bold;
+  background: rgba(255,80,80,0.1);
 }
 
-.dex-merc-skills h4,
-.dex-skill-detail-effects h4,
-.dex-skill-detail-raw h4 {
-  color: #f0c040;
-  margin: 0 0 8px;
-  font-size: 0.95em;
+/* --- 스킬 (용병 디테일 내부) --- */
+.dex-merc-skills h4 {
+  color: #8a9abc;
+  margin: 0 0 10px;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .dex-skill-item {
-  padding: 8px 10px;
-  border-radius: 6px;
-  margin-bottom: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  background: rgba(0,0,0,0.2);
+  border-left: 3px solid transparent;
 }
+
+.dex-skill-item.ci-skill-timing-before_attack { border-left-color: #4a8adc; }
+.dex-skill-item.ci-skill-timing-after_attack { border-left-color: #dc4a4a; }
+.dex-skill-item.ci-skill-timing-passive { border-left-color: #4adc6a; }
 
 .dex-skill-header {
   display: flex;
@@ -1349,80 +1479,312 @@ h1 {
   margin-bottom: 4px;
 }
 
+.dex-skill-timing-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7em;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.dex-skill-timing-badge.ci-skill-timing-before_attack {
+  background: rgba(74,138,220,0.2);
+  color: #6aacff;
+}
+
+.dex-skill-timing-badge.ci-skill-timing-after_attack {
+  background: rgba(220,74,74,0.2);
+  color: #ff8a8a;
+}
+
+.dex-skill-timing-badge.ci-skill-timing-passive {
+  background: rgba(74,220,106,0.2);
+  color: #6aee8a;
+}
+
 .dex-skill-name {
-  color: #eee;
+  color: #dde;
   font-weight: 500;
   font-size: 0.9em;
 }
 
-.dex-skill-timing,
 .dex-skill-target {
-  font-size: 0.75em;
-  color: #aaa;
-  background: rgba(0,0,0,0.3);
-  padding: 1px 6px;
-  border-radius: 3px;
+  font-size: 0.72em;
+  color: #6a7a9c;
+  margin-left: auto;
 }
 
 .dex-skill-desc {
-  color: #999;
-  font-size: 0.8em;
+  color: #7a8aac;
+  font-size: 0.78em;
+  padding-left: 2px;
 }
 
-/* Skill detail */
+/* ===== 스킬 도감 (SkillDex) ===== */
 
-.dex-skill-detail-header {
+.sdex-layout {
+  display: flex;
+  gap: 0;
+  min-height: calc(100vh - 180px);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+.sdex-sidebar {
+  width: 140px;
+  min-width: 140px;
+  background: rgba(0,0,0,0.25);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  gap: 2px;
+}
+
+.sdex-cat-btn {
+  background: transparent;
+  border: none;
+  color: #7a8aac;
+  padding: 10px 14px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.85em;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.sdex-cat-btn:hover {
+  background: rgba(255,255,255,0.04);
+  color: #bcc;
+}
+
+.sdex-cat-active {
+  background: linear-gradient(135deg, #4a6adc, #5a7aee);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(74,106,220,0.25);
+}
+
+/* --- 스킬 카드 리스트 --- */
+.sdex-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 180px);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sdex-card {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  padding: 12px 14px;
+  background: rgba(0,0,0,0.15);
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
 }
 
-.dex-skill-detail-header h3 {
-  margin: 0;
-  color: #eee;
+.sdex-card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.08);
 }
 
-.ci-skill-timing-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.8em;
+.sdex-card-selected {
+  background: rgba(74,106,220,0.1);
+  border-color: #4a6adc;
+}
+
+.sdex-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1em;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sdex-card-icon.ci-skill-timing-before_attack {
+  background: linear-gradient(135deg, #1a3a6e, #2a4a8e);
+  color: #6aacff;
+}
+
+.sdex-card-icon.ci-skill-timing-after_attack {
+  background: linear-gradient(135deg, #5a1a1a, #7a2a2a);
+  color: #ff8a8a;
+}
+
+.sdex-card-icon.ci-skill-timing-passive {
+  background: linear-gradient(135deg, #1a4a2a, #2a5a3a);
+  color: #6aee8a;
+}
+
+.sdex-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.sdex-card-name {
+  color: #dde;
+  font-size: 0.92em;
   font-weight: 500;
 }
 
-.dex-skill-detail-meta {
+.sdex-card-sub {
+  color: #5a6a8c;
+  font-size: 0.75em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sdex-card-usage {
   display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
-  color: #888;
-  font-size: 0.85em;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
-.dex-skill-detail-meta code {
-  background: #1a1a2e;
-  padding: 1px 6px;
-  border-radius: 3px;
-  color: #aaa;
+.sdex-card-usage-label {
+  color: #5a6a8c;
+  font-size: 0.65em;
 }
 
-.dex-skill-detail-effects {
-  margin-bottom: 16px;
-}
-
-.dex-effect-line {
-  color: #ccc;
-  font-size: 0.85em;
-  padding: 6px 8px;
-  background: #1a1a2e;
-  border-radius: 4px;
-  margin-bottom: 4px;
-}
-
-.dex-skill-detail-raw pre {
-  background: #1a1a2e;
-  color: #8a8;
-  padding: 10px;
-  border-radius: 6px;
+.sdex-card-usage-count {
+  background: linear-gradient(135deg, #3a5aaa, #4a6abc);
+  color: #fff;
   font-size: 0.8em;
-  overflow-x: auto;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  min-width: 28px;
+  text-align: center;
+}
+
+.sdex-empty {
+  color: #4a5a7c;
+  text-align: center;
+  padding: 60px 0;
+  font-size: 0.9em;
+}
+
+/* --- 스킬 디테일 (모달 내부) --- */
+.sdex-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.sdex-detail-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85em;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.sdex-detail-header h3 {
+  margin: 0 0 4px;
+  color: #eee;
+  font-size: 1.1em;
+}
+
+.sdex-detail-id {
+  color: #5a6a8c;
+  font-size: 0.78em;
+  font-family: monospace;
+}
+
+.sdex-detail-meta {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.sdex-detail-section {
+  margin-bottom: 20px;
+}
+
+.sdex-detail-section h4 {
+  color: #8a9abc;
+  margin: 0 0 10px;
+  font-size: 0.82em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sdex-effect-row {
+  background: rgba(0,0,0,0.2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+
+.sdex-effect-type {
+  color: #aabbdd;
+  font-size: 0.85em;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 6px;
+  text-transform: capitalize;
+}
+
+.sdex-effect-details {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sdex-effect-tag {
+  font-size: 0.75em;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 8px;
+  border-radius: 10px;
+  color: #8a9abc;
+}
+
+.sdex-effect-tag.buff {
+  background: rgba(74,220,106,0.1);
+  color: #6adc8a;
+}
+
+.sdex-effect-tag.debuff {
+  background: rgba(220,74,74,0.1);
+  color: #dc8a8a;
+}
+
+.sdex-effect-tag.warn {
+  background: rgba(240,192,64,0.15);
+  color: #f0c040;
+}
+
+.sdex-users {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.sdex-user-tag {
+  color: #aabbcc;
+  font-size: 0.8em;
+  background: rgba(255,255,255,0.06);
+  padding: 4px 12px;
+  border-radius: 14px;
 }
