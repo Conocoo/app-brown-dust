@@ -1525,7 +1525,7 @@ h1 {
 .sdex-layout {
   display: flex;
   gap: 0;
-  min-height: calc(100vh - 180px);
+  height: calc(100vh - 160px);
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid rgba(255,255,255,0.06);
@@ -1540,6 +1540,7 @@ h1 {
   flex-direction: column;
   padding: 4px;
   gap: 2px;
+  overflow-y: auto;
 }
 
 .sdex-cat-btn {
@@ -1570,7 +1571,6 @@ h1 {
 .sdex-list {
   flex: 1;
   overflow-y: auto;
-  max-height: calc(100vh - 180px);
   padding: 8px;
   display: flex;
   flex-direction: column;

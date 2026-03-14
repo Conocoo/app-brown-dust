@@ -9,7 +9,7 @@ export const wiggle: MercenaryTemplate = {
   atk: 4777,
   def: 0,
   emoji: '💥',
-  imageId: 'char515icon',
+  imageId: '515',
   critRate: 5,
   critDamage: 50,
   agility: 0,
