@@ -4,6 +4,50 @@
   text-align: center;
 }
 
+.app.home {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 24px;
+}
+
+.home-desc {
+  color: #8899aa;
+  font-size: 1rem;
+}
+
+.home-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 240px;
+}
+
+.btn-home {
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border: 2px solid #0f3460;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  background: #16213e;
+  color: #eee;
+  transition: transform 0.15s, border-color 0.2s;
+}
+
+.btn-home:hover:not(:disabled) {
+  border-color: #f0c040;
+  transform: scale(1.05);
+}
+
+.btn-home:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 h1 {
   margin-bottom: 24px;
   font-size: 1.8rem;

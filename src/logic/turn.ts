@@ -638,19 +638,9 @@ function isBeneficialSkill(skill: Skill): boolean {
 
 function executeNormalAttack(
   actor: BattleCharacter,
-  allies: BattleCharacter[],
   enemies: BattleCharacter[],
   logs: BattleLogEntry[]
 ): void {
-  // 현혹: 아군을 공격 (범위 무시, 단일 타겟)
-  if (isCharmed(actor)) {
-    const aliveAllies = allies.filter((a) => a !== actor && a.hp > 0)
-    const target = aliveAllies.length > 0 ? aliveAllies[0] : null
-    if (!target) return
-    attackSingleTarget(actor, target, logs, false)
-    return
-  }
-
   // 용병의 attackTarget으로 메인 타겟 선택
   const mainTarget = resolveEnemyTarget(actor, enemies)
   if (!mainTarget) return
@@ -768,10 +758,13 @@ function processPostTurn(
 /** 한 캐릭터의 턴 실행 */
 export function executeTurn(
   actor: BattleCharacter,
-  allies: BattleCharacter[],
-  enemies: BattleCharacter[],
+  alliesParam: BattleCharacter[],
+  enemiesParam: BattleCharacter[],
   logs: BattleLogEntry[]
 ): void {
+  let allies = alliesParam
+  let enemies = enemiesParam
+
   // 턴 시작 전 살아있는 적 스냅샷 (킬 판정용)
   const aliveBeforeTurn = new Set(enemies.filter((e) => e.hp > 0))
 
@@ -796,7 +789,20 @@ export function executeTurn(
 
   const skills = actor.skills
 
-  const canUseSkills = !isSilenced(actor) && !isCharmed(actor)
+  // 혼란(charm): 아군↔적 리스트 스왑 (원본: GetOwnerList/GetEnemyList 교환)
+  // 스킬도 정상 발동, 범위 공격도 적용 — 단지 타겟이 반전됨
+  if (isCharmed(actor)) {
+    const temp = allies
+    allies = enemies
+    enemies = temp
+    logs.push({
+      type: 'debuff',
+      defender: charLabel(actor),
+      message: `${charLabel(actor)} → 혼란 상태! 아군을 적으로 인식!`,
+    })
+  }
+
+  const canUseSkills = !isSilenced(actor)
 
   // 3. before_attack 스킬 (이로운 → 해로운 순서)
   if (canUseSkills) {
@@ -811,7 +817,7 @@ export function executeTurn(
 
   // 4. 일반공격 (지원형은 공격하지 않음)
   if (actor.type !== 'support') {
-    executeNormalAttack(actor, allies, enemies, logs)
+    executeNormalAttack(actor, enemies, logs)
   }
 
   // 5. after_attack 스킬

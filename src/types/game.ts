@@ -105,7 +105,7 @@ export interface BattleLogEntry {
 }
 
 /** 게임 상태 */
-export type GamePhase = 'placing' | 'ordering' | 'battling' | 'result'
+export type GamePhase = 'home' | 'placing' | 'ordering' | 'battling' | 'result'
 
 // ─── 룬 시스템 ────────────────────────────────────────────────────────────────
 

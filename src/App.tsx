@@ -73,12 +73,8 @@ type DragSource =
   | null
 
 export default function App() {
-  const [grid, setGrid] = useState<(BattleCharacter | null)[][]>(() => {
-    const g = createEmptyGrid()
-    placeEnemies(g)
-    return g
-  })
-  const [phase, setPhase] = useState<GamePhase>('placing')
+  const [grid, setGrid] = useState<(BattleCharacter | null)[][]>(createEmptyGrid)
+  const [phase, setPhase] = useState<GamePhase>('home')
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null)
   const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null)
   const [battleLogs, setBattleLogs] = useState<BattleLogEntry[]>([])
@@ -558,7 +554,7 @@ export default function App() {
     const g = createEmptyGrid()
     placeEnemies(g)
     setGrid(g)
-    setPhase('placing')
+    setPhase('home')
     setSelectedCharId(null)
     setSelectedCell(null)
     setBattleLogs([])
@@ -617,6 +613,31 @@ export default function App() {
     }
     return null
   })()
+
+  const handleEnterBattle = useCallback(() => {
+    const g = createEmptyGrid()
+    placeEnemies(g)
+    setGrid(g)
+    setPhase('placing')
+  }, [])
+
+  if (phase === 'home') {
+    return (
+      <div className="app home">
+        <h1>브라운더스트 전투 시뮬레이터</h1>
+        <p className="home-desc">용병을 배치하고 전투를 시뮬레이션하세요.</p>
+        <div className="home-buttons">
+          <button className="btn-start" onClick={handleEnterBattle}>
+            전투 시작
+          </button>
+          <button className="btn-home" disabled>용병 도감</button>
+          <button className="btn-home" disabled>스킬 도감</button>
+          <button className="btn-home" disabled>카드 도감</button>
+          <button className="btn-home" disabled>규칙 설명</button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="app">
