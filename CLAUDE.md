@@ -12,7 +12,7 @@
 - `src/data/mercenaries/(3star|4star|5star)/` — 용병 데이터
 - `src/data/skills/` — 스킬 템플릿 데이터
 - `src/logic/` — 전투 로직 (turn.ts, damage.ts, targeting.ts, battle.ts, rune.ts)
-- `src/components/` — UI 컴포넌트 (App.tsx가 메인 오케스트레이터)
+- `src/components/` — UI 컴포넌트 (App.tsx가 메인 오케스트레이터, MercenaryDex/SkillDex 도감)
 - `scripts/` — 자동화 스크립트 (create-skill.mjs, create-mercenary.mjs)
 - `Docs/` — 프로젝트 문서
 - `TODO/` — 작업 계획서 (완료 후 항목 제거)
@@ -38,7 +38,8 @@
 - `rune.ts`: 룬 스탯 합산 및 캐릭터 스탯 적용
 
 ## 게임 단계 (GamePhase)
-`placing` (배치) → `ordering` (순서 설정) → `battling` (전투 재생) → `result` (결과)
+`home` (홈) → `placing` (배치) → `ordering` (순서 설정) → `battling` (전투 재생) → `result` (결과)
+- 홈 화면에서 `activeTab`으로 전투(`main`) / 용병 도감(`mercenary_dex`) / 스킬 도감(`skill_dex`) 전환
 
 ## 커맨드
 - `npm run dev` — 개발 서버
@@ -50,8 +51,17 @@
 ## 문서 동기화
 코드 변경 시 관련 문서 함께 업데이트:
 - `Docs/스킬-목록.md` — 스킬 추가/수정 시
+- `Docs/용병-목록.md` — 용병 추가/수정 시
 - `Docs/폴더-구조.md` — 파일 추가/삭제 시
 - `Docs/전투-시스템-가이드.md` — 전투 로직 변경 시
+- `Docs/게임-사용법.md` — UI/기능 변경 시
+- `README.md` — 컨텐츠 수량(용병/스킬 수) 변경 시
+
+## 이미지 리소스
+- 초상화: `public/images/portraits/char{imageId}icon.png`
+- 썸네일: `public/images/thumbnails/char{imageId}icon.png`
+- 미사용: `public/images/not_use/` (새 용병 추가 시 여기서 portraits/thumbnails로 복사)
+- 용병의 `imageId`는 **숫자만** 사용 (`'515'`), 경로 조합은 `char${imageId}icon.png`
 
 ## 파일 네이밍
 - 스킬 ID: snake_case (`advanced_burn`)
