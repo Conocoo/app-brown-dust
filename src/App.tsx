@@ -9,6 +9,8 @@ import CharacterInfo from './components/CharacterInfo'
 import CharacterList from './components/CharacterList'
 import OrderSetter from './components/OrderSetter'
 import BattleLog from './components/BattleLog'
+import MercenaryDex from './components/MercenaryDex'
+import SkillDex from './components/SkillDex'
 import './App.css'
 
 const ROWS = 3
@@ -72,7 +74,10 @@ type DragSource =
   | { type: 'cell'; row: number; col: number }
   | null
 
+type ActiveTab = 'main' | 'mercenary_dex' | 'skill_dex'
+
 export default function App() {
+  const [activeTab, setActiveTab] = useState<ActiveTab>('main')
   const [grid, setGrid] = useState<(BattleCharacter | null)[][]>(createEmptyGrid)
   const [phase, setPhase] = useState<GamePhase>('home')
   const [selectedCharId, setSelectedCharId] = useState<string | null>(null)
@@ -482,8 +487,8 @@ export default function App() {
         const finalEnemies = teams.enemies.map((c) => ({ ...c }))
         replayHp(finalPlayers, finalEnemies, battleLogs)
 
-        const playersAlive = finalPlayers.some((c) => c.hp > 0)
-        const enemiesAlive = finalEnemies.some((c) => c.hp > 0)
+        const playersAlive = finalPlayers.some((c) => c.hp > 0 && c.type !== 'support')
+        const enemiesAlive = finalEnemies.some((c) => c.hp > 0 && c.type !== 'support')
 
         if (!enemiesAlive && playersAlive) setWinner('player')
         else if (!playersAlive && enemiesAlive) setWinner('enemy')
@@ -621,6 +626,22 @@ export default function App() {
     setPhase('placing')
   }, [])
 
+  if (activeTab === 'mercenary_dex') {
+    return (
+      <div className="app">
+        <MercenaryDex onBack={() => setActiveTab('main')} />
+      </div>
+    )
+  }
+
+  if (activeTab === 'skill_dex') {
+    return (
+      <div className="app">
+        <SkillDex onBack={() => setActiveTab('main')} />
+      </div>
+    )
+  }
+
   if (phase === 'home') {
     return (
       <div className="app home">
@@ -630,8 +651,8 @@ export default function App() {
           <button className="btn-start" onClick={handleEnterBattle}>
             전투 시작
           </button>
-          <button className="btn-home" disabled>용병 도감</button>
-          <button className="btn-home" disabled>스킬 도감</button>
+          <button className="btn-home" onClick={() => setActiveTab('mercenary_dex')}>용병 도감</button>
+          <button className="btn-home" onClick={() => setActiveTab('skill_dex')}>스킬 도감</button>
           <button className="btn-home" disabled>카드 도감</button>
           <button className="btn-home" disabled>규칙 설명</button>
         </div>

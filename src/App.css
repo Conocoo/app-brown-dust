@@ -1099,3 +1099,330 @@ h1 {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.4; }
 }
+
+/* ===== Dex (도감) ===== */
+
+.dex {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.dex-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dex-header h2 {
+  margin: 0;
+  color: #f0c040;
+}
+
+.dex-count {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.btn-back {
+  background: #2a3a5c;
+  color: #ccc;
+  border: 1px solid #3a4a6c;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.btn-back:hover {
+  background: #3a4a6c;
+  color: #fff;
+}
+
+.dex-filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.dex-filter-btn {
+  background: #16213e;
+  color: #aaa;
+  border: 1px solid #2a3a5c;
+  padding: 4px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+}
+
+.dex-filter-btn:hover {
+  background: #2a3a5c;
+  color: #fff;
+}
+
+.dex-filter-active {
+  background: #f0c040;
+  color: #1a1a2e;
+  border-color: #f0c040;
+  font-weight: bold;
+}
+
+.dex-layout {
+  display: flex;
+  gap: 16px;
+}
+
+.dex-list {
+  width: 280px;
+  min-width: 280px;
+  max-height: 600px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dex-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: #16213e;
+  border: 1px solid #2a3a5c;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.dex-card:hover {
+  background: #1e2d4e;
+  border-color: #4a6a9c;
+}
+
+.dex-card-selected {
+  background: #1e2d4e;
+  border-color: #f0c040;
+}
+
+.dex-card-portrait {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.dex-card-portrait img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.dex-card-emoji {
+  font-size: 1.5em;
+}
+
+.dex-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dex-card-name {
+  color: #eee;
+  font-size: 0.95em;
+  font-weight: 500;
+}
+
+.dex-card-type,
+.dex-card-sub {
+  font-size: 0.75em;
+  color: #888;
+}
+
+.dex-card-skill {
+  gap: 8px;
+}
+
+.dex-card-timing {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75em;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.dex-detail {
+  flex: 1;
+  background: #16213e;
+  border: 1px solid #2a3a5c;
+  border-radius: 8px;
+  padding: 16px;
+  min-height: 400px;
+}
+
+.dex-detail-empty {
+  color: #666;
+  text-align: center;
+  padding-top: 120px;
+}
+
+/* Mercenary detail */
+
+.dex-merc-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dex-merc-portrait {
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dex-merc-portrait img {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.dex-merc-emoji {
+  font-size: 2.5em;
+}
+
+.dex-merc-title h3 {
+  margin: 0 0 4px;
+  color: #eee;
+}
+
+.dex-merc-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 10px;
+  background: #1a1a2e;
+  border-radius: 6px;
+}
+
+.dex-stat-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dex-stat {
+  color: #ccc;
+  font-size: 0.9em;
+}
+
+.dex-stat-warn {
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.dex-merc-skills h4,
+.dex-skill-detail-effects h4,
+.dex-skill-detail-raw h4 {
+  color: #f0c040;
+  margin: 0 0 8px;
+  font-size: 0.95em;
+}
+
+.dex-skill-item {
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.dex-skill-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.dex-skill-name {
+  color: #eee;
+  font-weight: 500;
+  font-size: 0.9em;
+}
+
+.dex-skill-timing,
+.dex-skill-target {
+  font-size: 0.75em;
+  color: #aaa;
+  background: rgba(0,0,0,0.3);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+.dex-skill-desc {
+  color: #999;
+  font-size: 0.8em;
+}
+
+/* Skill detail */
+
+.dex-skill-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.dex-skill-detail-header h3 {
+  margin: 0;
+  color: #eee;
+}
+
+.ci-skill-timing-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.dex-skill-detail-meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  color: #888;
+  font-size: 0.85em;
+}
+
+.dex-skill-detail-meta code {
+  background: #1a1a2e;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #aaa;
+}
+
+.dex-skill-detail-effects {
+  margin-bottom: 16px;
+}
+
+.dex-effect-line {
+  color: #ccc;
+  font-size: 0.85em;
+  padding: 6px 8px;
+  background: #1a1a2e;
+  border-radius: 4px;
+  margin-bottom: 4px;
+}
+
+.dex-skill-detail-raw pre {
+  background: #1a1a2e;
+  color: #8a8;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.8em;
+  overflow-x: auto;
+}

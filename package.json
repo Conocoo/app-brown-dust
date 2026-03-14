@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "validate": "tsc --noEmit",
     "create-skill": "node scripts/create-skill.mjs",
-    "create-mercenary": "node scripts/create-mercenary.mjs"
+    "create-mercenary": "node scripts/create-mercenary.mjs",
+    "generate-docs": "node scripts/generate-docs.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

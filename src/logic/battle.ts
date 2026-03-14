@@ -13,7 +13,8 @@ export function simulateBattle(
   const enemies = enemyTeam.map((c) => ({ ...c, statusEffects: [...c.statusEffects] }))
   const logs: BattleLogEntry[] = []
 
-  const alive = (team: BattleCharacter[]) => team.filter((c) => c.hp > 0)
+  const alive = (team: BattleCharacter[]) =>
+    team.filter((c) => c.hp > 0 && c.type !== 'support')
 
   // 순서대로 정렬
   const sortedPlayers = [...players].sort((a, b) => a.order - b.order)
