@@ -41,8 +41,9 @@ export function getEffectiveCritDamage(char: BattleCharacter): number {
 
 /** 버프/디버프 반영한 유효 민첩 */
 export function getEffectiveAgility(char: BattleCharacter): number {
+  const bonus = sumEffectValue(char.statusEffects, 'agility_up')
   const penalty = sumEffectValue(char.statusEffects, 'agility_down')
-  return Math.max(0, char.agility - penalty)
+  return Math.max(0, char.agility + bonus - penalty)
 }
 
 /** 보호막 감소율 계산 (곱연산, 상한 -70%) */

@@ -164,11 +164,16 @@ function applyStatusEffect(
   }
 
   // atkScaling / spScaling: value를 시전자 스탯의 %로 계산
-  const value = effect.atkScaling
+  let value = effect.atkScaling
     ? Math.round(getEffectiveAtk(actor) * effect.value / 100)
     : effect.spScaling
       ? Math.round(actor.supportPower * effect.value / 100)
       : effect.value
+
+  // 중독: 공격형 대상 3배
+  if (effect.type === 'poison' && target.type === 'attacker') {
+    value *= 3
+  }
 
   const se: StatusEffect = {
     id: nextEffectId(),
@@ -221,6 +226,21 @@ function processTurnStart(
       })
     }
 
+    // 부패 DoT (최대HP 기반)
+    if (effect.type === 'decay') {
+      const decayDamage = Math.round(actor.maxHp * effect.value / 100)
+      applyDamageToCharacter(actor, decayDamage)
+      logs.push({
+        type: 'debuff',
+        defender: charLabel(actor),
+        damage: decayDamage,
+        defenderHpAfter: actor.hp,
+        defenderMaxHp: actor.maxHp,
+        defeated: actor.hp <= 0,
+        message: `${charLabel(actor)} → 부패로 ${decayDamage} 피해! (HP: ${actor.hp})`,
+      })
+    }
+
     // 치명피해 지속 증가 (매 턴 스택 추가)
     if (effect.type === 'crit_damage_up_stacking') {
       actor.statusEffects.push({
@@ -235,6 +255,36 @@ function processTurnStart(
         type: 'buff',
         defender: charLabel(actor),
         message: `${charLabel(actor)} → 치명피해 +${effect.value}% 누적!`,
+      })
+    }
+
+    // 치명확률 지속 증가 (매 턴 스택 추가)
+    if (effect.type === 'crit_up_stacking') {
+      actor.statusEffects.push({
+        id: nextEffectId(),
+        type: 'crit_up',
+        value: effect.value,
+        remainingTurns: effect.remainingTurns,
+        category: 'buff',
+        buffType: 'stat_enhance',
+      })
+      logs.push({
+        type: 'buff',
+        defender: charLabel(actor),
+        message: `${charLabel(actor)} → 치명확률 +${effect.value}% 누적!`,
+      })
+    }
+
+    // 재생 (regeneration): 매 턴 최대HP% 회복
+    if (effect.type === 'regeneration') {
+      const curseEffect = actor.statusEffects.find((e) => e.type === 'curse')
+      const curseReduction = curseEffect ? (1 - curseEffect.value / 100) : 1
+      const healAmount = Math.round(actor.maxHp * effect.value / 100 * curseReduction)
+      actor.hp = Math.min(actor.maxHp, actor.hp + healAmount)
+      logs.push({
+        type: 'buff',
+        defender: charLabel(actor),
+        message: `${charLabel(actor)} → 재생으로 ${healAmount} 회복! (HP: ${actor.hp})`,
       })
     }
 
@@ -543,6 +593,48 @@ function applyEffect(
       applyCleanse(target, actor, logs, skill.name)
       return
     }
+    case 'purify_dot': {
+      // DoT 디버프 일괄 제거
+      const before = target.statusEffects.length
+      target.statusEffects = target.statusEffects.filter(
+        (e) => !(e.category === 'debuff' && e.debuffClass === 'dot')
+      )
+      const removed = before - target.statusEffects.length
+      if (removed > 0) {
+        logs.push({
+          type: 'support',
+          attackerTeam: actor.team,
+          attacker: charLabel(actor),
+          defender: charLabel(target),
+          skillName: skill.name,
+          message: `${charLabel(actor)} → ${charLabel(target)}의 DoT 디버프 ${removed}개 제거!`,
+          targetKey: `${target.team}-${target.templateId}`,
+          targetStatusEffects: [...target.statusEffects],
+        })
+      }
+      return
+    }
+    case 'purify_cc': {
+      // CC 디버프 일괄 제거
+      const before = target.statusEffects.length
+      target.statusEffects = target.statusEffects.filter(
+        (e) => !(e.category === 'debuff' && e.debuffClass === 'cc')
+      )
+      const removed = before - target.statusEffects.length
+      if (removed > 0) {
+        logs.push({
+          type: 'support',
+          attackerTeam: actor.team,
+          attacker: charLabel(actor),
+          defender: charLabel(target),
+          skillName: skill.name,
+          message: `${charLabel(actor)} → ${charLabel(target)}의 CC 디버프 ${removed}개 제거!`,
+          targetKey: `${target.team}-${target.templateId}`,
+          targetStatusEffects: [...target.statusEffects],
+        })
+      }
+      return
+    }
     case 'temp_hp': {
       // 임시생명력: 시전자 maxHp × supportPower/100 × value/100
       const tempAmount = Math.round(actor.maxHp * actor.supportPower / 100 * effect.value / 100)
@@ -580,11 +672,55 @@ function applyEffect(
       }
       return
     }
+    case 'giant_strike': {
+      // 최대HP% 추가 피해
+      const gsDamage = Math.round(actor.maxHp * effect.value / 100)
+      const gsShield = calcShieldReduction(target)
+      const gsDmgTaken = getDmgTakenMultiplier(target)
+      const finalGsDamage = Math.max(0, Math.round(gsDamage * gsShield * gsDmgTaken))
+      applyDamageToCharacter(target, finalGsDamage)
+      logs.push({
+        type: 'attack',
+        attacker: actorLabel,
+        attackerTeam: actor.team,
+        defender: targetLabel,
+        damage: finalGsDamage,
+        defenderHpAfter: target.hp,
+        defenderMaxHp: target.maxHp,
+        defeated: target.hp <= 0,
+        skillName: skill.name,
+        targetKey: `${target.team}-${target.templateId}`,
+      })
+      return
+    }
+    case 'on_kill_trigger': {
+      // 적 사망 시 triggerSkill 발동 등록 (중복 방지)
+      if (effect.triggerSkill && !actor.statusEffects.some((e) => e.type === 'pending_kill_trigger')) {
+        actor.statusEffects.push({
+          id: nextEffectId(),
+          type: 'pending_kill_trigger',
+          value: 0,
+          remainingTurns: 0,
+          category: 'buff',
+          linkedBuffId: effect.triggerSkill,
+        })
+      }
+      return
+    }
   }
 
   // 지속 효과 → 상태 효과 부여
   if (effect.duration) {
     applyStatusEffect(target, effect, actor, logs, skill.name)
+    // triggerSkill: 상태 효과 부여 후 연쇄 스킬 발동
+    if (effect.triggerSkill) {
+      const triggered = getSkillById(effect.triggerSkill)
+      if (triggered) {
+        for (const te of triggered.effects) {
+          applyEffect(te, triggered, actor, target, logs)
+        }
+      }
+    }
     return
   }
 
@@ -694,6 +830,56 @@ function attackSingleTarget(
     })
   }
 
+  // 중독 반격: 피격 시 공격자에게 중독 부여
+  if (target.hp > 0 && target.statusEffects.some((e) => e.type === 'poison_counter')) {
+    const poisonValue = Math.round(getEffectiveAtk(target) * 12 / 100)
+    // 공격형 대상 3배
+    const multiplier = actor.type === 'attacker' ? 3 : 1
+    const finalValue = poisonValue * multiplier
+    actor.statusEffects.push({
+      id: nextEffectId(),
+      type: 'poison',
+      value: finalValue,
+      remainingTurns: 6,
+      category: 'debuff',
+      debuffClass: 'dot',
+    })
+    logs.push({
+      type: 'debuff',
+      attacker: charLabel(target),
+      attackerTeam: target.team,
+      defender: charLabel(actor),
+      message: `${charLabel(target)} → ${charLabel(actor)}에게 중독 반격! (${finalValue}/턴, ${multiplier === 3 ? '공격형 3배, ' : ''}6턴)`,
+      targetKey: `${actor.team}-${actor.templateId}`,
+      targetStatusEffects: [...actor.statusEffects],
+    })
+  }
+
+  // 피격 시 회복 (on_hit_recovery)
+  if (target.hp > 0 && target.statusEffects.some((e) => e.type === 'on_hit_recovery')) {
+    const healAmount = Math.round(target.maxHp * 10 / 100)
+    const curseEffect = target.statusEffects.find((e) => e.type === 'curse')
+    const curseReduction = curseEffect ? (1 - curseEffect.value / 100) : 1
+    const finalHeal = Math.round(healAmount * curseReduction)
+    target.hp = Math.min(target.maxHp, target.hp + finalHeal)
+    logs.push({
+      type: 'buff',
+      attacker: charLabel(target),
+      attackerTeam: target.team,
+      message: `${charLabel(target)} → 피격 시 회복으로 ${finalHeal} 회복! (HP: ${target.hp})`,
+    })
+  }
+
+  // 피격 시 방어력 증가 (on_hit_def_up — 반사 신경)
+  if (target.hp > 0 && target.statusEffects.some((e) => e.type === 'on_hit_def_up')) {
+    const defUpSkill = getSkillById('reflex_def_up')
+    if (defUpSkill) {
+      for (const te of defUpSkill.effects) {
+        applyEffect(te, defUpSkill, target, target, logs)
+      }
+    }
+  }
+
   // 반사반격 (반격 디버프는 이후 대상 공격에도 누적 적용)
   if (allowCounter && target.hp > 0) {
     processCounterAttack(actor, target, damage, logs)
@@ -750,6 +936,23 @@ function processPostTurn(
       }
     }
     actor.statusEffects = actor.statusEffects.filter((e) => e.type !== 'pending_kill_atk_up')
+  }
+
+  // 킬 시 트리거 스킬 발동 (pending_kill_trigger)
+  const killTriggers = actor.statusEffects.filter((e) => e.type === 'pending_kill_trigger')
+  if (killTriggers.length > 0) {
+    const anyKilled = [...aliveBeforeTurn].some((e) => e.hp <= 0)
+    if (anyKilled && actor.hp > 0) {
+      for (const trigger of killTriggers) {
+        const triggeredSkill = trigger.linkedBuffId ? getSkillById(trigger.linkedBuffId) : undefined
+        if (triggeredSkill) {
+          for (const te of triggeredSkill.effects) {
+            applyEffect(te, triggeredSkill, actor, actor, logs)
+          }
+        }
+      }
+    }
+    actor.statusEffects = actor.statusEffects.filter((e) => e.type !== 'pending_kill_trigger')
   }
 }
 

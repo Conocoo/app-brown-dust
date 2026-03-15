@@ -27,6 +27,20 @@ import { curseSkill } from './curse'
 import { burn } from './burn'
 import { harmfulEffectImmunity } from './harmful-effect-immunity'
 import { advancedSelfdestructStun } from './advanced-selfdestruct-stun'
+import { poison } from './poison'
+import { decay } from './decay'
+import { advancedPoisonCounter } from './advanced-poison-counter'
+import { advancedShield } from './advanced-shield'
+import { purifyDot } from './purify-dot'
+import { sloanRecovery } from './sloan-recovery'
+import { advancedGiantStrike } from './advanced-giant-strike'
+import { giantStrikeRecovery } from './giant-strike-recovery'
+import { critRateSustainedIncrease } from './crit-rate-sustained-increase'
+import { regeneration } from './regeneration'
+import { advancedCcPurify } from './advanced-cc-purify'
+import { advancedRegenerationGrant } from './advanced-regeneration-grant'
+import { reflexGrant } from './reflex-grant'
+import { reflexDefUp } from './reflex-def-up'
 
 const skillMap = new Map<string, Skill>()
 
@@ -61,6 +75,20 @@ register(curseSkill)
 register(burn)
 register(harmfulEffectImmunity)
 register(advancedSelfdestructStun)
+register(poison)
+register(decay)
+register(advancedPoisonCounter)
+register(advancedShield)
+register(purifyDot)
+register(sloanRecovery)
+register(advancedGiantStrike)
+register(giantStrikeRecovery)
+register(critRateSustainedIncrease)
+register(regeneration)
+register(advancedCcPurify)
+register(advancedRegenerationGrant)
+register(reflexGrant)
+register(reflexDefUp)
 
 export function getSkillById(id: string): Skill | undefined {
   return skillMap.get(id)

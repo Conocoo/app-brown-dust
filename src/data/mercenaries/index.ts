@@ -6,6 +6,9 @@ import { carlson } from './3star/carlson'
 import { maria } from './3star/maria'
 import { maya } from './3star/maya'
 import { wiggle } from './3star/wiggle'
+import { sloan } from './3star/sloan'
+import { jayden } from './3star/jayden'
+import { julie } from './3star/julie'
 
 const mercenaryMap = new Map<string, MercenaryTemplate>()
 
@@ -20,6 +23,9 @@ register(carlson)
 register(maria)
 register(maya)
 register(wiggle)
+register(sloan)
+register(jayden)
+register(julie)
 
 export function getMercenaryById(id: string): MercenaryTemplate | undefined {
   return mercenaryMap.get(id)
