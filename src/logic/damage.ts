@@ -10,12 +10,36 @@ function sumEffectValue(effects: StatusEffect[], type: string): number {
   return effects.filter((e) => e.type === type).reduce((sum, e) => sum + e.value, 0)
 }
 
-/** 버프/디버프 반영한 유효 공격력 (기본 ATK의 %, 상한 +300%) */
+/** 채널별 합산: multiply 채널 합계 (channel 미지정 시 multiply 기본) */
+function sumMultiply(effects: StatusEffect[], type: string): number {
+  return effects
+    .filter((e) => e.type === type && e.channel !== 'plus')
+    .reduce((sum, e) => sum + e.value, 0)
+}
+
+/** 채널별 합산: plus 채널 합계 */
+function sumPlus(effects: StatusEffect[], type: string): number {
+  return effects
+    .filter((e) => e.type === type && e.channel === 'plus')
+    .reduce((sum, e) => sum + e.value, 0)
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value))
+}
+
+/**
+ * 버프/디버프 반영한 유효 공격력
+ * 패턴 A: max(0, base * (1 + clamp(mul, -0.8, 3.0))) + plus
+ */
 export function getEffectiveAtk(char: BattleCharacter): number {
-  const bonus = sumEffectValue(char.statusEffects, 'atk_up')
-  const penalty = sumEffectValue(char.statusEffects, 'atk_down')
-  const rate = Math.min(bonus - penalty, 300) // +300% 상한
-  return Math.max(0, char.atk * (1 + rate / 100))
+  const mulUp = sumMultiply(char.statusEffects, 'atk_up')
+  const mulDown = sumMultiply(char.statusEffects, 'atk_down')
+  const multiply = clamp((mulUp - mulDown) / 100, -0.8, 3.0)
+  const plusUp = sumPlus(char.statusEffects, 'atk_up')
+  const plusDown = sumPlus(char.statusEffects, 'atk_down')
+  const plus = plusUp - plusDown
+  return Math.max(0, char.atk * (1 + multiply)) + plus
 }
 
 /** 버프/디버프 반영한 유효 방어력 (% 기반, 합연산) */
@@ -25,25 +49,46 @@ export function getEffectiveDef(char: BattleCharacter): number {
   return Math.max(0, char.def + bonus - penalty)
 }
 
-/** 버프 반영한 유효 치명확률 */
+/**
+ * 버프 반영한 유효 치명확률
+ * 패턴 B: clamp((base + plus) * (1 + mul), 0, 1)
+ */
 export function getEffectiveCritRate(char: BattleCharacter): number {
-  const bonus = sumEffectValue(char.statusEffects, 'crit_up')
-  const penalty = sumEffectValue(char.statusEffects, 'crit_rate_down')
-  return Math.max(0, char.critRate + bonus - penalty)
+  const mulUp = sumMultiply(char.statusEffects, 'crit_up')
+  const mulDown = sumMultiply(char.statusEffects, 'crit_rate_down')
+  const multiply = (mulUp - mulDown) / 100
+  const plusUp = sumPlus(char.statusEffects, 'crit_up')
+  const plusDown = sumPlus(char.statusEffects, 'crit_rate_down')
+  const plus = (plusUp - plusDown) / 100
+  return clamp((char.critRate / 100 + plus) * (1 + multiply), 0, 1) * 100
 }
 
-/** 버프/디버프 반영한 유효 치명피해 */
+/**
+ * 버프/디버프 반영한 유효 치명피해
+ * 패턴 B (상한 없음): max(0, (base + plus) * (1 + mul))
+ */
 export function getEffectiveCritDamage(char: BattleCharacter): number {
-  const bonus = sumEffectValue(char.statusEffects, 'crit_damage_up')
-  const penalty = sumEffectValue(char.statusEffects, 'crit_damage_down')
-  return Math.max(0, char.critDamage + bonus - penalty)
+  const mulUp = sumMultiply(char.statusEffects, 'crit_damage_up')
+  const mulDown = sumMultiply(char.statusEffects, 'crit_damage_down')
+  const multiply = (mulUp - mulDown) / 100
+  const plusUp = sumPlus(char.statusEffects, 'crit_damage_up')
+  const plusDown = sumPlus(char.statusEffects, 'crit_damage_down')
+  const plus = plusUp - plusDown
+  return Math.max(0, (char.critDamage + plus) * (1 + multiply))
 }
 
-/** 버프/디버프 반영한 유효 민첩 */
+/**
+ * 버프/디버프 반영한 유효 민첩
+ * 패턴 B: clamp((base + plus) * (1 + mul), 0, 1)
+ */
 export function getEffectiveAgility(char: BattleCharacter): number {
-  const bonus = sumEffectValue(char.statusEffects, 'agility_up')
-  const penalty = sumEffectValue(char.statusEffects, 'agility_down')
-  return Math.max(0, char.agility + bonus - penalty)
+  const mulUp = sumMultiply(char.statusEffects, 'agility_up')
+  const mulDown = sumMultiply(char.statusEffects, 'agility_down')
+  const multiply = (mulUp - mulDown) / 100
+  const plusUp = sumPlus(char.statusEffects, 'agility_up')
+  const plusDown = sumPlus(char.statusEffects, 'agility_down')
+  const plus = (plusUp - plusDown) / 100
+  return clamp((char.agility / 100 + plus) * (1 + multiply), 0, 1) * 100
 }
 
 /** 보호막 감소율 계산 (곱연산, 상한 -70%) */
@@ -66,27 +111,57 @@ export function getDmgTakenMultiplier(defender: BattleCharacter): number {
   return 1 + (increase + bundled) / 100
 }
 
+/** 최종 데미지 계산 결과 */
+export interface FullDamageResult {
+  variableDamage: number
+  fixedDamage: number
+  totalDamage: number
+}
+
 /**
  * 최종 데미지 계산 (버프/디버프/보호막 모두 반영)
- * 스침(graze)은 rollCritGraze에서 agility 기반으로 처리됨
+ * 고정/가변 데미지 분리: 고정 데미지는 DEF를 무시
+ * 스침(graze)은 가변 데미지에만 적용
  */
 export function calculateFullDamage(
   attacker: BattleCharacter,
   defender: BattleCharacter,
   skillMultiplier: number = 1.0,
-  critGrazeMultiplier: number = 1.0
-): number {
+  critMultiplier: number = 1.0,
+  isGraze: boolean = false
+): FullDamageResult {
   const atk = getEffectiveAtk(attacker)
   const def = getEffectiveDef(defender)
-  const baseDamage = calculateDamage(atk, def)
+  const fixedRate = attacker.fixedDamageRate ?? 0
 
-  let damage = baseDamage * skillMultiplier * critGrazeMultiplier
+  // Variable damage: DEF applied
+  const variableAtk = atk * (1 - fixedRate)
+  let variableDamage = calculateDamage(variableAtk, def) * skillMultiplier * critMultiplier
 
-  // 받는 피해량 증가
-  damage *= getDmgTakenMultiplier(defender)
+  // Graze: 35% reduction to variable damage only
+  if (isGraze) {
+    variableDamage *= 0.65
+  }
 
-  // 보호막 곱연산
-  damage *= calcShieldReduction(defender)
+  // Fixed damage: DEF ignored
+  let fixedDamage = atk * fixedRate * skillMultiplier * critMultiplier
 
-  return Math.max(0, Math.round(damage))
+  // dmg_taken_up applies to both
+  const dmgTakenMul = getDmgTakenMultiplier(defender)
+  variableDamage *= dmgTakenMul
+  fixedDamage *= dmgTakenMul
+
+  // Shield applies to both
+  const shieldMul = calcShieldReduction(defender)
+  variableDamage *= shieldMul
+  fixedDamage *= shieldMul
+
+  const finalVariable = Math.max(0, Math.round(variableDamage))
+  const finalFixed = Math.max(0, Math.round(fixedDamage))
+
+  return {
+    variableDamage: finalVariable,
+    fixedDamage: finalFixed,
+    totalDamage: finalVariable + finalFixed,
+  }
 }

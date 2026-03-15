@@ -28,6 +28,8 @@ export interface SkillEffect {
   triggerSkill?: string
   /** 이 효과 제거 시 함께 제거할 상태효과 type */
   linkedBuffId?: string
+  /** 효과 채널: multiply(승산) vs plus(가산). 미지정 시 multiply */
+  channel?: 'multiply' | 'plus'
 }
 
 /** 스킬 정의 */

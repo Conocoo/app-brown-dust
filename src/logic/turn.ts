@@ -46,26 +46,26 @@ function applyDamageToCharacter(target: BattleCharacter, damage: number): void {
 
 /** 치명타/스침 판정 */
 interface CritGrazeResult {
-  multiplier: number
+  /** crit multiplier only (graze is handled separately in calculateFullDamage) */
+  critMultiplier: number
   isCritical: boolean
   isGraze: boolean
 }
 
 function rollCritGraze(attacker: BattleCharacter, defender: BattleCharacter): CritGrazeResult {
-  let multiplier = 1.0
+  let critMultiplier = 1.0
   const critRate = getEffectiveCritRate(attacker)
   const isCritical = Math.random() * 100 < critRate
   const agility = getEffectiveAgility(defender)
   const isGraze = Math.random() * 100 < agility
 
   if (isCritical) {
-    multiplier *= 2.0 + getEffectiveCritDamage(attacker) / 100
-  }
-  if (isGraze) {
-    multiplier *= 0.65
+    const critDmgRate = 2.0 + getEffectiveCritDamage(attacker) / 100
+    const critResist = defender.critResist ?? 0
+    critMultiplier *= Math.max(0, critDmgRate * (1 - critResist))
   }
 
-  return { multiplier, isCritical, isGraze }
+  return { critMultiplier, isCritical, isGraze }
 }
 
 // ─── CC 판정 ───
@@ -186,6 +186,7 @@ function applyStatusEffect(
     ignoreImmunity: effect.ignoreImmunity,
     dmgTakenUp: effect.dmgTakenUp,
     linkedBuffId: effect.linkedBuffId,
+    channel: effect.channel,
   }
 
   target.statusEffects.push(se)
@@ -468,15 +469,15 @@ function applyEffect(
   // 즉시 효과
   switch (effect.type) {
     case 'damage': {
-      const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
-      const damage = calculateFullDamage(actor, target, effect.value / 100, multiplier)
-      applyDamageToCharacter(target, damage)
+      const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
+      const { totalDamage } = calculateFullDamage(actor, target, effect.value / 100, critMultiplier, isGraze)
+      applyDamageToCharacter(target, totalDamage)
       logs.push({
         type: 'attack',
         attacker: actorLabel,
         attackerTeam: actor.team,
         defender: targetLabel,
-        damage,
+        damage: totalDamage,
         defenderHpAfter: target.hp,
         defenderMaxHp: target.maxHp,
         defeated: target.hp <= 0,
@@ -489,10 +490,11 @@ function applyEffect(
     }
     case 'crit_scaling_damage': {
       // 적중의 강타: critRate/100 × ATK × value/100
-      const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
+      const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
       const critRate = getEffectiveCritRate(actor)
       const rawDamage = (critRate / 100) * getEffectiveAtk(actor) * (effect.value / 100)
-      let damage = rawDamage * multiplier
+      let damage = rawDamage * critMultiplier
+      if (isGraze) damage *= 0.65
       damage *= getDmgTakenMultiplier(target)
       damage *= calcShieldReduction(target)
       damage = Math.max(0, Math.round(damage))
@@ -515,9 +517,10 @@ function applyEffect(
     }
     case 'def_scaling_damage': {
       // 철갑: (공격자 유효DEF / 100) × 공격자 유효ATK × (value / 100), 대상 DEF 무시
-      const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
+      const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
       const rawDamage = (getEffectiveDef(actor) / 100) * getEffectiveAtk(actor) * (effect.value / 100)
-      let damage = rawDamage * multiplier
+      let damage = rawDamage * critMultiplier
+      if (isGraze) damage *= 0.65
       damage *= getDmgTakenMultiplier(target)
       damage *= calcShieldReduction(target)
       damage = Math.max(0, Math.round(damage))
@@ -539,10 +542,10 @@ function applyEffect(
       return
     }
     case 'heal': {
-      const { multiplier, isCritical } = rollCritGraze(actor, target)
+      const { critMultiplier, isCritical } = rollCritGraze(actor, target)
       const curseEffect = target.statusEffects.find((e) => e.type === 'curse')
       const curseReduction = curseEffect ? (1 - curseEffect.value / 100) : 1
-      const healAmount = Math.round(effect.value * multiplier * curseReduction)
+      const healAmount = Math.round(effect.value * critMultiplier * curseReduction)
       target.hp = Math.min(target.maxHp, target.hp + healAmount)
       logs.push({
         type: 'support',
@@ -556,10 +559,10 @@ function applyEffect(
       return
     }
     case 'heal_percent': {
-      const { multiplier, isCritical } = rollCritGraze(actor, target)
+      const { critMultiplier, isCritical } = rollCritGraze(actor, target)
       const curseEffect = target.statusEffects.find((e) => e.type === 'curse')
       const curseReduction = curseEffect ? (1 - curseEffect.value / 100) : 1
-      const healAmount = Math.round(target.maxHp * effect.value / 100 * multiplier * curseReduction)
+      const healAmount = Math.round(target.maxHp * effect.value / 100 * critMultiplier * curseReduction)
       target.hp = Math.min(target.maxHp, target.hp + healAmount)
       logs.push({
         type: 'support',
@@ -799,8 +802,8 @@ function attackSingleTarget(
   logs: BattleLogEntry[],
   allowCounter: boolean
 ): void {
-  const { multiplier, isCritical, isGraze } = rollCritGraze(actor, target)
-  const damage = calculateFullDamage(actor, target, 1.0, multiplier)
+  const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
+  const { totalDamage: damage } = calculateFullDamage(actor, target, 1.0, critMultiplier, isGraze)
   applyDamageToCharacter(target, damage)
 
   logs.push({

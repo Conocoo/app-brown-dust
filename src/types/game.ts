@@ -33,6 +33,8 @@ export interface StatusEffect {
   linkedBuffId?: string
   /** 부여할 버프의 지속턴 (pending 상태효과에서 사용) */
   grantDuration?: number
+  /** 효과 채널: multiply(승산) vs plus(가산). 미지정 시 multiply */
+  channel?: 'multiply' | 'plus'
 }
 
 /** 전투 중 캐릭터 상태 */
@@ -67,6 +69,10 @@ export interface BattleCharacter {
   attackRange: AttackRange
   /** 범위 크기 (horizontal, vertical, back_n, front_n, cross, area_n 등에서 사용) */
   rangeSize?: number
+  /** 고정 데미지 비율 (0.0~1.0). 고정 데미지는 DEF/회피를 무시 */
+  fixedDamageRate?: number
+  /** 크리티컬 저항 (0.0~1.0). 크리티컬 배율을 감소시킴 */
+  critResist?: number
   /** 임시생명력 (피격 시 hp보다 먼저 소진) */
   tempHp: number
   /** 현재 걸린 상태 효과 */
