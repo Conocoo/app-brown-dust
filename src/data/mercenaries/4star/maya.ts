@@ -4,7 +4,7 @@ export const maya: MercenaryTemplate = {
   id: 'maya',
   name: '마야',
   type: 'attacker',
-  star: 3,
+  star: 4,
   maxHp: 4794,
   atk: 925,
   def: 5,
