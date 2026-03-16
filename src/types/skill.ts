@@ -30,6 +30,8 @@ export interface SkillEffect {
   linkedBuffId?: string
   /** 효과 채널: multiply(승산) vs plus(가산). 미지정 시 multiply */
   channel?: 'multiply' | 'plus'
+  /** 카운트 가드 등 횟수 기반 효과의 초기 횟수 */
+  count?: number
 }
 
 /** 스킬 정의 */

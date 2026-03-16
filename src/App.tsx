@@ -64,6 +64,7 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
       tempHp: 0,
       statusEffects: [],
       runes: tmpl.runes ?? [],
+      damageReduce: tmpl.damageReduce ?? 0,
       selfDestruct: tmpl.selfDestruct,
     }
   }
@@ -169,7 +170,8 @@ export default function App() {
             tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
-            selfDestruct: tmpl.selfDestruct,
+            damageReduce: tmpl.damageReduce ?? 0,
+      selfDestruct: tmpl.selfDestruct,
           }
           return next
         })
@@ -280,7 +282,8 @@ export default function App() {
             tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
-            selfDestruct: tmpl.selfDestruct,
+            damageReduce: tmpl.damageReduce ?? 0,
+      selfDestruct: tmpl.selfDestruct,
           }
         } else if (dragSource.type === 'cell') {
           // 셀에서 셀로 이동
@@ -380,7 +383,7 @@ export default function App() {
       }
       for (let i = 0; i < upTo && i < logs.length; i++) {
         const log = logs[i]
-        if ((log.type === 'attack' || log.type === 'reflect') && log.defenderHpAfter !== undefined) {
+        if ((log.type === 'attack' || log.type === 'reflect' || log.type === 'rebirth' || log.type === 'revival') && log.defenderHpAfter !== undefined) {
           if (log.targetKey) {
             const s = state.get(log.targetKey)
             if (s) s.hp = log.defenderHpAfter
@@ -613,7 +616,8 @@ export default function App() {
         tempHp: 0,
         statusEffects: [],
         runes: tmpl.runes ?? [],
-        selfDestruct: tmpl.selfDestruct,
+        damageReduce: tmpl.damageReduce ?? 0,
+      selfDestruct: tmpl.selfDestruct,
       }
     }
     return null

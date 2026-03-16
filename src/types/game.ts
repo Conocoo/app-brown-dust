@@ -35,6 +35,8 @@ export interface StatusEffect {
   grantDuration?: number
   /** 효과 채널: multiply(승산) vs plus(가산). 미지정 시 multiply */
   channel?: 'multiply' | 'plus'
+  /** 카운트 가드 잔여 횟수 (0이 되면 효과 제거) */
+  count?: number
 }
 
 /** 전투 중 캐릭터 상태 */
@@ -73,6 +75,8 @@ export interface BattleCharacter {
   fixedDamageRate?: number
   /** 크리티컬 저항 (0.0~1.0). 크리티컬 배율을 감소시킴 */
   critResist?: number
+  /** 피해 감소 (0.0~1.0). 가변 데미지에만 적용. 방어와 독립 */
+  damageReduce: number
   /** 임시생명력 (피격 시 hp보다 먼저 소진) */
   tempHp: number
   /** 현재 걸린 상태 효과 */
@@ -84,7 +88,7 @@ export interface BattleCharacter {
 }
 
 /** 전투 로그 종류 */
-export type BattleLogType = 'attack' | 'casting' | 'support' | 'round_start' | 'buff' | 'debuff' | 'immune' | 'reflect' | 'status_update'
+export type BattleLogType = 'attack' | 'casting' | 'support' | 'round_start' | 'buff' | 'debuff' | 'immune' | 'reflect' | 'status_update' | 'rebirth' | 'revival' | 'post_death'
 
 /** 전투 로그 한 줄 */
 export interface BattleLogEntry {

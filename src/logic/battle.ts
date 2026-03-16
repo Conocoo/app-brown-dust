@@ -1,5 +1,5 @@
 import type { BattleCharacter, BattleLogEntry } from '../types/game'
-import { executeTurn, applyPassiveSkills } from './turn'
+import { executeTurn, applyPassiveSkills, processPostDeathBuffs } from './turn'
 
 const MAX_ROUNDS = 100
 
@@ -24,6 +24,36 @@ export function simulateBattle(
   const allSorted = [...sortedEnemies, ...sortedPlayers]
   applyPassiveSkills(allSorted, players, enemies, logs)
 
+  // 사후 버프 추적: 캐릭터별 on_death_buff 정보를 미리 저장
+  const deathBuffMap = new Map<BattleCharacter, { type: string; linkedBuffId?: string }[]>()
+  for (const char of [...players, ...enemies]) {
+    const deathBuffs = char.statusEffects.filter(
+      (e) => e.type === 'on_death_buff_allies' || e.type === 'on_death_buff_enemies'
+    )
+    if (deathBuffs.length > 0) {
+      deathBuffMap.set(char, deathBuffs.map((e) => ({ type: e.type, linkedBuffId: e.linkedBuffId })))
+    }
+  }
+
+  // 이미 처리된 사망 캐릭터 추적
+  const processedDeaths = new Set<BattleCharacter>()
+
+  /** 턴 후 새로 사망한 캐릭터의 사후 버프 처리 */
+  function handleNewDeaths(): void {
+    const allChars = [...players, ...enemies]
+    for (const char of allChars) {
+      if (char.hp > 0 || processedDeaths.has(char)) continue
+      processedDeaths.add(char)
+
+      const deathBuffs = deathBuffMap.get(char)
+      if (!deathBuffs || deathBuffs.length === 0) continue
+
+      const charAllies = char.team === 'player' ? players : enemies
+      const charEnemies = char.team === 'player' ? enemies : players
+      processPostDeathBuffs(char, charAllies, charEnemies, logs, deathBuffs)
+    }
+  }
+
   for (let round = 1; round <= MAX_ROUNDS; round++) {
     // 라운드 시작 로그
     logs.push({ type: 'round_start', round, message: `라운드 ${round}` })
@@ -37,6 +67,7 @@ export function simulateBattle(
         const enemyChar = sortedEnemies[i]
         if (enemyChar.hp > 0) {
           executeTurn(enemyChar, enemies, players, logs)
+          handleNewDeaths()
         }
         if (alive(players).length === 0) break
       }
@@ -46,6 +77,7 @@ export function simulateBattle(
         const playerChar = sortedPlayers[i]
         if (playerChar.hp > 0) {
           executeTurn(playerChar, players, enemies, logs)
+          handleNewDeaths()
         }
         if (alive(enemies).length === 0) break
       }
