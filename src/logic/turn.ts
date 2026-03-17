@@ -27,21 +27,47 @@ function removeStatusWithLinked(target: BattleCharacter, effectType: string): vo
   }
 }
 
-/** 데미지 적용 (임시생명력 우선 소진) */
+/**
+ * 데미지 적용 파이프라인 (원본 SetDamage 순서)
+ * 에너지 가드 → 임시생명력(보너스HP) → 1회 피해 상한 → HP 차감
+ */
 function applyDamageToCharacter(target: BattleCharacter, damage: number): void {
-  if (target.tempHp > 0) {
-    if (damage <= target.tempHp) {
-      target.tempHp -= damage
-    } else {
-      const overflow = damage - target.tempHp
-      target.tempHp = 0
-      target.hp = Math.max(0, target.hp - overflow)
-      // 임시생명력 소진 → 상태효과 + 연동 버프 제거
-      removeStatusWithLinked(target, 'temp_hp')
+  let remaining = damage
+
+  // 1. 에너지 가드: 별도 에너지 풀로 데미지 흡수
+  const energyGuard = target.statusEffects.find(
+    (e) => e.type === 'energy_guard' && e.value > 0
+  )
+  if (energyGuard) {
+    if (remaining <= energyGuard.value) {
+      energyGuard.value -= remaining
+      return // 전량 흡수
     }
-  } else {
-    target.hp = Math.max(0, target.hp - damage)
+    remaining -= energyGuard.value
+    energyGuard.value = 0
+    // 에너지 소진 → 효과 제거
+    target.statusEffects = target.statusEffects.filter((e) => e !== energyGuard)
   }
+
+  // 2. 임시생명력 (보너스HP) 우선 소진
+  if (target.tempHp > 0) {
+    if (remaining <= target.tempHp) {
+      target.tempHp -= remaining
+      return
+    }
+    remaining -= target.tempHp
+    target.tempHp = 0
+    removeStatusWithLinked(target, 'temp_hp')
+  }
+
+  // 3. 1회 피해 상한 (EachDamageLimit)
+  const dmgLimit = target.statusEffects.find((e) => e.type === 'each_damage_limit')
+  if (dmgLimit && remaining > dmgLimit.value) {
+    remaining = dmgLimit.value
+  }
+
+  // 4. HP 차감
+  target.hp = Math.max(0, target.hp - remaining)
 }
 
 /**
