@@ -31,6 +31,8 @@ export interface MercenaryTemplate {
   critDamage: number
   /** 민첩 (0~100). 피격 시 스침(65% 데미지) 확률 + 데미지 감소 35% + 디버프 턴수 감소 50% */
   agility: number
+  /** 피해 감소 (0~100). 가변 데미지에만 적용. 방어와 독립. 기본 0 */
+  damageReduce?: number
   /** 스킬 1~4 (최대 4개), 스킬 ID + 효과 오버라이드 */
   skills: MercenarySkillRef[]
   /** 적 타겟 선택 방식 (기본: enemy_front) */

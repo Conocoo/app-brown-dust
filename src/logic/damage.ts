@@ -91,18 +91,63 @@ export function getEffectiveAgility(char: BattleCharacter): number {
   return clamp((char.agility / 100 + plus) * (1 + multiply), 0, 1) * 100
 }
 
-/** 보호막 감소율 계산 (곱연산, 상한 -70%) */
-export function calcShieldReduction(defender: BattleCharacter): number {
+/**
+ * 버프/디버프 반영한 유효 피해 감소
+ * 패턴 B: clamp((base + plus) * (1 + mul), 0, 1)
+ */
+export function getEffectiveDamageReduce(char: BattleCharacter): number {
+  const mulUp = sumMultiply(char.statusEffects, 'damage_reduce_up')
+  const mulDown = sumMultiply(char.statusEffects, 'damage_reduce_down')
+  const multiply = (mulUp - mulDown) / 100
+  const plusUp = sumPlus(char.statusEffects, 'damage_reduce_up')
+  const plusDown = sumPlus(char.statusEffects, 'damage_reduce_down')
+  const plus = (plusUp - plusDown) / 100
+  return clamp((char.damageReduce / 100 + plus) * (1 + multiply), 0, 1)
+}
+
+/**
+ * 보호율 계산 (원본: GetProtectedRate)
+ * - shield_fix가 있으면 고정값 사용 (ProtectFix — 곱연산 스킵)
+ * - 일반 shield는 곱연산 누적: rate = (1-v1/100) × (1-v2/100) × ...
+ * - 상한: 최대 70% 감소 → rate 최소 0.3
+ * @returns 데미지 배율 (0.3~1.0). 낮을수록 방어 높음
+ */
+export function calcProtectedRate(defender: BattleCharacter): number {
+  // ProtectFix: 고정 보호율 (곱연산 스킵, 첫 번째 값 사용)
+  const fix = defender.statusEffects.find((e) => e.type === 'shield_fix')
+  if (fix) {
+    return Math.max(0.3, 1 - fix.value / 100)
+  }
+
   const shields = defender.statusEffects.filter((e) => e.type === 'shield')
   if (shields.length === 0) return 1.0
 
-  let multiplier = 1.0
+  let rate = 1.0
   for (const s of shields) {
-    multiplier *= 1 - s.value / 100
+    rate *= 1 - s.value / 100
   }
-  // 상한: 최대 70% 감소 → multiplier 최소 0.3
-  return Math.max(0.3, multiplier)
+  // 상한: 최대 70% 감소 → rate 최소 0.3
+  return Math.max(0.3, rate)
 }
+
+/**
+ * 수신 데미지율 (원본: GetReciveDamageRate)
+ * shield_penalty (피해 증가) 효과만 곱연산 누적
+ * @returns 데미지 배율 (>= 1.0). 높을수록 피해 증가
+ */
+export function calcReciveDamageRate(defender: BattleCharacter): number {
+  const penalties = defender.statusEffects.filter((e) => e.type === 'shield_penalty')
+  if (penalties.length === 0) return 1.0
+
+  let rate = 1.0
+  for (const p of penalties) {
+    rate *= 1 + p.value / 100
+  }
+  return rate
+}
+
+/** @deprecated Use calcProtectedRate instead */
+export const calcShieldReduction = calcProtectedRate
 
 /** 받는 피해량 증가 반영 (dmg_taken_up 효과 + 복합 상태효과의 dmgTakenUp 합산) */
 export function getDmgTakenMultiplier(defender: BattleCharacter): number {
@@ -143,6 +188,12 @@ export function calculateFullDamage(
     variableDamage *= 0.65
   }
 
+  // DamageReduce: variable damage only
+  const damageReduce = getEffectiveDamageReduce(defender)
+  if (damageReduce > 0) {
+    variableDamage *= (1 - damageReduce)
+  }
+
   // Fixed damage: DEF ignored
   let fixedDamage = atk * fixedRate * skillMultiplier * critMultiplier
 
@@ -151,10 +202,15 @@ export function calculateFullDamage(
   variableDamage *= dmgTakenMul
   fixedDamage *= dmgTakenMul
 
-  // Shield applies to both
-  const shieldMul = calcShieldReduction(defender)
-  variableDamage *= shieldMul
-  fixedDamage *= shieldMul
+  // ProtectedRate (shield) applies to both
+  const protectedRate = calcProtectedRate(defender)
+  variableDamage *= protectedRate
+  fixedDamage *= protectedRate
+
+  // ReciveDamageRate (shield_penalty) applies to both
+  const reciveDmgRate = calcReciveDamageRate(defender)
+  variableDamage *= reciveDmgRate
+  fixedDamage *= reciveDmgRate
 
   const finalVariable = Math.max(0, Math.round(variableDamage))
   const finalFixed = Math.max(0, Math.round(fixedDamage))

@@ -1,7 +1,7 @@
 import type { BattleCharacter, BattleLogEntry, StatusEffect } from '../types/game'
 import type { Skill, SkillEffect } from '../types/skill'
 import { findNextAlly, resolveEnemyTarget, getTargetsInRange } from './targeting'
-import { calculateFullDamage, getEffectiveCritRate, getEffectiveCritDamage, getEffectiveAgility, getEffectiveAtk, getEffectiveDef, calcShieldReduction, getDmgTakenMultiplier } from './damage'
+import { calculateFullDamage, getEffectiveCritRate, getEffectiveCritDamage, getEffectiveAgility, getEffectiveAtk, getEffectiveDef, calcProtectedRate, calcReciveDamageRate, getDmgTakenMultiplier } from './damage'
 import { getSkillById } from '../data/skills'
 
 // ─── 유틸 ───
@@ -44,6 +44,43 @@ function applyDamageToCharacter(target: BattleCharacter, damage: number): void {
   }
 }
 
+/**
+ * 카운트 가드 체크: count_guard 상태효과가 있으면 데미지를 0으로 만들고 횟수 차감
+ * @returns true if damage was blocked by count guard
+ */
+function checkCountGuard(
+  target: BattleCharacter,
+  logs: BattleLogEntry[]
+): boolean {
+  const guard = target.statusEffects.find(
+    (e) => e.type === 'count_guard' && e.count !== undefined && e.count > 0
+  )
+  if (!guard) return false
+
+  guard.count = (guard.count ?? 0) - 1
+  logs.push({
+    type: 'buff',
+    defender: charLabel(target),
+    message: `${charLabel(target)} → 카운트 가드! 공격 무효화 (잔여: ${guard.count}회)`,
+    targetKey: `${target.team}-${target.templateId}`,
+    targetStatusEffects: [...target.statusEffects],
+  })
+
+  // 횟수 소진 시 제거
+  if (guard.count <= 0) {
+    target.statusEffects = target.statusEffects.filter((e) => e !== guard)
+    logs.push({
+      type: 'buff',
+      defender: charLabel(target),
+      message: `${charLabel(target)} → 카운트 가드 소진!`,
+      targetKey: `${target.team}-${target.templateId}`,
+      targetStatusEffects: [...target.statusEffects],
+    })
+  }
+
+  return true
+}
+
 /** 치명타/스침 판정 */
 interface CritGrazeResult {
   /** crit multiplier only (graze is handled separately in calculateFullDamage) */
@@ -66,6 +103,125 @@ function rollCritGraze(attacker: BattleCharacter, defender: BattleCharacter): Cr
   }
 
   return { critMultiplier, isCritical, isGraze }
+}
+
+// ─── 사망 판정 체인 ───
+// 원본 게임: HP ≤ 0 → [1] 대신죽기(백로그) → [2] 환생 → [3] 사망콜백 → [4] 부활 → [5] 진짜사망
+
+/**
+ * 사망 판정 체인: 환생 → 사망콜백 → 부활 → 진짜 사망
+ * 대신죽기는 백로그 (미구현)
+ * @returns true if character survived (rebirth or revival)
+ */
+function processDieCheck(
+  target: BattleCharacter,
+  logs: BattleLogEntry[]
+): boolean {
+  if (target.hp > 0) return false
+
+  // [2] 환생 (Rebirth): 모든 버프 제거 + HP 복구 + 생존
+  const rebirth = target.statusEffects.find((e) => e.type === 'rebirth')
+  if (rebirth) {
+    const hpPercent = rebirth.value || 100
+    target.statusEffects = []
+    target.hp = Math.round(target.maxHp * hpPercent / 100)
+    target.tempHp = 0
+    logs.push({
+      type: 'rebirth',
+      defender: charLabel(target),
+      defenderHpAfter: target.hp,
+      defenderMaxHp: target.maxHp,
+      message: `${charLabel(target)} → 환생! (HP: ${target.hp}/${target.maxHp})`,
+      targetKey: `${target.team}-${target.templateId}`,
+      targetStatusEffects: [...target.statusEffects],
+    })
+    return true
+  }
+
+  // [3] 사망 콜백 (DieCallback): on_death_trigger 스킬 발동
+  const deathTriggers = target.statusEffects.filter((e) => e.type === 'on_death_trigger')
+  for (const trigger of deathTriggers) {
+    if (trigger.linkedBuffId) {
+      const skill = getSkillById(trigger.linkedBuffId)
+      if (skill) {
+        for (const te of skill.effects) {
+          applyEffect(te, skill, target, target, logs)
+        }
+      }
+    }
+  }
+
+  // [4] 부활 (Revival): value% HP로 부활
+  const revival = target.statusEffects.find((e) => e.type === 'revival')
+  if (revival) {
+    const hpPercent = revival.value || 50
+    target.hp = Math.round(target.maxHp * hpPercent / 100)
+    target.statusEffects = target.statusEffects.filter((e) => e.type !== 'revival')
+    logs.push({
+      type: 'revival',
+      defender: charLabel(target),
+      defenderHpAfter: target.hp,
+      defenderMaxHp: target.maxHp,
+      message: `${charLabel(target)} → 부활! (HP: ${target.hp}/${target.maxHp})`,
+      targetKey: `${target.team}-${target.templateId}`,
+      targetStatusEffects: [...target.statusEffects],
+    })
+    return true
+  }
+
+  // [5] 진짜 사망: 버프 해제 (사후 버프는 battle.ts에서 처리)
+  target.statusEffects = []
+  return false
+}
+
+/**
+ * 사후 버프 처리: 진짜 사망한 캐릭터의 on_death_buff 효과를 아군에게 적용
+ * battle.ts에서 턴 종료 후 호출
+ */
+export function processPostDeathBuffs(
+  deadChar: BattleCharacter,
+  allies: BattleCharacter[],
+  enemies: BattleCharacter[],
+  logs: BattleLogEntry[],
+  deathBuffs: { type: string; linkedBuffId?: string }[]
+): void {
+  for (const buff of deathBuffs) {
+    if (!buff.linkedBuffId) continue
+    const skill = getSkillById(buff.linkedBuffId)
+    if (!skill) continue
+
+    // 아군 사후 버프: 살아있는 아군에게 적용
+    if (buff.type === 'on_death_buff_allies') {
+      const aliveAllies = allies.filter((c) => c.hp > 0)
+      for (const ally of aliveAllies) {
+        for (const effect of skill.effects) {
+          applyEffect(effect, skill, deadChar, ally, logs)
+        }
+      }
+      logs.push({
+        type: 'post_death',
+        attacker: charLabel(deadChar),
+        attackerTeam: deadChar.team,
+        message: `${charLabel(deadChar)} → 사망! 아군에게 ${skill.name} 발동!`,
+      })
+    }
+
+    // 적군 사후 버프: 살아있는 적에게 적용
+    if (buff.type === 'on_death_buff_enemies') {
+      const aliveEnemies = enemies.filter((c) => c.hp > 0)
+      for (const enemy of aliveEnemies) {
+        for (const effect of skill.effects) {
+          applyEffect(effect, skill, deadChar, enemy, logs)
+        }
+      }
+      logs.push({
+        type: 'post_death',
+        attacker: charLabel(deadChar),
+        attackerTeam: deadChar.team,
+        message: `${charLabel(deadChar)} → 사망! 적군에게 ${skill.name} 발동!`,
+      })
+    }
+  }
 }
 
 // ─── CC 판정 ───
@@ -187,6 +343,7 @@ function applyStatusEffect(
     dmgTakenUp: effect.dmgTakenUp,
     linkedBuffId: effect.linkedBuffId,
     channel: effect.channel,
+    count: effect.count,
   }
 
   target.statusEffects.push(se)
@@ -225,6 +382,10 @@ function processTurnStart(
         defeated: actor.hp <= 0,
         message: `${charLabel(actor)} → ${effect.type}으로 ${effect.value} 피해! (HP: ${actor.hp})`,
       })
+      if (actor.hp <= 0) {
+        processDieCheck(actor, logs)
+        if (actor.hp <= 0) break // 진짜 사망 시 나머지 효과 처리 중단
+      }
     }
 
     // 부패 DoT (최대HP 기반)
@@ -240,6 +401,10 @@ function processTurnStart(
         defeated: actor.hp <= 0,
         message: `${charLabel(actor)} → 부패로 ${decayDamage} 피해! (HP: ${actor.hp})`,
       })
+      if (actor.hp <= 0) {
+        processDieCheck(actor, logs)
+        if (actor.hp <= 0) break // 진짜 사망 시 나머지 효과 처리 중단
+      }
     }
 
     // 치명피해 지속 증가 (매 턴 스택 추가)
@@ -416,6 +581,10 @@ function processCounterAttack(
       message: `${charLabel(defender)} → ${charLabel(attacker)}에게 ${counterDamage} 반격!`,
       targetKey: `${attacker.team}-${attacker.templateId}`,
     })
+    // 반격으로 사망 시 사망 판정 체인
+    if (attacker.hp <= 0) {
+      processDieCheck(attacker, logs)
+    }
   }
 
   // 디버프 반격 (강화 버프 제거)
@@ -469,6 +638,7 @@ function applyEffect(
   // 즉시 효과
   switch (effect.type) {
     case 'damage': {
+      if (checkCountGuard(target, logs)) return
       const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
       const { totalDamage } = calculateFullDamage(actor, target, effect.value / 100, critMultiplier, isGraze)
       applyDamageToCharacter(target, totalDamage)
@@ -486,9 +656,11 @@ function applyEffect(
         isGraze,
         targetKey: `${target.team}-${target.templateId}`,
       })
+      if (target.hp <= 0) processDieCheck(target, logs)
       return
     }
     case 'crit_scaling_damage': {
+      if (checkCountGuard(target, logs)) return
       // 적중의 강타: critRate/100 × ATK × value/100
       const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
       const critRate = getEffectiveCritRate(actor)
@@ -496,7 +668,8 @@ function applyEffect(
       let damage = rawDamage * critMultiplier
       if (isGraze) damage *= 0.65
       damage *= getDmgTakenMultiplier(target)
-      damage *= calcShieldReduction(target)
+      damage *= calcProtectedRate(target)
+      damage *= calcReciveDamageRate(target)
       damage = Math.max(0, Math.round(damage))
       applyDamageToCharacter(target, damage)
       logs.push({
@@ -513,16 +686,19 @@ function applyEffect(
         isGraze,
         targetKey: `${target.team}-${target.templateId}`,
       })
+      if (target.hp <= 0) processDieCheck(target, logs)
       return
     }
     case 'def_scaling_damage': {
+      if (checkCountGuard(target, logs)) return
       // 철갑: (공격자 유효DEF / 100) × 공격자 유효ATK × (value / 100), 대상 DEF 무시
       const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
       const rawDamage = (getEffectiveDef(actor) / 100) * getEffectiveAtk(actor) * (effect.value / 100)
       let damage = rawDamage * critMultiplier
       if (isGraze) damage *= 0.65
       damage *= getDmgTakenMultiplier(target)
-      damage *= calcShieldReduction(target)
+      damage *= calcProtectedRate(target)
+      damage *= calcReciveDamageRate(target)
       damage = Math.max(0, Math.round(damage))
       applyDamageToCharacter(target, damage)
       logs.push({
@@ -539,6 +715,7 @@ function applyEffect(
         isGraze,
         targetKey: `${target.team}-${target.templateId}`,
       })
+      if (target.hp <= 0) processDieCheck(target, logs)
       return
     }
     case 'heal': {
@@ -676,11 +853,13 @@ function applyEffect(
       return
     }
     case 'giant_strike': {
+      if (checkCountGuard(target, logs)) return
       // 최대HP% 추가 피해
       const gsDamage = Math.round(actor.maxHp * effect.value / 100)
-      const gsShield = calcShieldReduction(target)
+      const gsProtect = calcProtectedRate(target)
       const gsDmgTaken = getDmgTakenMultiplier(target)
-      const finalGsDamage = Math.max(0, Math.round(gsDamage * gsShield * gsDmgTaken))
+      const gsReciveDmg = calcReciveDamageRate(target)
+      const finalGsDamage = Math.max(0, Math.round(gsDamage * gsProtect * gsDmgTaken * gsReciveDmg))
       applyDamageToCharacter(target, finalGsDamage)
       logs.push({
         type: 'attack',
@@ -694,6 +873,7 @@ function applyEffect(
         skillName: skill.name,
         targetKey: `${target.team}-${target.templateId}`,
       })
+      if (target.hp <= 0) processDieCheck(target, logs)
       return
     }
     case 'on_kill_trigger': {
@@ -802,6 +982,9 @@ function attackSingleTarget(
   logs: BattleLogEntry[],
   allowCounter: boolean
 ): void {
+  // 카운트 가드 체크
+  if (checkCountGuard(target, logs)) return
+
   const { critMultiplier, isCritical, isGraze } = rollCritGraze(actor, target)
   const { totalDamage: damage } = calculateFullDamage(actor, target, 1.0, critMultiplier, isGraze)
   applyDamageToCharacter(target, damage)
@@ -819,6 +1002,11 @@ function attackSingleTarget(
     isGraze,
     targetKey: `${target.team}-${target.templateId}`,
   })
+
+  // 사망 판정 체인 (대상)
+  if (target.hp <= 0) {
+    processDieCheck(target, logs)
+  }
 
   // 흡혈
   const lifesteal = actor.statusEffects.find((e) => e.type === 'lifesteal')
@@ -886,6 +1074,11 @@ function attackSingleTarget(
   // 반사반격 (반격 디버프는 이후 대상 공격에도 누적 적용)
   if (allowCounter && target.hp > 0) {
     processCounterAttack(actor, target, damage, logs)
+  }
+
+  // 사망 판정 체인 (공격자 — 반격으로 사망 시)
+  if (actor.hp <= 0) {
+    processDieCheck(actor, logs)
   }
 }
 

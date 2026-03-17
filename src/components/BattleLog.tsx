@@ -51,6 +51,16 @@ export default function BattleLog({ logs, visibleCount }: BattleLogProps) {
             )
           }
 
+          // rebirth, revival, post_death: 사망 판정 체인 로그
+          if (log.type === 'rebirth' || log.type === 'revival' || log.type === 'post_death') {
+            return (
+              <div key={originalIdx} className={`log-entry log-revival ${teamClass}`}>
+                {log.attackerTeam && <span className="log-team-label">{teamLabel}</span>}
+                {' '}{log.message}
+              </div>
+            )
+          }
+
           // buff, debuff, immune: message 기반 표시
           if (log.type === 'buff' || log.type === 'debuff' || log.type === 'immune') {
             return (
