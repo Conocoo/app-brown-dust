@@ -1,7 +1,11 @@
 import type { BattleCharacter, BattleLogEntry } from '../types/game'
 import { executeTurn, applyPassiveSkills, processPostDeathBuffs } from './turn'
 
-const MAX_ROUNDS = 100
+const MAX_ROUNDS = 300
+
+// 게임오버 버프 설정 (원본: CharBalanceList)
+const GAMEOVER_BUFF_ROUND = 7       // 이 라운드부터 강제 버프
+const GAMEOVER_BUFF_FREQUENCY = 1   // 매 N 라운드마다
 
 /** 전투를 시뮬레이션하고 턴별 로그를 반환 */
 export function simulateBattle(
@@ -54,9 +58,30 @@ export function simulateBattle(
     }
   }
 
+  let gameoverBuffId = 0
+
   for (let round = 1; round <= MAX_ROUNDS; round++) {
     // 라운드 시작 로그
     logs.push({ type: 'round_start', round, message: `라운드 ${round}` })
+
+    // 게임오버 버프: 장기전 방지용 강제 ATK 증가 (양팀 전체)
+    if (round >= GAMEOVER_BUFF_ROUND && (round - GAMEOVER_BUFF_ROUND) % GAMEOVER_BUFF_FREQUENCY === 0) {
+      for (const char of [...players, ...enemies]) {
+        if (char.hp <= 0) continue
+        char.statusEffects.push({
+          id: `gameover_${++gameoverBuffId}`,
+          type: 'atk_up',
+          value: 30,
+          remainingTurns: 999,
+          category: 'buff',
+          buffType: 'stat_enhance',
+        })
+      }
+      logs.push({
+        type: 'buff',
+        message: `라운드 ${round} — 게임오버 버프! 양팀 공격력 +30%`,
+      })
+    }
 
     // 번갈아 턴 진행: 상대1 → 나1 → 상대2 → 나2 → ...
     const maxLen = Math.max(sortedEnemies.length, sortedPlayers.length)
