@@ -1,4 +1,5 @@
 import type { BattleCharacter, BattleLogEntry } from '../types/game'
+import { PlayRandomManager } from './random'
 import { executeTurn, applyPassiveSkills, processPostDeathBuffs } from './turn'
 
 const MAX_ROUNDS = 300
@@ -7,11 +8,20 @@ const MAX_ROUNDS = 300
 const GAMEOVER_BUFF_ROUND = 7       // 이 라운드부터 강제 버프
 const GAMEOVER_BUFF_FREQUENCY = 1   // 매 N 라운드마다
 
-/** 전투를 시뮬레이션하고 턴별 로그를 반환 */
+let gameoverBuffId = 0
+
+/**
+ * 전투를 시뮬레이션하고 턴별 로그를 반환.
+ * @param seed 시드 미지정 시 랜덤 생성. 동일 시드 → 동일 전투 결과.
+ */
 export function simulateBattle(
   playerTeam: BattleCharacter[],
-  enemyTeam: BattleCharacter[]
+  enemyTeam: BattleCharacter[],
+  seed?: number
 ): BattleLogEntry[] {
+  const battleSeed = seed ?? (Math.floor(Math.random() * 0xFFFFFFFF) >>> 0)
+  const rng = new PlayRandomManager(battleSeed)
+
   // 전투용 복사본 (statusEffects 독립 배열로 복사)
   const players = playerTeam.map((c) => ({ ...c, statusEffects: [...c.statusEffects] }))
   const enemies = enemyTeam.map((c) => ({ ...c, statusEffects: [...c.statusEffects] }))
@@ -26,7 +36,7 @@ export function simulateBattle(
 
   // passive 스킬 발동 (게임 시작 시 1회)
   const allSorted = [...sortedEnemies, ...sortedPlayers]
-  applyPassiveSkills(allSorted, players, enemies, logs)
+  applyPassiveSkills(allSorted, players, enemies, logs, rng)
 
   // 사후 버프 추적: 캐릭터별 on_death_buff 정보를 미리 저장
   const deathBuffMap = new Map<BattleCharacter, { type: string; linkedBuffId?: string }[]>()
@@ -54,15 +64,18 @@ export function simulateBattle(
 
       const charAllies = char.team === 'player' ? players : enemies
       const charEnemies = char.team === 'player' ? enemies : players
-      processPostDeathBuffs(char, charAllies, charEnemies, logs, deathBuffs)
+      processPostDeathBuffs(char, charAllies, charEnemies, logs, deathBuffs, rng)
     }
   }
 
-  let gameoverBuffId = 0
-
   for (let round = 1; round <= MAX_ROUNDS; round++) {
-    // 라운드 시작 로그
-    logs.push({ type: 'round_start', round, message: `라운드 ${round}` })
+    // 라운드 시작 로그 (첫 번째 라운드에 시드 기록)
+    logs.push({
+      type: 'round_start',
+      round,
+      message: `라운드 ${round}`,
+      ...(round === 1 ? { seed: battleSeed } : {}),
+    })
 
     // 게임오버 버프: 장기전 방지용 강제 ATK 증가 (양팀 전체)
     if (round >= GAMEOVER_BUFF_ROUND && (round - GAMEOVER_BUFF_ROUND) % GAMEOVER_BUFF_FREQUENCY === 0) {
@@ -91,7 +104,7 @@ export function simulateBattle(
       if (i < sortedEnemies.length) {
         const enemyChar = sortedEnemies[i]
         if (enemyChar.hp > 0) {
-          executeTurn(enemyChar, enemies, players, logs)
+          executeTurn(enemyChar, enemies, players, logs, rng)
           handleNewDeaths()
         }
         if (alive(players).length === 0) break
@@ -101,7 +114,7 @@ export function simulateBattle(
       if (i < sortedPlayers.length) {
         const playerChar = sortedPlayers[i]
         if (playerChar.hp > 0) {
-          executeTurn(playerChar, players, enemies, logs)
+          executeTurn(playerChar, players, enemies, logs, rng)
           handleNewDeaths()
         }
         if (alive(enemies).length === 0) break

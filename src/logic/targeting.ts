@@ -1,4 +1,5 @@
 import type { BattleCharacter, AttackRange } from '../types/game'
+import type { PlayRandomManager } from './random'
 
 const ROWS = 3
 
@@ -80,20 +81,22 @@ export function findTargetBack(
   return alive[0]
 }
 
-/** 살아있는 적 중 랜덤 */
+/** 살아있는 적 중 랜덤 (WELL512 RNG 사용) */
 export function findTargetRandom(
   _attacker: BattleCharacter,
-  enemies: BattleCharacter[]
+  enemies: BattleCharacter[],
+  rng: PlayRandomManager
 ): BattleCharacter | null {
   const alive = enemies.filter((e) => e.hp > 0)
   if (alive.length === 0) return null
-  return alive[Math.floor(Math.random() * alive.length)]
+  return alive[rng.getRandom(alive.length)]
 }
 
 /** attackTarget에 따라 적 타겟 선택 */
 export function resolveEnemyTarget(
   attacker: BattleCharacter,
-  enemies: BattleCharacter[]
+  enemies: BattleCharacter[],
+  rng: PlayRandomManager
 ): BattleCharacter | null {
   const alive = enemies.filter((e) => e.hp > 0)
   if (alive.length === 0) return null
@@ -114,7 +117,7 @@ export function resolveEnemyTarget(
     case 'enemy_back':
       return findTargetBack(attacker, enemies)
     case 'enemy_random':
-      return findTargetRandom(attacker, enemies)
+      return findTargetRandom(attacker, enemies, rng)
     case 'enemy_front':
     default:
       return findTarget(attacker, enemies)

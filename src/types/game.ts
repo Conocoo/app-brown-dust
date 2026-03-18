@@ -94,6 +94,8 @@ export type BattleLogType = 'attack' | 'casting' | 'support' | 'round_start' | '
 export interface BattleLogEntry {
   type: BattleLogType
   round?: number
+  /** 전투 시작 시드 (첫 번째 round_start 로그에만 기록) */
+  seed?: number
   attacker?: string
   attackerTeam?: 'player' | 'enemy'
   defender?: string
