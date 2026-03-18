@@ -1,0 +1,18 @@
+import type { MercenaryTemplate } from '../../../types/mercenary'
+
+export const zarka: MercenaryTemplate = {
+  id: 'zarka',
+  name: '자르카',
+  type: 'mage',
+  star: 4,
+  maxHp: 3952,
+  atk: 1276,
+  def: 0,
+  emoji: '🔮',
+  imageId: '1165',
+  critRate: 20,
+  critDamage: 50,
+  agility: 15,
+  skills: [
+  ],
+}

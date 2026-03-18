@@ -1,0 +1,18 @@
+import type { MercenaryTemplate } from '../../../types/mercenary'
+
+export const xenon: MercenaryTemplate = {
+  id: 'xenon',
+  name: '제논',
+  type: 'attacker',
+  star: 4,
+  maxHp: 6523,
+  atk: 1840,
+  def: 10,
+  emoji: '⚔️',
+  imageId: '975',
+  critRate: 10,
+  critDamage: 50,
+  agility: 10,
+  skills: [
+  ],
+}

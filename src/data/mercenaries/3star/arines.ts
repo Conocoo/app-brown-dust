@@ -5,7 +5,7 @@ export const arines: MercenaryTemplate = {
   name: '아리네스',
   type: 'support',
   star: 3,
-  maxHp: 5189,
+  maxHp: 2907,
   atk: 0,
   supportPower: 203,
   def: 5,

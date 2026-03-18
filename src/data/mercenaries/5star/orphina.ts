@@ -1,0 +1,18 @@
+import type { MercenaryTemplate } from '../../../types/mercenary'
+
+export const orphina: MercenaryTemplate = {
+  id: 'orphina',
+  name: '오르피나',
+  type: 'defender',
+  star: 5,
+  maxHp: 13061,
+  atk: 2204,
+  def: 15,
+  emoji: '🛡️',
+  imageId: '4125',
+  critRate: 25,
+  critDamage: 50,
+  agility: 15,
+  skills: [
+  ],
+}

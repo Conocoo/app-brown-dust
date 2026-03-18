@@ -214,7 +214,7 @@ function updateMercIndex(mercenaries, dryRun) {
   // register 삽입 위치: 마지막 register() 호출 바로 다음
   let lastRegisterLine = -1
   for (let i = 0; i < lines.length; i++) {
-    if (/^register\(.+\)$/.test(lines[i])) {
+    if (/^register\(.+\)\r?$/.test(lines[i])) {
       lastRegisterLine = i
     }
   }

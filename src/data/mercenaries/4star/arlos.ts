@@ -1,0 +1,18 @@
+import type { MercenaryTemplate } from '../../../types/mercenary'
+
+export const arlos: MercenaryTemplate = {
+  id: 'arlos',
+  name: '알로스',
+  type: 'defender',
+  star: 4,
+  maxHp: 6332,
+  atk: 1052,
+  def: 10,
+  emoji: '🛡️',
+  imageId: '575',
+  critRate: 10,
+  critDamage: 50,
+  agility: 0,
+  skills: [
+  ],
+}

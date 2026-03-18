@@ -1,0 +1,18 @@
+import type { MercenaryTemplate } from '../../../types/mercenary'
+
+export const hiro: MercenaryTemplate = {
+  id: 'hiro',
+  name: '히로',
+  type: 'attacker',
+  star: 5,
+  maxHp: 4178,
+  atk: 2457,
+  def: 15,
+  emoji: '⚔️',
+  imageId: '4495',
+  critRate: 10,
+  critDamage: 50,
+  agility: 10,
+  skills: [
+  ],
+}

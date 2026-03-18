@@ -1,0 +1,18 @@
+import type { MercenaryTemplate } from '../../../types/mercenary'
+
+export const rimuru_tempest: MercenaryTemplate = {
+  id: 'rimuru_tempest',
+  name: 'リムル',
+  type: 'defender',
+  star: 5,
+  maxHp: 4566,
+  atk: 1190,
+  def: 5,
+  emoji: '🛡️',
+  imageId: '3955',
+  critRate: 10,
+  critDamage: 50,
+  agility: 60,
+  skills: [
+  ],
+}

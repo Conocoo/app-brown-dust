@@ -1,0 +1,18 @@
+import type { MercenaryTemplate } from '../../../types/mercenary'
+
+export const foxy: MercenaryTemplate = {
+  id: 'foxy',
+  name: '폭시',
+  type: 'attacker',
+  star: 5,
+  maxHp: 4329,
+  atk: 993,
+  def: 0,
+  emoji: '⚔️',
+  imageId: '2765',
+  critRate: 15,
+  critDamage: 50,
+  agility: 20,
+  skills: [
+  ],
+}
