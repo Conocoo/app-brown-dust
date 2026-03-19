@@ -97,7 +97,7 @@ function parseMercFile(filePath) {
   const hpMatch = src.match(/maxHp:\s*(\d+)/)
   const atkMatch = src.match(/atk:\s*(\d+)/)
   const defMatch = src.match(/def:\s*(\d+)/)
-  const spMatch = src.match(/supportPower:\s*(\d+)/)
+  const spMatch = src.match(/supportPower:\s*(\d+(?:\.\d+)?)/)
 
   // Extract skill IDs
   const skillIds = [...src.matchAll(/skillId:\s*'([^']+)'/g)].map(m => m[1])
