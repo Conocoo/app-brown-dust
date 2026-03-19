@@ -13,6 +13,10 @@ export const venus: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'single',
+    effects: [],
+  },
 }

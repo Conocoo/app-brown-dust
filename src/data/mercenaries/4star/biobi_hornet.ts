@@ -13,6 +13,11 @@ export const biobi_hornet: MercenaryTemplate = {
   critRate: 100,
   critDamage: 100,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 2,
+    effects: [],
+  },
 }

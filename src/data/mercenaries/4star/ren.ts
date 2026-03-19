@@ -13,6 +13,10 @@ export const ren: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 20,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

@@ -13,6 +13,10 @@ export const gloria: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

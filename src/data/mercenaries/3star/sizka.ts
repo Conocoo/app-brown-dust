@@ -13,6 +13,11 @@ export const sizka: MercenaryTemplate = {
   critRate: 15,
   critDamage: 75,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }

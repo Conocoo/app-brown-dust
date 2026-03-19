@@ -13,6 +13,11 @@ export const naressa: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 25,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

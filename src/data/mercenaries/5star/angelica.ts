@@ -13,6 +13,10 @@ export const angelica: MercenaryTemplate = {
   critRate: 25,
   critDamage: 150,
   agility: 35,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

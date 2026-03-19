@@ -13,6 +13,11 @@ export const kaylin: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

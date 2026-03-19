@@ -13,6 +13,11 @@ export const venomous_bee: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 100,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'front_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

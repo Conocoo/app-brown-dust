@@ -13,6 +13,11 @@ export const skinny_cat: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

@@ -13,6 +13,10 @@ export const kozak: MercenaryTemplate = {
   critRate: 15,
   critDamage: 75,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

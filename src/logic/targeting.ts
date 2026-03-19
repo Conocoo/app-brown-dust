@@ -62,6 +62,26 @@ export function findTargetSecond(
   return alive[0]
 }
 
+/** 앞 2명 건너뛰고 3번째 적 (2명 이하면 가장 뒤 적) */
+export function findTargetThird(
+  attacker: BattleCharacter,
+  enemies: BattleCharacter[]
+): BattleCharacter | null {
+  const alive = enemies.filter((e) => e.hp > 0)
+  if (alive.length === 0) return null
+
+  for (const row of getRowOrder(attacker.row)) {
+    const inRow = sortFrontToBack(
+      alive.filter((e) => e.row === row),
+      attacker.team
+    )
+    if (inRow.length >= 3) return inRow[2]
+    if (inRow.length > 0) return inRow[inRow.length - 1]
+  }
+
+  return alive[alive.length - 1]
+}
+
 /** 같은 행 → 아래 → 위, 가장 뒤 적 */
 export function findTargetBack(
   attacker: BattleCharacter,
@@ -111,9 +131,11 @@ export function resolveEnemyTarget(
     if (tauntTarget) return tauntTarget
   }
 
-  switch (attacker.attackTarget) {
+  switch (attacker.skill.target) {
     case 'enemy_second':
       return findTargetSecond(attacker, enemies)
+    case 'enemy_third':
+      return findTargetThird(attacker, enemies)
     case 'enemy_back':
       return findTargetBack(attacker, enemies)
     case 'enemy_random':

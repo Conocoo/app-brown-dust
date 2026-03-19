@@ -13,6 +13,10 @@ export const grace: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 25,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

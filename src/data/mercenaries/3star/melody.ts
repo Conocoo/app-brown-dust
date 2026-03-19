@@ -13,6 +13,10 @@ export const melody: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

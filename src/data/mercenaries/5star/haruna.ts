@@ -13,6 +13,10 @@ export const haruna: MercenaryTemplate = {
   critRate: 40,
   critDamage: 100,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_second',
+    attackRange: 'single',
+    effects: [],
+  },
 }

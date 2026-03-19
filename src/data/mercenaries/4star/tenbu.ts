@@ -13,6 +13,10 @@ export const tenbu: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 100,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

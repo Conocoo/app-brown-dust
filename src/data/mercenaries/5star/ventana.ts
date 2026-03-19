@@ -13,6 +13,10 @@ export const ventana: MercenaryTemplate = {
   critRate: 75,
   critDamage: 75,
   agility: 45,
-  skills: [
-  ],
+  skill: {
+    timing: 'before_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

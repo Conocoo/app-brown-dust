@@ -13,6 +13,11 @@ export const lydia: MercenaryTemplate = {
   critRate: 15,
   critDamage: 75,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'before_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

@@ -1,6 +1,6 @@
 import type { MercenaryTemplate } from '../../types/mercenary'
 import { cordelia } from './3star/cordelia'
-import { liznet } from './3star/liznet'
+import { rigenette } from './3star/rigenette'
 import { arines } from './3star/arines'
 import { carlson } from './3star/carlson'
 import { maria } from './3star/maria'
@@ -310,7 +310,7 @@ function register(merc: MercenaryTemplate) {
 }
 
 register(cordelia)
-register(liznet)
+register(rigenette)
 register(arines)
 register(carlson)
 register(maria)

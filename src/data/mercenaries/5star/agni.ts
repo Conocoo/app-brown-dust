@@ -13,6 +13,11 @@ export const agni: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 20,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

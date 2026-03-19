@@ -13,6 +13,11 @@ export const aiela: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 20,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

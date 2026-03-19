@@ -13,6 +13,10 @@ export const leto: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 65,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'single',
+    effects: [],
+  },
 }

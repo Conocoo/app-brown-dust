@@ -1,4 +1,4 @@
-import type { Skill } from './skill'
+import type { CharacterSkill } from './skill'
 
 /** 캐릭터 유형 (4종) */
 export type CharacterType = 'attacker' | 'defender' | 'support' | 'mage'
@@ -10,7 +10,7 @@ export type BuffType = 'shield' | 'stat_enhance' | 'special'
 export type DebuffClass = 'cc' | 'dot' | 'stat_weaken'
 
 /** 적 타겟 선택 방식 (용병 단위) */
-export type AttackTargetType = 'enemy_front' | 'enemy_second' | 'enemy_back' | 'enemy_random'
+export type AttackTargetType = 'enemy_front' | 'enemy_second' | 'enemy_third' | 'enemy_back' | 'enemy_random'
 
 /** 공격 범위 패턴 (용병 단위) */
 export type AttackRange = 'single' | 'horizontal' | 'vertical' | 'back_n' | 'front_n'
@@ -63,14 +63,8 @@ export interface BattleCharacter {
   isCasting: boolean
   /** 행동 순서 (0부터 시작) */
   order: number
-  /** 해석된 스킬 목록 */
-  skills: Skill[]
-  /** 적 타겟 선택 방식 */
-  attackTarget: AttackTargetType
-  /** 공격 범위 패턴 */
-  attackRange: AttackRange
-  /** 범위 크기 (horizontal, vertical, back_n, front_n, cross, area_n 등에서 사용) */
-  rangeSize?: number
+  /** 캐릭터 스킬 (1개) */
+  skill: CharacterSkill
   /** 고정 데미지 비율 (0.0~1.0). 고정 데미지는 DEF/회피를 무시 */
   fixedDamageRate?: number
   /** 크리티컬 저항 (0.0~1.0). 크리티컬 배율을 감소시킴 */

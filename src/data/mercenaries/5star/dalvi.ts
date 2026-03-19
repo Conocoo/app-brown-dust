@@ -13,6 +13,11 @@ export const dalvi: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 40,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'back_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

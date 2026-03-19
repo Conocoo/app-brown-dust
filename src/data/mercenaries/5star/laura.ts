@@ -13,6 +13,11 @@ export const laura: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 40,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'horizontal',
+    rangeSize: 3,
+    effects: [],
+  },
 }

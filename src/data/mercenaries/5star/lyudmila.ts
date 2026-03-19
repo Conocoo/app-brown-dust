@@ -13,6 +13,11 @@ export const lyudmila: MercenaryTemplate = {
   critRate: 70,
   critDamage: 75,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'front_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

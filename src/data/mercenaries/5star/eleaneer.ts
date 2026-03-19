@@ -13,6 +13,11 @@ export const eleaneer: MercenaryTemplate = {
   critRate: 75,
   critDamage: 50,
   agility: 65,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'back_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

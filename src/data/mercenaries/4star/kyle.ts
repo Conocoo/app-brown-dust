@@ -13,6 +13,11 @@ export const kyle: MercenaryTemplate = {
   critRate: 15,
   critDamage: 50,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'cross',
+    rangeSize: 2,
+    effects: [],
+  },
 }

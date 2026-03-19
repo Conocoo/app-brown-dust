@@ -13,6 +13,11 @@ export const ulfin: MercenaryTemplate = {
   critRate: 30,
   critDamage: 50,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'cross',
+    rangeSize: 2,
+    effects: [],
+  },
 }

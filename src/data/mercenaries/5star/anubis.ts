@@ -13,6 +13,11 @@ export const anubis: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'small_cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

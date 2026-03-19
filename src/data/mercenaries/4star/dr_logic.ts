@@ -13,6 +13,11 @@ export const dr_logic: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

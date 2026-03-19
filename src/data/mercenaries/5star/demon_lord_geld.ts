@@ -13,6 +13,11 @@ export const demon_lord_geld: MercenaryTemplate = {
   critRate: 25,
   critDamage: 75,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_back',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

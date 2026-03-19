@@ -13,6 +13,10 @@ export const collab_3467: MercenaryTemplate = {
   critRate: 25,
   critDamage: 75,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

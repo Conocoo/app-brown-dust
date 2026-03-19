@@ -13,6 +13,11 @@ export const mary: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'front_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

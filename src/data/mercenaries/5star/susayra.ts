@@ -13,6 +13,11 @@ export const susayra: MercenaryTemplate = {
   critRate: 40,
   critDamage: 25,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'back_n',
+    rangeSize: 2,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const venomous_frog: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 100,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 5,
+    effects: [],
+  },
 }

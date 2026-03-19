@@ -13,6 +13,11 @@ export const impaired_elephant: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

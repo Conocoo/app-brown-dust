@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 import type { BattleCharacter, GamePhase, BattleLogEntry, StatusEffect, Rune } from './types/game'
 import { getAllMercenaries, getMercenaryById } from './data/mercenaries'
-import { resolveSkills } from './data/skills'
+
 import { simulateBattle } from './logic/battle'
 import { applyRunes } from './logic/rune'
 import Board from './components/Board'
@@ -57,10 +57,7 @@ function placeEnemies(grid: (BattleCharacter | null)[][]): void {
       col: pos.col,
       isCasting: false,
       order: i,
-      skills: resolveSkills(tmpl.skills),
-      attackTarget: tmpl.attackTarget ?? 'enemy_front',
-      attackRange: tmpl.attackRange ?? 'single',
-      rangeSize: tmpl.rangeSize,
+      skill: tmpl.skill,
       tempHp: 0,
       statusEffects: [],
       runes: tmpl.runes ?? [],
@@ -163,10 +160,7 @@ export default function App() {
             col,
             isCasting: false,
             order: currentPlayerCount,
-            skills: resolveSkills(tmpl.skills),
-            attackTarget: tmpl.attackTarget ?? 'enemy_front',
-            attackRange: tmpl.attackRange ?? 'single',
-            rangeSize: tmpl.rangeSize,
+            skill: tmpl.skill,
             tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
@@ -275,10 +269,7 @@ export default function App() {
             col,
             isCasting: false,
             order: currentPlayerCount,
-            skills: resolveSkills(tmpl.skills),
-            attackTarget: tmpl.attackTarget ?? 'enemy_front',
-            attackRange: tmpl.attackRange ?? 'single',
-            rangeSize: tmpl.rangeSize,
+            skill: tmpl.skill,
             tempHp: 0,
             statusEffects: [],
             runes: tmpl.runes ?? [],
@@ -609,10 +600,7 @@ export default function App() {
         col: -1,
         isCasting: false,
         order: -1,
-        skills: resolveSkills(tmpl.skills),
-        attackTarget: tmpl.attackTarget ?? 'enemy_front',
-        attackRange: tmpl.attackRange ?? 'single',
-        rangeSize: tmpl.rangeSize,
+        skill: tmpl.skill,
         tempHp: 0,
         statusEffects: [],
         runes: tmpl.runes ?? [],

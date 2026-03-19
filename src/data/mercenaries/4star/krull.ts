@@ -13,6 +13,11 @@ export const krull: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

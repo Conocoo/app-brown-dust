@@ -13,6 +13,11 @@ export const orphina: MercenaryTemplate = {
   critRate: 25,
   critDamage: 50,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

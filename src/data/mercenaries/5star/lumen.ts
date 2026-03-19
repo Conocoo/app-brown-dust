@@ -13,6 +13,11 @@ export const lumen: MercenaryTemplate = {
   critRate: 35,
   critDamage: 75,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 4,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const lillian: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

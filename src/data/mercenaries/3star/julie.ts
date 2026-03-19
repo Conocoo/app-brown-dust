@@ -13,12 +13,18 @@ export const julie: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 25,
-  attackRange: 'area_n',
-  rangeSize: 3,
-  skills: [
-    { skillId: 'advanced_cc_purify' },
-    { skillId: 'advanced_regeneration_grant' },
-    { skillId: 'reflex_grant' },
-    { skillId: 'reflex_def_up' },
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [
+      { type: 'purify_cc', value: 0 },
+      { type: 'regeneration', value: 10, spScaling: true, duration: 14, buffType: 'stat_enhance' },
+      { type: 'heal_percent', value: 5 },
+      { type: 'agility_up', value: 50, spScaling: true, duration: 12, buffType: 'stat_enhance', ignoreImmunity: true },
+      { type: 'on_hit_def_up', value: 0, duration: 12, buffType: 'special' },
+      { type: 'def_up', value: 100, duration: 1, buffType: 'stat_enhance' },
+    ],
+  },
 }

@@ -13,6 +13,11 @@ export const lufel: MercenaryTemplate = {
   critRate: 0,
   critDamage: 50,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'back_n',
+    rangeSize: 2,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const crocell: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'front_n',
+    rangeSize: 3,
+    effects: [],
+  },
 }

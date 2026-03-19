@@ -13,6 +13,10 @@ export const lecliss: MercenaryTemplate = {
   critRate: 0,
   critDamage: 25,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

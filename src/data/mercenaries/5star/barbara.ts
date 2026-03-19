@@ -13,6 +13,11 @@ export const barbara: MercenaryTemplate = {
   critRate: 65,
   critDamage: 50,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'before_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 3,
+    effects: [],
+  },
 }

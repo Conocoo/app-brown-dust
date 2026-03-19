@@ -13,6 +13,11 @@ export const leah: MercenaryTemplate = {
   critRate: 50,
   critDamage: 75,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_back',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const scrime: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

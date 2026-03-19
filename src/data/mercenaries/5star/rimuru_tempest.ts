@@ -13,6 +13,10 @@ export const rimuru_tempest: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 60,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const esther: MercenaryTemplate = {
   critRate: 30,
   critDamage: 75,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }

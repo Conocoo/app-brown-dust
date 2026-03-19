@@ -13,6 +13,11 @@ export const claudia: MercenaryTemplate = {
   critRate: 10,
   critDamage: 25,
   agility: 35,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

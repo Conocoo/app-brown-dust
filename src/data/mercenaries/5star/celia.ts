@@ -13,6 +13,11 @@ export const celia: MercenaryTemplate = {
   critRate: 25,
   critDamage: 75,
   agility: 35,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'area_n',
+    rangeSize: 2,
+    effects: [],
+  },
 }

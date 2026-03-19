@@ -13,6 +13,10 @@ export const john: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'single',
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const michaela: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'back_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

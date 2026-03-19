@@ -13,6 +13,11 @@ export const wester: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'cross',
+    rangeSize: 2,
+    effects: [],
+  },
 }

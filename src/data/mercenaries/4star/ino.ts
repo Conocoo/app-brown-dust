@@ -13,6 +13,11 @@ export const ino: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'back_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

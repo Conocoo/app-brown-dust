@@ -13,6 +13,11 @@ export const agaron: MercenaryTemplate = {
   critRate: 15,
   critDamage: 50,
   agility: 20,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'front_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

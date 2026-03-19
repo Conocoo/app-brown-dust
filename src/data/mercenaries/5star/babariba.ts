@@ -13,6 +13,10 @@ export const babariba: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 35,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'single',
+    effects: [],
+  },
 }

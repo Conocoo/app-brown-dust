@@ -13,6 +13,11 @@ export const edan: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }

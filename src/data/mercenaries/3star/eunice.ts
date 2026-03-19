@@ -13,6 +13,11 @@ export const eunice: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }

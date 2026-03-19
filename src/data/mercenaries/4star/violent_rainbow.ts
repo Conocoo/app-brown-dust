@@ -13,6 +13,11 @@ export const violent_rainbow: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

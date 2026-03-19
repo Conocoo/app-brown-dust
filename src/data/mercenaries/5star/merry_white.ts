@@ -13,6 +13,11 @@ export const merry_white: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'small_cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

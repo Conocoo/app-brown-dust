@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { BattleCharacter, Rune, RuneStat } from '../types/game'
 import { RUNE_VALUES } from '../data/runeValues'
-import type { Skill, SkillTiming } from '../types/skill'
+import type { CharacterSkill, SkillTiming } from '../types/skill'
 
 interface Props {
   character: BattleCharacter | null
@@ -16,7 +16,7 @@ const TIMING_LABEL: Record<SkillTiming, string> = {
   passive: '패시브',
 }
 
-function skillEffectDesc(skill: Skill): string {
+function skillEffectDesc(skill: CharacterSkill): string {
   return skill.effects.map((e) => {
     const parts: string[] = []
     if (e.atkScaling) parts.push(`ATK×${e.value}%`)
@@ -298,28 +298,16 @@ export default function CharacterInfo({ character, isBattle, isPlacing, onRuneCh
       {/* 우: 스킬 슬롯 */}
       <div className="ci-right">
         <div className="ci-skills">
-          {Array.from({ length: 4 }, (_, i) => {
-            const skill: Skill | undefined = character.skills[i]
-            if (!skill) {
-              return (
-                <div key={i} className="ci-skill-slot ci-skill-slot-empty">
-                  <span>+</span>
-                </div>
-              )
-            }
-            return (
-              <div key={skill.id} className={`ci-skill-slot ci-skill-timing-${skill.timing}`}>
-                <span className="ci-skill-name">{skill.name}</span>
-                <div className="ci-skill-tooltip">
-                  <div className="ci-skill-tooltip-header">
-                    <strong>{skill.name}</strong>
-                    <span className="ci-skill-timing-badge">{TIMING_LABEL[skill.timing]}</span>
-                  </div>
-                  <div className="ci-skill-tooltip-desc">{skillEffectDesc(skill)}</div>
-                </div>
+          <div className={`ci-skill-slot ci-skill-timing-${character.skill.timing}`}>
+            <span className="ci-skill-name">{character.skill.name ?? ''}</span>
+            <div className="ci-skill-tooltip">
+              <div className="ci-skill-tooltip-header">
+                <strong>{character.skill.name ?? ''}</strong>
+                <span className="ci-skill-timing-badge">{TIMING_LABEL[character.skill.timing]}</span>
               </div>
-            )
-          })}
+              <div className="ci-skill-tooltip-desc">{skillEffectDesc(character.skill)}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

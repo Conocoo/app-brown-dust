@@ -13,6 +13,11 @@ export const alicia: MercenaryTemplate = {
   critRate: 35,
   critDamage: 75,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 3,
+    effects: [],
+  },
 }

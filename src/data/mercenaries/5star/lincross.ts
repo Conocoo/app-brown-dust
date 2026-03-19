@@ -13,6 +13,11 @@ export const lincross: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

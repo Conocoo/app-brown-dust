@@ -13,6 +13,10 @@ export const paladin_siegmund: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

@@ -13,6 +13,10 @@ export const indra: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'single',
+    effects: [],
+  },
 }

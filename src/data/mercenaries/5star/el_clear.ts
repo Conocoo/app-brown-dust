@@ -13,6 +13,11 @@ export const el_clear: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 50,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

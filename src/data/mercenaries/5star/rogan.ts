@@ -13,6 +13,11 @@ export const rogan: MercenaryTemplate = {
   critRate: 35,
   critDamage: 75,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

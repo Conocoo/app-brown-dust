@@ -13,6 +13,11 @@ export const yuri: MercenaryTemplate = {
   critRate: 40,
   critDamage: 75,
   agility: 75,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }

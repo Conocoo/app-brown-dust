@@ -13,6 +13,11 @@ export const farrel: MercenaryTemplate = {
   critRate: 20,
   critDamage: 25,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

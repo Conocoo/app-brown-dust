@@ -13,6 +13,11 @@ export const deserted_teddy_bear: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 2,
+    effects: [],
+  },
 }

@@ -1,15 +1,17 @@
-import type { BuffType, DebuffClass, AttackTargetType } from './game'
+import type { BuffType, DebuffClass, AttackTargetType, AttackRange } from './game'
 
 /** 스킬 발동 시점 */
 export type SkillTiming = 'before_attack' | 'after_attack' | 'passive'
 
-/** 스킬 대상 선택 (enemy 계열은 실행 시 용병의 attackTarget으로 대체됨) */
+/** 스킬 대상 선택 */
 export type SkillTargetType = AttackTargetType | 'next_ally' | 'self'
 
 /** 스킬 개별 효과 */
 export interface SkillEffect {
   type: string
   value: number
+  /** 이 효과에만 적용할 대상 오버라이드 (없으면 CharacterSkill.target 사용) */
+  target?: SkillTargetType
   /** 지속 턴 수 (없으면 즉시 효과) */
   duration?: number
   /** 버프 분류 (shield/stat_enhance/special) */
@@ -34,7 +36,19 @@ export interface SkillEffect {
   count?: number
 }
 
-/** 스킬 정의 */
+/** 용병 캐릭터 스킬 (용병당 1개, 게임 원본 SkillBasicList 구조 반영) */
+export interface CharacterSkill {
+  /** 스킬명 (UI 표시용) */
+  name?: string
+  timing: SkillTiming
+  /** 기본 대상 (개별 효과에서 target 오버라이드 가능) */
+  target: SkillTargetType
+  attackRange: AttackRange
+  rangeSize?: number
+  effects: SkillEffect[]
+}
+
+/** 스킬 정의 (트리거 효과용 템플릿) */
 export interface Skill {
   id: string
   name: string

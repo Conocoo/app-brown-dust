@@ -13,6 +13,11 @@ export const sobalina: MercenaryTemplate = {
   critRate: 100,
   critDamage: 50,
   agility: 100,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

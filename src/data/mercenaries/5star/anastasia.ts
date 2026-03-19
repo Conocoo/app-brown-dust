@@ -13,6 +13,11 @@ export const anastasia: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_third',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

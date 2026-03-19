@@ -13,6 +13,11 @@ export const kumari: MercenaryTemplate = {
   critRate: 50,
   critDamage: 75,
   agility: 50,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'front_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

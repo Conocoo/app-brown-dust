@@ -12,8 +12,9 @@ const INDEX_PATH = join(MERCS_DIR, 'index.ts')
 
 const VALID_TYPES = ['attacker', 'defender', 'support', 'mage']
 const VALID_STARS = [3, 4, 5]
-const VALID_TARGETS = ['enemy_front', 'enemy_second', 'enemy_back', 'enemy_random']
-const VALID_RANGES = ['single', 'horizontal', 'vertical', 'back_n', 'front_n', 'cross', 'x_shape', 'area_n', 'diamond']
+const VALID_TARGETS = ['enemy_front', 'enemy_second', 'enemy_back', 'enemy_random', 'self', 'next_ally']
+const VALID_RANGES = ['single', 'horizontal', 'vertical', 'back_n', 'front_n', 'cross', 'x_shape', 'area_n', 'diamond', 'small_cross']
+const VALID_TIMINGS = ['before_attack', 'after_attack', 'passive']
 
 // -- CLI -------------------------------------------------------
 
@@ -42,16 +43,19 @@ JSON 형식:
       "critRate": 0,
       "critDamage": 0,
       "agility": 0,
-      "attackTarget": "enemy_front",
-      "attackRange": "single",
-      "skills": [
-        { "skillId": "advanced_taunt" }
-      ]
+      "skill": {
+        "timing": "after_attack",
+        "target": "enemy_front",
+        "attackRange": "single"
+      }
     }
   ]
 }
 
-선택 필드: supportPower, imageId, attackTarget, attackRange, rangeSize, runes, skills`)
+선택 필드: supportPower, imageId, runes
+skill.timing 기본값: after_attack
+skill.target 기본값: enemy_front
+skill.attackRange 기본값: single`)
 }
 
 function parseArgs() {
@@ -91,8 +95,12 @@ function validate(mercenaries) {
     if (typeof m.critRate !== 'number') errors.push(`${prefix} critRate 필수 (숫자)`)
     if (typeof m.critDamage !== 'number') errors.push(`${prefix} critDamage 필수 (숫자)`)
     if (typeof m.agility !== 'number') errors.push(`${prefix} agility 필수 (숫자)`)
-    if (m.attackTarget && !VALID_TARGETS.includes(m.attackTarget)) errors.push(`${prefix} attackTarget 잘못됨: ${m.attackTarget}`)
-    if (m.attackRange && !VALID_RANGES.includes(m.attackRange)) errors.push(`${prefix} attackRange 잘못됨: ${m.attackRange}`)
+    if (m.skill) {
+      const s = m.skill
+      if (s.timing && !VALID_TIMINGS.includes(s.timing)) errors.push(`${prefix} skill.timing 잘못됨: ${s.timing} (${VALID_TIMINGS.join('|')})`)
+      if (s.target && !VALID_TARGETS.includes(s.target)) errors.push(`${prefix} skill.target 잘못됨: ${s.target}`)
+      if (s.attackRange && !VALID_RANGES.includes(s.attackRange)) errors.push(`${prefix} skill.attackRange 잘못됨: ${s.attackRange}`)
+    }
   }
 
   // config 내 ID 중복 체크
@@ -110,17 +118,6 @@ function validate(mercenaries) {
 }
 
 // -- 용병 파일 생성 --------------------------------------------
-
-function serializeSkillRef(ref) {
-  if (!ref.effects || ref.effects.length === 0) {
-    return `{ skillId: '${ref.skillId}' }`
-  }
-  const effectParts = ref.effects.map((e) => {
-    const props = Object.entries(e).map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : v}`)
-    return `{ ${props.join(', ')} }`
-  })
-  return `{ skillId: '${ref.skillId}', effects: [${effectParts.join(', ')}] }`
-}
 
 function serializeRune(rune) {
   const props = Object.entries(rune).map(([k, v]) => {
@@ -164,23 +161,19 @@ function generateMercenaryFile(merc) {
   lines.push(`  critRate: ${merc.critRate},`)
   lines.push(`  critDamage: ${merc.critDamage},`)
   lines.push(`  agility: ${merc.agility},`)
-  if (merc.attackTarget) {
-    lines.push(`  attackTarget: '${merc.attackTarget}',`)
-  }
-  if (merc.attackRange) {
-    lines.push(`  attackRange: '${merc.attackRange}',`)
-  }
-  if (merc.rangeSize !== undefined) {
-    lines.push(`  rangeSize: ${merc.rangeSize},`)
-  }
 
-  // skills
-  const skills = merc.skills || []
-  lines.push('  skills: [')
-  for (const ref of skills) {
-    lines.push(`    ${serializeSkillRef(ref)},`)
-  }
-  lines.push('  ],')
+  // skill (CharacterSkill)
+  const s = merc.skill || {}
+  const timing = s.timing || 'after_attack'
+  const target = s.target || 'enemy_front'
+  const attackRange = s.attackRange || 'single'
+  const rangeSizeLine = s.rangeSize !== undefined ? `\n    rangeSize: ${s.rangeSize},` : ''
+  lines.push(`  skill: {`)
+  lines.push(`    timing: '${timing}',`)
+  lines.push(`    target: '${target}',`)
+  lines.push(`    attackRange: '${attackRange}',${rangeSizeLine}`)
+  lines.push(`    effects: [],`)
+  lines.push(`  },`)
 
   // runes
   if (merc.runes && merc.runes.length > 0) {

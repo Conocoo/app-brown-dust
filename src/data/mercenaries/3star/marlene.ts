@@ -13,6 +13,11 @@ export const marlene: MercenaryTemplate = {
   critRate: 15,
   critDamage: 50,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

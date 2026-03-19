@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import type { Skill, SkillTiming } from '../types/skill'
 import { getAllSkills } from '../data/skills'
-import { getAllMercenaries } from '../data/mercenaries'
+
 
 const TIMING_LABEL: Record<SkillTiming, string> = {
   before_attack: '공격 전',
@@ -56,22 +56,11 @@ interface Props {
 
 export default function SkillDex({ onBack }: Props) {
   const allSkills = getAllSkills()
-  const allMercenaries = getAllMercenaries()
   const [category, setCategory] = useState('all')
   const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  /** 스킬 ID별 사용 용병 수 */
-  const usageMap = useMemo(() => {
-    const map = new Map<string, string[]>()
-    for (const merc of allMercenaries) {
-      for (const ref of merc.skills) {
-        const list = map.get(ref.skillId) ?? []
-        list.push(merc.name)
-        map.set(ref.skillId, list)
-      }
-    }
-    return map
-  }, [allMercenaries])
+  /** 스킬 ID별 사용 용병 목록 (CharacterSkill 구조에서는 미지원 — 항상 빈 맵) */
+  const usageMap = useMemo(() => new Map<string, string[]>(), [])
 
   const activeCategory = SKILL_CATEGORIES.find((c) => c.key === category) ?? SKILL_CATEGORIES[0]
   const filtered = allSkills.filter(activeCategory.match)

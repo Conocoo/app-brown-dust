@@ -13,6 +13,11 @@ export const stella: MercenaryTemplate = {
   critRate: 80,
   critDamage: 50,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'horizontal',
+    rangeSize: 4,
+    effects: [],
+  },
 }

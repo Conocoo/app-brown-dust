@@ -13,10 +13,17 @@ export const carlson: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 0,
-  skills: [
-    { skillId: 'advanced_taunt' },
-    { skillId: 'advanced_armor_strike' },
-    { skillId: 'recovery' },
-    { skillId: 'advanced_dot_immune' },
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [
+      { type: 'taunt', value: 0, duration: 12, buffType: 'special', target: 'self' },
+      { type: 'shield', value: 35, duration: 12, buffType: 'shield', target: 'self' },
+      { type: 'def_scaling_damage', value: 275 },
+      { type: 'on_kill_heal_percent', value: 100, target: 'self' },
+      { type: 'dot_immune', value: 0, duration: 18, buffType: 'special', target: 'self' },
+      { type: 'shield', value: 50, duration: 18, buffType: 'shield', target: 'self' },
+    ],
+  },
 }

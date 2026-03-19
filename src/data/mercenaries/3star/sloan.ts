@@ -12,11 +12,17 @@ export const sloan: MercenaryTemplate = {
   critRate: 5,
   critDamage: 50,
   agility: 0,
-  skills: [
-    { skillId: 'advanced_poison_counter' },
-    { skillId: 'poison' },
-    { skillId: 'advanced_shield' },
-    { skillId: 'decay' },
-    { skillId: 'sloan_recovery' },
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [
+      { type: 'poison_counter', value: 0, duration: 999, buffType: 'special', target: 'self' },
+      { type: 'on_hit_recovery', value: 0, duration: 999, buffType: 'special', target: 'self' },
+      { type: 'poison', value: 12, atkScaling: true, duration: 6, debuffClass: 'dot' },
+      { type: 'shield', value: 35, duration: 12, buffType: 'shield', triggerSkill: 'purify_dot', target: 'self' },
+      { type: 'decay', value: 2.5, duration: 10, debuffClass: 'dot' },
+      { type: 'heal_percent', value: 10, target: 'self' },
+    ],
+  },
 }

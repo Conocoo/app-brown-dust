@@ -13,6 +13,11 @@ export const asmode: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 65,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

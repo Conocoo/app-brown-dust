@@ -13,6 +13,11 @@ export const freesia: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'cross',
+    rangeSize: 2,
+    effects: [],
+  },
 }

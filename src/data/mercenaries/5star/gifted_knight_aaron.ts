@@ -13,6 +13,10 @@ export const gifted_knight_aaron: MercenaryTemplate = {
   critRate: 60,
   critDamage: 300,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

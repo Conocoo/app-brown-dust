@@ -13,6 +13,11 @@ export const ryde: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'area_n',
+    rangeSize: 2,
+    effects: [],
+  },
 }

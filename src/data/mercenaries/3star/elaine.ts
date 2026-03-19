@@ -13,6 +13,11 @@ export const elaine: MercenaryTemplate = {
   critRate: 15,
   critDamage: 50,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

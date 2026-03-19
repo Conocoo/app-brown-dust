@@ -13,6 +13,10 @@ export const seir: MercenaryTemplate = {
   critRate: 65,
   critDamage: 75,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

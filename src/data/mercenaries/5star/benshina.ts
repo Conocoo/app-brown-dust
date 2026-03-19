@@ -13,6 +13,11 @@ export const benshina: MercenaryTemplate = {
   critRate: 20,
   critDamage: 0,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'back_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

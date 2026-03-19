@@ -13,6 +13,10 @@ export const sillion: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_third',
+    attackRange: 'cross',
+    effects: [],
+  },
 }

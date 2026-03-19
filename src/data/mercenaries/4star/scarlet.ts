@@ -13,6 +13,11 @@ export const scarlet: MercenaryTemplate = {
   critRate: 35,
   critDamage: 75,
   agility: 65,
-  skills: [
-  ],
+  skill: {
+    timing: 'before_attack',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const garinoth: MercenaryTemplate = {
   critRate: 100,
   critDamage: 0,
   agility: 35,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

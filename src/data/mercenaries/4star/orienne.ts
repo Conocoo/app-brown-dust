@@ -13,6 +13,11 @@ export const orienne: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 25,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

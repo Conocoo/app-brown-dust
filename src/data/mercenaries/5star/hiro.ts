@@ -13,6 +13,11 @@ export const hiro: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 2,
+    effects: [],
+  },
 }

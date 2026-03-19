@@ -13,6 +13,10 @@ export const glacia: MercenaryTemplate = {
   critRate: 75,
   critDamage: 75,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

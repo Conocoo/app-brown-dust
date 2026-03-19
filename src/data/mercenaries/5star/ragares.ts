@@ -13,6 +13,11 @@ export const ragares: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 30,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

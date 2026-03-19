@@ -13,6 +13,10 @@ export const lain: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const vermont: MercenaryTemplate = {
   critRate: 25,
   critDamage: 50,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

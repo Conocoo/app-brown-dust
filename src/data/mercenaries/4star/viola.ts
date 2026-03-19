@@ -13,6 +13,11 @@ export const viola: MercenaryTemplate = {
   critRate: 15,
   critDamage: 75,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'back_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

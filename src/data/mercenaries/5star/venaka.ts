@@ -13,6 +13,11 @@ export const venaka: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 30,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'next_ally',
+    attackRange: 'horizontal',
+    rangeSize: 3,
+    effects: [],
+  },
 }

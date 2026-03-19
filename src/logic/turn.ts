@@ -1,5 +1,5 @@
 import type { BattleCharacter, BattleLogEntry, StatusEffect } from '../types/game'
-import type { Skill, SkillEffect } from '../types/skill'
+import type { CharacterSkill, SkillEffect } from '../types/skill'
 import type { PlayRandomManager } from './random'
 import { findNextAlly, resolveEnemyTarget, getTargetsInRange } from './targeting'
 import { calculateFullDamage, getEffectiveCritRate, getEffectiveCritDamage, getEffectiveAgility, getEffectiveAtk, getEffectiveDef, calcProtectedRate, calcReciveDamageRate, getDmgTakenMultiplier } from './damage'
@@ -643,29 +643,10 @@ function processCounterAttack(
 
 // ─── 스킬 실행 ───
 
-/** 스킬의 메인 타겟 결정 (enemy 계열은 용병의 attackTarget 사용) */
-function findSkillTarget(
-  skill: Skill,
-  actor: BattleCharacter,
-  allies: BattleCharacter[],
-  enemies: BattleCharacter[],
-  rng: PlayRandomManager
-): BattleCharacter | null {
-  if (skill.target === 'next_ally') return findNextAlly(actor, allies)
-  if (skill.target === 'self') return actor
-  // enemy 계열: 용병의 attackTarget으로 타겟 선택
-  return resolveEnemyTarget(actor, enemies, rng)
-}
-
-/** 스킬 대상이 적인지 판별 */
-function isEnemyTargetSkill(skill: Skill): boolean {
-  return skill.target !== 'next_ally' && skill.target !== 'self'
-}
-
 /** 개별 효과 적용 */
 function applyEffect(
   effect: SkillEffect,
-  skill: Skill,
+  skill: { name?: string },
   actor: BattleCharacter,
   target: BattleCharacter,
   logs: BattleLogEntry[],
@@ -808,7 +789,7 @@ function applyEffect(
       return
     }
     case 'dispel': {
-      applyDispel(target, false, actor, logs, skill.name)
+      applyDispel(target, false, actor, logs, skill.name ?? '')
       // triggerSkill: 무효화 후 연쇄 스킬 발동
       if (effect.triggerSkill) {
         const triggered = getSkillById(effect.triggerSkill)
@@ -821,11 +802,11 @@ function applyEffect(
       return
     }
     case 'dispel_enhance': {
-      applyDispel(target, true, actor, logs, skill.name)
+      applyDispel(target, true, actor, logs, skill.name ?? '')
       return
     }
     case 'cleanse': {
-      applyCleanse(target, actor, logs, skill.name)
+      applyCleanse(target, actor, logs, skill.name ?? '')
       return
     }
     case 'purify_dot': {
@@ -876,7 +857,7 @@ function applyEffect(
       target.tempHp = tempAmount
       // 지속 효과로도 등록 (duration 추적 + 연동 제거용)
       if (effect.duration) {
-        applyStatusEffect(target, effect, actor, logs, skill.name)
+        applyStatusEffect(target, effect, actor, logs, skill.name ?? '')
       }
       return
     }
@@ -954,7 +935,7 @@ function applyEffect(
 
   // 지속 효과 → 상태 효과 부여
   if (effect.duration) {
-    applyStatusEffect(target, effect, actor, logs, skill.name)
+    applyStatusEffect(target, effect, actor, logs, skill.name ?? '')
     // triggerSkill: 상태 효과 부여 후 연쇄 스킬 발동
     if (effect.triggerSkill) {
       const triggered = getSkillById(effect.triggerSkill)
@@ -971,47 +952,54 @@ function applyEffect(
   logs.push({
     type: 'support',
     attackerTeam: actor.team,
-    skillName: skill.name,
-    message: `${actorLabel} → ${targetLabel}에게 ${skill.name}!`,
+    skillName: skill.name ?? '',
+    message: `${actorLabel} → ${targetLabel}에게 ${skill.name ?? ''}!`,
   })
 }
 
-function executeSkill(
-  skill: Skill,
+/** 캐릭터 스킬 실행 (CharacterSkill — 용병당 1개, 효과별 대상 오버라이드 지원) */
+function executeCharSkill(
+  skill: CharacterSkill,
   actor: BattleCharacter,
   allies: BattleCharacter[],
   enemies: BattleCharacter[],
   logs: BattleLogEntry[],
   rng: PlayRandomManager
 ): void {
-  const mainTarget = findSkillTarget(skill, actor, allies, enemies, rng)
-  if (!mainTarget) return
+  const skillIsEnemyTargeting = skill.target !== 'self' && skill.target !== 'next_ally'
 
-  // 적 대상 스킬: 용병의 공격 범위 적용 (다중 타겟 순차 처리)
-  if (isEnemyTargetSkill(skill)) {
-    const targets = getTargetsInRange(mainTarget, actor.attackRange, actor.rangeSize, enemies, actor)
-    for (const target of targets) {
-      if (target.hp <= 0) continue
-      for (const effect of skill.effects) {
+  // 적 대상 스킬이면 메인 타겟 + 범위 대상 사전 결정
+  let mainTarget: BattleCharacter | null = null
+  let rangeTargets: BattleCharacter[] = []
+
+  if (skillIsEnemyTargeting) {
+    mainTarget = resolveEnemyTarget(actor, enemies, rng)
+    if (mainTarget) {
+      rangeTargets = getTargetsInRange(mainTarget, skill.attackRange, skill.rangeSize, enemies, actor)
+    }
+  } else if (skill.target === 'next_ally') {
+    mainTarget = findNextAlly(actor, allies)
+  } else {
+    mainTarget = actor
+  }
+
+  for (const effect of skill.effects) {
+    const effectTargetOverride = effect.target
+
+    if (effectTargetOverride === 'self') {
+      applyEffect(effect, skill, actor, actor, logs, rng)
+    } else if (effectTargetOverride === 'next_ally') {
+      const ally = findNextAlly(actor, allies)
+      if (ally) applyEffect(effect, skill, actor, ally, logs, rng)
+    } else if (skillIsEnemyTargeting) {
+      for (const target of rangeTargets) {
+        if (target.hp <= 0) continue
         applyEffect(effect, skill, actor, target, logs, rng)
       }
-    }
-  } else {
-    // 아군/자기 대상: 단일 타겟
-    for (const effect of skill.effects) {
+    } else if (mainTarget) {
       applyEffect(effect, skill, actor, mainTarget, logs, rng)
     }
   }
-}
-
-/** 스킬이 이로운 효과인지 판단 (before_attack 정렬용) */
-function isBeneficialSkill(skill: Skill): boolean {
-  return skill.effects.every((e) => {
-    if (e.debuffClass) return false
-    if (e.type === 'damage' || e.type === 'dispel' || e.type === 'dispel_enhance') return false
-    if (isEnemyTargetSkill(skill)) return false
-    return true
-  })
 }
 
 // ─── 화염 가드 / 피격 콜백 ───
@@ -1089,7 +1077,7 @@ function executeNormalAttack(
   if (!mainTarget) return
 
   // 용병의 attackRange로 범위 내 대상 목록
-  const targets = getTargetsInRange(mainTarget, actor.attackRange, actor.rangeSize, enemies, actor)
+  const targets = getTargetsInRange(mainTarget, actor.skill.attackRange, actor.skill.rangeSize, enemies, actor)
 
   // 대상별 순차 처리 (개별 치명/스침 판정)
   for (const target of targets) {
@@ -1320,8 +1308,6 @@ export function executeTurn(
     return
   }
 
-  const skills = actor.skills
-
   // 혼란(charm): 아군↔적 리스트 스왑 (원본: GetOwnerList/GetEnemyList 교환)
   // 스킬도 정상 발동, 범위 공격도 적용 — 단지 타겟이 반전됨
   if (isCharmed(actor)) {
@@ -1336,16 +1322,11 @@ export function executeTurn(
   }
 
   const canUseSkills = !isSilenced(actor)
+  const charSkill = actor.skill
 
-  // 3. before_attack 스킬 (이로운 → 해로운 순서)
-  if (canUseSkills) {
-    const beforeSkills = skills.filter((s) => s.timing === 'before_attack')
-    const beneficial = beforeSkills.filter((s) => isBeneficialSkill(s))
-    const harmful = beforeSkills.filter((s) => !isBeneficialSkill(s))
-
-    for (const skill of [...beneficial, ...harmful]) {
-      executeSkill(skill, actor, allies, enemies, logs, rng)
-    }
+  // 3. before_attack 스킬
+  if (canUseSkills && charSkill.timing === 'before_attack') {
+    executeCharSkill(charSkill, actor, allies, enemies, logs, rng)
   }
 
   // 4. 일반공격 (지원형은 공격하지 않음)
@@ -1354,12 +1335,8 @@ export function executeTurn(
   }
 
   // 5. after_attack 스킬
-  if (canUseSkills) {
-    for (const skill of skills) {
-      if (skill.timing === 'after_attack') {
-        executeSkill(skill, actor, allies, enemies, logs, rng)
-      }
-    }
+  if (canUseSkills && charSkill.timing === 'after_attack') {
+    executeCharSkill(charSkill, actor, allies, enemies, logs, rng)
   }
 
   // 6. 자폭: 모든 스킬 발동 후 자신 즉사
@@ -1394,13 +1371,9 @@ export function applyPassiveSkills(
 ): void {
   for (const actor of allCharacters) {
     if (actor.hp <= 0) continue
-    const skills = actor.skills
-
-    for (const skill of skills) {
-      if (skill.timing === 'passive') {
-        const isPlayer = actor.team === 'player'
-        executeSkill(skill, actor, isPlayer ? allies : enemies, isPlayer ? enemies : allies, logs, rng)
-      }
+    if (actor.skill.timing === 'passive') {
+      const isPlayer = actor.team === 'player'
+      executeCharSkill(actor.skill, actor, isPlayer ? allies : enemies, isPlayer ? enemies : allies, logs, rng)
     }
   }
 }

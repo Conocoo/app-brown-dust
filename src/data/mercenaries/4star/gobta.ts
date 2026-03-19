@@ -13,6 +13,10 @@ export const gobta: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 40,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'single',
+    effects: [],
+  },
 }

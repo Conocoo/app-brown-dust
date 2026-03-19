@@ -1,15 +1,8 @@
-import type { CharacterType, AttackTargetType, AttackRange, Rune } from './game'
-import type { SkillEffect } from './skill'
+import type { CharacterType, Rune } from './game'
+import type { CharacterSkill } from './skill'
 
 /** 성급 */
 export type StarRating = 3 | 4 | 5
-
-/** 용병별 스킬 참조 (효과 오버라이드 가능) */
-export interface MercenarySkillRef {
-  skillId: string
-  /** 효과별 오버라이드 (인덱스 기준, 해당 인덱스의 숫자값만 덮어씀) */
-  effects?: Partial<SkillEffect>[]
-}
 
 /** 용병 템플릿 */
 export interface MercenaryTemplate {
@@ -33,14 +26,8 @@ export interface MercenaryTemplate {
   agility: number
   /** 피해 감소 (0~100). 가변 데미지에만 적용. 방어와 독립. 기본 0 */
   damageReduce?: number
-  /** 스킬 1~4 (최대 4개), 스킬 ID + 효과 오버라이드 */
-  skills: MercenarySkillRef[]
-  /** 적 타겟 선택 방식 (기본: enemy_front) */
-  attackTarget?: AttackTargetType
-  /** 공격 범위 패턴 (기본: single) */
-  attackRange?: AttackRange
-  /** 범위 크기 (horizontal, vertical, back_n 등에서 사용) */
-  rangeSize?: number
+  /** 캐릭터 스킬 (1개, 게임 원본 SkillBasicList 반영) */
+  skill: CharacterSkill
   /** 장착된 룬 목록 (최대 2개) */
   runes?: Rune[]
   /** 자폭: 턴 종료 후 자신 즉사 */

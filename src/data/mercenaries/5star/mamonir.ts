@@ -13,6 +13,11 @@ export const mamonir: MercenaryTemplate = {
   critRate: 15,
   critDamage: 50,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 1,
+    effects: [],
+  },
 }

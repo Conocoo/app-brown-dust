@@ -13,6 +13,11 @@ export const kellan: MercenaryTemplate = {
   critRate: 15,
   critDamage: 25,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

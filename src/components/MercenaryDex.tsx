@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import type { MercenaryTemplate } from '../types/mercenary'
 import type { CharacterType } from '../types/game'
-import type { Skill } from '../types/skill'
+import type { CharacterSkill } from '../types/skill'
 import { getAllMercenaries } from '../data/mercenaries'
-import { resolveSkills } from '../data/skills'
 
 const TYPE_LABEL: Record<string, string> = {
   attacker: '공격형',
@@ -62,7 +61,7 @@ const STAR_FILTERS = [
   { value: 5, label: '★5' },
 ]
 
-function skillEffectDesc(skill: Skill): string {
+function skillEffectDesc(skill: CharacterSkill): string {
   return skill.effects.map((e) => {
     const parts: string[] = []
     if (e.atkScaling) parts.push(`ATK×${e.value}%`)
@@ -97,8 +96,6 @@ export default function MercenaryDex({ onBack }: Props) {
   const selected = selectedId
     ? mercenaries.find((m) => m.id === selectedId) ?? null
     : null
-
-  const selectedSkills = selected ? resolveSkills(selected.skills) : []
 
   return (
     <div className="dex">
@@ -160,7 +157,7 @@ export default function MercenaryDex({ onBack }: Props) {
         <div className="dex-modal-overlay" onClick={() => setSelectedId(null)}>
           <div className="dex-modal" onClick={(e) => e.stopPropagation()}>
             <button className="dex-modal-close" onClick={() => setSelectedId(null)}>✕</button>
-            <MercDetail merc={selected} skills={selectedSkills} />
+            <MercDetail merc={selected} />
           </div>
         </div>
       )}
@@ -168,7 +165,7 @@ export default function MercenaryDex({ onBack }: Props) {
   )
 }
 
-function MercDetail({ merc, skills }: { merc: MercenaryTemplate; skills: Skill[] }) {
+function MercDetail({ merc }: { merc: MercenaryTemplate }) {
   return (
     <div className="dex-merc-detail">
       <div className="dex-merc-header">
@@ -217,26 +214,24 @@ function MercDetail({ merc, skills }: { merc: MercenaryTemplate; skills: Skill[]
           </div>
         </div>
         <div className="dex-stat-row-bottom">
-          <span className="dex-stat-tag">타겟: {TARGET_LABEL[merc.attackTarget ?? 'enemy_front']}</span>
-          <span className="dex-stat-tag">범위: {RANGE_LABEL[merc.attackRange ?? 'single']}{merc.rangeSize ? `(${merc.rangeSize})` : ''}</span>
+          <span className="dex-stat-tag">타겟: {TARGET_LABEL[merc.skill.target] ?? merc.skill.target}</span>
+          <span className="dex-stat-tag">범위: {RANGE_LABEL[merc.skill.attackRange] ?? merc.skill.attackRange}{merc.skill.rangeSize ? `(${merc.skill.rangeSize})` : ''}</span>
           {merc.selfDestruct && <span className="dex-stat-tag dex-stat-warn">💀 자폭</span>}
         </div>
       </div>
 
       <div className="dex-merc-skills">
         <h4>스킬</h4>
-        {skills.map((skill) => (
-          <div key={skill.id} className={`dex-skill-item ci-skill-timing-${skill.timing}`}>
-            <div className="dex-skill-header">
-              <span className={`dex-skill-timing-badge ci-skill-timing-${skill.timing}`}>
-                {TIMING_LABEL[skill.timing]}
-              </span>
-              <span className="dex-skill-name">{skill.name}</span>
-              <span className="dex-skill-target">{TARGET_LABEL[skill.target] ?? skill.target}</span>
-            </div>
-            <div className="dex-skill-desc">{skillEffectDesc(skill)}</div>
+        <div className={`dex-skill-item ci-skill-timing-${merc.skill.timing}`}>
+          <div className="dex-skill-header">
+            <span className={`dex-skill-timing-badge ci-skill-timing-${merc.skill.timing}`}>
+              {TIMING_LABEL[merc.skill.timing]}
+            </span>
+            <span className="dex-skill-name">{merc.skill.name ?? ''}</span>
+            <span className="dex-skill-target">{TARGET_LABEL[merc.skill.target] ?? merc.skill.target}</span>
           </div>
-        ))}
+          <div className="dex-skill-desc">{skillEffectDesc(merc.skill)}</div>
+        </div>
       </div>
     </div>
   )

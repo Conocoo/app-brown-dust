@@ -13,6 +13,11 @@ export const valz: MercenaryTemplate = {
   critRate: 65,
   critDamage: 50,
   agility: 75,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'back_n',
+    rangeSize: 2,
+    effects: [],
+  },
 }

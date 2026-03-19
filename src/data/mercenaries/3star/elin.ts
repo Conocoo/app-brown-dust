@@ -13,6 +13,11 @@ export const elin: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

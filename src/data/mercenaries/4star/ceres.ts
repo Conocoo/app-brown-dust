@@ -13,6 +13,11 @@ export const ceres: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 50,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'front_n',
+    rangeSize: 3,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const shoman: MercenaryTemplate = {
   critRate: 40,
   critDamage: 250,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const kaina: MercenaryTemplate = {
   critRate: 10,
   critDamage: 50,
   agility: 25,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

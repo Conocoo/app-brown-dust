@@ -13,12 +13,16 @@ export const cordelia: MercenaryTemplate = {
   critRate: 7.5,
   critDamage: 75,
   agility: 0,
-  attackRange: 'back_n',
-  rangeSize: 2,
-  skills: [
-    { skillId: 'advanced_burn', effects: [{ value: 25, duration: 5, dmgTakenUp: 20 }] },
-    { skillId: 'advanced_fatal_strike', effects: [{ value: 50 }] },
-    { skillId: 'fatal_strike_recovery', effects: [{ value: 50 }] },
-    { skillId: 'shield', effects: [{ value: 25, duration: 12 }] },
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'horizontal',
+    rangeSize: 2,
+    effects: [
+      { type: 'advanced_burn', value: 25, atkScaling: true, duration: 5, debuffClass: 'dot', dmgTakenUp: 20 },
+      { type: 'damage', value: 50, atkScaling: true },
+      { type: 'on_kill_heal_percent', value: 50, target: 'self' },
+      { type: 'shield', value: 25, duration: 12, buffType: 'shield', target: 'self' },
+    ],
+  },
 }

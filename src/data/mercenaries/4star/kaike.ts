@@ -13,6 +13,11 @@ export const kaike: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }

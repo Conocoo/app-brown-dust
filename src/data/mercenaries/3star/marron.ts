@@ -13,6 +13,11 @@ export const marron: MercenaryTemplate = {
   critRate: 5,
   critDamage: 25,
   agility: 15,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [],
+  },
 }

@@ -13,6 +13,11 @@ export const noel: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'back_n',
+    rangeSize: 2,
+    effects: [],
+  },
 }

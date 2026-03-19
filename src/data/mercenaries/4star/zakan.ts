@@ -13,6 +13,10 @@ export const zakan: MercenaryTemplate = {
   critRate: 5,
   critDamage: 25,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_back',
+    attackRange: 'single',
+    effects: [],
+  },
 }

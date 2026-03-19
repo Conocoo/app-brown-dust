@@ -13,6 +13,10 @@ export const naius: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 50,
-  skills: [
-  ],
+  skill: {
+    timing: 'passive',
+    target: 'enemy_front',
+    attackRange: 'single',
+    effects: [],
+  },
 }

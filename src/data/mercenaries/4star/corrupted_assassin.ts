@@ -13,6 +13,11 @@ export const corrupted_assassin: MercenaryTemplate = {
   critRate: 20,
   critDamage: 100,
   agility: 35,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'front_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

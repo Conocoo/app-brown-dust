@@ -13,6 +13,11 @@ export const vincent: MercenaryTemplate = {
   critRate: 0,
   critDamage: 0,
   agility: 5,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'next_ally',
+    attackRange: 'horizontal',
+    rangeSize: 3,
+    effects: [],
+  },
 }

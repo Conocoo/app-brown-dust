@@ -13,6 +13,11 @@ export const victor: MercenaryTemplate = {
   critRate: 15,
   critDamage: 50,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'single',
+    rangeSize: 1,
+    effects: [],
+  },
 }

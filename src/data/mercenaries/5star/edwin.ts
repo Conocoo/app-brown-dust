@@ -13,6 +13,11 @@ export const edwin: MercenaryTemplate = {
   critRate: 20,
   critDamage: 50,
   agility: 35,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'cross',
+    rangeSize: 2,
+    effects: [],
+  },
 }

@@ -13,12 +13,16 @@ export const wiggle: MercenaryTemplate = {
   critRate: 5,
   critDamage: 50,
   agility: 0,
-  attackTarget: 'enemy_front',
-  attackRange: 'small_cross',
   selfDestruct: true,
-  skills: [
-    { skillId: 'advanced_selfdestruct_stun' },
-    { skillId: 'harmful_effect_immunity' },
-    { skillId: 'burn' },
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'cross',
+    rangeSize: 1,
+    effects: [
+      { type: 'stun', value: 0, duration: 18, debuffClass: 'cc', dmgTakenUp: 50 },
+      { type: 'harmful_immune', value: 0, duration: 999, buffType: 'special', target: 'self' },
+      { type: 'burn', value: 4, atkScaling: true, duration: 5, debuffClass: 'dot' },
+    ],
+  },
 }

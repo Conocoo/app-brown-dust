@@ -13,6 +13,11 @@ export const eldora: MercenaryTemplate = {
   critRate: 20,
   critDamage: 100,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_second',
+    attackRange: 'front_n',
+    rangeSize: 3,
+    effects: [],
+  },
 }

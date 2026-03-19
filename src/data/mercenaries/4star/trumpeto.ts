@@ -13,6 +13,11 @@ export const trumpeto: MercenaryTemplate = {
   critRate: 100,
   critDamage: 100,
   agility: 0,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'area_n',
+    rangeSize: 1,
+    effects: [],
+  },
 }

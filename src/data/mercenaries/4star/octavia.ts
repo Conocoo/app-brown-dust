@@ -13,6 +13,11 @@ export const octavia: MercenaryTemplate = {
   critRate: 20,
   critDamage: 75,
   agility: 10,
-  skills: [
-  ],
+  skill: {
+    timing: 'after_attack',
+    target: 'enemy_front',
+    attackRange: 'x_shape',
+    rangeSize: 1,
+    effects: [],
+  },
 }
