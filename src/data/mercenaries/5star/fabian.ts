@@ -18,6 +18,10 @@ export const fabian: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 30, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 30, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+    ],
   },
 }

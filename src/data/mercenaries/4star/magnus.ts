@@ -18,6 +18,10 @@ export const magnus: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'atk_down', value: 30, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'silence', value: 0, duration: 18, debuffClass: 'cc' },
+    ],
   },
 }

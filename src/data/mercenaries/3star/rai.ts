@@ -17,6 +17,8 @@ export const rai: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.5, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

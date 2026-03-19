@@ -18,6 +18,12 @@ export const merry_white: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'small_cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'on_attack_trigger', value: 0, duration: 1, buffType: 'stat_enhance' },
+      { type: 'on_attack_trigger', value: 0, duration: 1, buffType: 'stat_enhance' },
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance' },
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

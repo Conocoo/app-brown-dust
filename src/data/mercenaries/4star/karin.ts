@@ -17,6 +17,11 @@ export const karin: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'on_death_trigger', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+      { type: 'def_down', value: 30, duration: 24, debuffClass: 'stat_weaken' },
+      { type: 'summon', value: 0, duration: 12, debuffClass: 'stat_weaken' },
+      { type: 'atk_up', value: 100, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

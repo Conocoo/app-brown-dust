@@ -17,6 +17,9 @@ export const uribel: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'added_buff_25', value: 0, duration: 20, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_31', value: 0.55, debuffClass: 'dot' },
+    ],
   },
 }

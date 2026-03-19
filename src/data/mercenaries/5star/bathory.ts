@@ -18,6 +18,12 @@ export const bathory: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'on_attack_trigger', value: 0, duration: 14, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

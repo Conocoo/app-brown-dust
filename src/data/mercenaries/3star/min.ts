@@ -17,6 +17,10 @@ export const min: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot_variant', value: 0.04, duration: 4, debuffClass: 'dot', atkScaling: true },
+      { type: 'stun', value: 0, duration: 4, debuffClass: 'cc' },
+      { type: 'shield', value: 30, duration: 4, debuffClass: 'stat_weaken' },
+    ],
   },
 }

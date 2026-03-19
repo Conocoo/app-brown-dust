@@ -18,6 +18,9 @@ export const ebony: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 10, duration: 10, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance' },
+    ],
   },
 }

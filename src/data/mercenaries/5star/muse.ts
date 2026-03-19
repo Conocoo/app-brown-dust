@@ -18,6 +18,12 @@ export const muse: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 35, duration: 40, debuffClass: 'stat_weaken' },
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'def_up', value: 35, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_rate_up', value: 30, duration: 100, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_damage_up', value: 50, duration: 100, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,12 @@ export const neptune: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'direct_damage', value: 2.6, debuffClass: 'stat_weaken' },
+      { type: 'dot_drain', value: 0.25, debuffClass: 'dot' },
+      { type: 'turn_pass', value: 0, duration: 10, buffType: 'stat_enhance', target: 'self' },
+      { type: 'damage_limit', value: 0.46, duration: 10, buffType: 'special', target: 'self' },
+    ],
   },
 }

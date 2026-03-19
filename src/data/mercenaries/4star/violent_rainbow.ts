@@ -18,6 +18,11 @@ export const violent_rainbow: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 70, duration: 999, buffType: 'shield', target: 'self' },
+    ],
   },
 }

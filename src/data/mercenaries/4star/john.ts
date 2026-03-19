@@ -17,6 +17,9 @@ export const john: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'next_ally',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'shield', value: 35, duration: 6, buffType: 'shield' },
+      { type: 'on_death_trigger', value: 0, duration: 24, buffType: 'stat_enhance' },
+    ],
   },
 }

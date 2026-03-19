@@ -18,6 +18,11 @@ export const aiela: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_variant', value: 0.02, duration: 8, debuffClass: 'dot', atkScaling: true },
+      { type: 'stun', value: 0, duration: 8, debuffClass: 'cc' },
+      { type: 'taunt', value: 0, duration: 4, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

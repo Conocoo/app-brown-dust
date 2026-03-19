@@ -18,6 +18,9 @@ export const hephaesia: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'front_n',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 4, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 16, buffType: 'stat_enhance' },
+    ],
   },
 }

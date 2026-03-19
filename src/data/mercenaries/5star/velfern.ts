@@ -18,6 +18,8 @@ export const velfern: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 10, duration: 100, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

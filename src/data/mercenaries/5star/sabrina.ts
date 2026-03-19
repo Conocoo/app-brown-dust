@@ -18,6 +18,10 @@ export const sabrina: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_rate_up', value: 15, duration: 6, buffType: 'stat_enhance' },
+      { type: 'agility_up', value: 15, duration: 6, buffType: 'stat_enhance' },
+      { type: 'dispel', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

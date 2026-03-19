@@ -18,6 +18,12 @@ export const pyran: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'added_buff_25', value: 0, duration: 26, buffType: 'stat_enhance', target: 'self' },
+      { type: 'turn_pass', value: 0, duration: 26, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_30', value: 1.6, debuffClass: 'dot' },
+      { type: 'def_up', value: 40, duration: 40, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

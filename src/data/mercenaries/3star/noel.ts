@@ -18,6 +18,9 @@ export const noel: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'back_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.1, duration: 5, debuffClass: 'dot', atkScaling: true },
+      { type: 'dot', value: 1, debuffClass: 'dot' },
+    ],
   },
 }

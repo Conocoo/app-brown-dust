@@ -18,6 +18,10 @@ export const velona: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.04, duration: 15, debuffClass: 'dot', atkScaling: true },
+      { type: 'stun', value: 0, duration: 4, debuffClass: 'cc' },
+      { type: 'dot', value: 0.3, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

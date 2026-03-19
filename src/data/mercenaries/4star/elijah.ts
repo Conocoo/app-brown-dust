@@ -18,6 +18,9 @@ export const elijah: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 10, duration: 8, buffType: 'shield' },
+      { type: 'on_death_trigger', value: 0, duration: 24, buffType: 'stat_enhance' },
+    ],
   },
 }

@@ -17,6 +17,10 @@ export const naius: MercenaryTemplate = {
     timing: 'passive',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 10, duration: 7, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

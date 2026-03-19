@@ -17,6 +17,11 @@ export const venus: MercenaryTemplate = {
     timing: 'passive',
     target: 'next_ally',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance' },
+      { type: 'summon', value: 0, duration: 999, buffType: 'stat_enhance' },
+      { type: 'revival', value: 0, buffType: 'special' },
+      { type: 'revival', value: 0, buffType: 'special' },
+    ],
   },
 }

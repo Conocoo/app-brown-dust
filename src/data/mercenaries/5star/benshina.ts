@@ -18,6 +18,10 @@ export const benshina: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'back_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.15, debuffClass: 'dot' },
+      { type: 'shield', value: 30, duration: 30, buffType: 'shield', target: 'self' },
+      { type: 'regeneration', value: 1, duration: 30, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

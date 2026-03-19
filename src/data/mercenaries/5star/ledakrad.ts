@@ -18,6 +18,11 @@ export const ledakrad: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 2, buffType: 'stat_enhance', target: 'self' },
+      { type: 'hp_up', value: 0.6, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'revival', value: 0, buffType: 'special', target: 'self' },
+      { type: 'dot_31', value: 0.25, debuffClass: 'dot' },
+    ],
   },
 }

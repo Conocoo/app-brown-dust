@@ -18,6 +18,8 @@ export const eras: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'agility_up', value: 20, duration: 10, buffType: 'stat_enhance' },
+    ],
   },
 }

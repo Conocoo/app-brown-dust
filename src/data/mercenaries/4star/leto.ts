@@ -17,6 +17,9 @@ export const leto: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_second',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'stun', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'taunt_immune', value: 0, duration: 35, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

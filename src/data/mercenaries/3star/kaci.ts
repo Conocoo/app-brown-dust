@@ -18,6 +18,9 @@ export const kaci: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 50, duration: 6, buffType: 'shield', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

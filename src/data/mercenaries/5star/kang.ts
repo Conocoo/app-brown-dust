@@ -17,6 +17,11 @@ export const kang: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 80, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 65, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

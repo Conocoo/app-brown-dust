@@ -18,6 +18,10 @@ export const bruno: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.75, debuffClass: 'dot', atkScaling: true },
+      { type: 'crit_damage_up', value: 3, duration: 50, buffType: 'stat_enhance', target: 'self' },
+      { type: 'stun', value: 0, duration: 18, debuffClass: 'cc' },
+    ],
   },
 }

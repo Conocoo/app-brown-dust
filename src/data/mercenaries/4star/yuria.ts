@@ -18,6 +18,9 @@ export const yuria: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

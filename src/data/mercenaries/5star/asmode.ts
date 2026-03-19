@@ -18,6 +18,11 @@ export const asmode: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, debuffClass: 'stat_weaken' },
+      { type: 'dot_pierce', value: 0.6, debuffClass: 'dot' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

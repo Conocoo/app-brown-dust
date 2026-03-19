@@ -17,6 +17,10 @@ export const melody: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'dot', value: 1, debuffClass: 'dot' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,10 @@ export const isabel: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_rate_up', value: 30, duration: 8, buffType: 'stat_enhance' },
+      { type: 'crit_damage_up', value: 70, duration: 8, buffType: 'stat_enhance' },
+      { type: 'dispel', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

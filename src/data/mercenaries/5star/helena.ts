@@ -18,6 +18,9 @@ export const helena: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 4, buffType: 'stat_enhance' },
+      { type: 'char_type_buff', value: 4, buffType: 'stat_enhance' },
+    ],
   },
 }

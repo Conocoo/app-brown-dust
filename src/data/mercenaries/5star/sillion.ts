@@ -17,6 +17,11 @@ export const sillion: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_third',
     attackRange: 'cross',
-    effects: [],
+    effects: [
+      { type: 'direct_damage', value: 1, debuffClass: 'stat_weaken', atkScaling: true },
+      { type: 'stun', value: 0, duration: 6, debuffClass: 'cc' },
+      { type: 'regeneration', value: 25, duration: 6, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 50, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

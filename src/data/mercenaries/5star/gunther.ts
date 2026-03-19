@@ -18,6 +18,9 @@ export const gunther: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_damage_up', value: 50, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

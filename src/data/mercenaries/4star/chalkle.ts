@@ -18,6 +18,11 @@ export const chalkle: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.1, duration: 5, debuffClass: 'dot', atkScaling: true },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'summon', value: 0, duration: 999, debuffClass: 'stat_weaken' },
+      { type: 'summon', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+    ],
   },
 }

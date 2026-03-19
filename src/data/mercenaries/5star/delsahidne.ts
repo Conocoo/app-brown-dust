@@ -18,6 +18,8 @@ export const delsahidne: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 4, buffType: 'stat_enhance' },
+    ],
   },
 }

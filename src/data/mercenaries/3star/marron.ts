@@ -18,6 +18,11 @@ export const marron: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'silence', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'all_stats_down', value: 25, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'position_change', value: 0, duration: 18, debuffClass: 'cc' },
+      { type: 'range_reduce', value: 0, duration: 18, debuffClass: 'cc' },
+    ],
   },
 }

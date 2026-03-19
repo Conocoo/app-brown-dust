@@ -17,6 +17,10 @@ export const niya: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 70, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_buff', value: 0, debuffClass: 'stat_weaken' },
+    ],
   },
 }

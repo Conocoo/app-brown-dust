@@ -17,6 +17,10 @@ export const venomous_mushroom: MercenaryTemplate = {
     timing: 'passive',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 70, duration: 999, buffType: 'shield', target: 'self' },
+    ],
   },
 }

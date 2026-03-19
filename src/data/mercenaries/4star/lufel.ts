@@ -18,6 +18,13 @@ export const lufel: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'back_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 65, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'crit_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'crit_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'crit_rate_down', value: 30, duration: 3, debuffClass: 'stat_weaken' },
+    ],
   },
 }

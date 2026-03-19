@@ -17,6 +17,10 @@ export const frederica: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'counter_attack', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'silence', value: 0, duration: 12, debuffClass: 'cc' },
+    ],
   },
 }

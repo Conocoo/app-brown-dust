@@ -18,6 +18,11 @@ export const alicia: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'stun', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'summon', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 3, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt_immune', value: 0, duration: 30, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -17,6 +17,11 @@ export const lain: MercenaryTemplate = {
     timing: 'passive',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'turn_pass', value: 0, duration: 38, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'summon', value: 0, duration: 38, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 2, duration: 24, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

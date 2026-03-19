@@ -17,6 +17,10 @@ export const mora: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot_drain', value: 0.45, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

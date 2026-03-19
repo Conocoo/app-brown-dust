@@ -17,6 +17,11 @@ export const cecilia: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 30, duration: 999, buffType: 'shield', target: 'self' },
+      { type: 'count_guard', value: 0, duration: 4, buffType: 'special', target: 'self' },
+      { type: 'dot', value: 0.5, debuffClass: 'dot' },
+    ],
   },
 }

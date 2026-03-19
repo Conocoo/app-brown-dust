@@ -18,6 +18,11 @@ export const alec: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_30', value: 2.7, debuffClass: 'dot' },
+      { type: 'dot_direct', value: 1.2, debuffClass: 'dot' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

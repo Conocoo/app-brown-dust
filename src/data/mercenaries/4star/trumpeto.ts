@@ -18,6 +18,10 @@ export const trumpeto: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 35, duration: 999, buffType: 'shield', target: 'self' },
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

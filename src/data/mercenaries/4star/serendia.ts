@@ -18,6 +18,9 @@ export const serendia: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 30, duration: 10, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance' },
+    ],
   },
 }

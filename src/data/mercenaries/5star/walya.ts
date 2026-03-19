@@ -18,6 +18,13 @@ export const walya: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'horizontal',
     rangeSize: 4,
-    effects: [],
+    effects: [
+      { type: 'stealth', value: 0, duration: 10, buffType: 'special' },
+      { type: 'crit_damage_up', value: 25, duration: 10, buffType: 'stat_enhance' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'atk_up', value: 100, duration: 10, buffType: 'stat_enhance' },
+      { type: 'shield', value: 35, duration: 10, buffType: 'shield' },
+      { type: 'regeneration', value: 9, duration: 10, buffType: 'stat_enhance' },
+    ],
   },
 }

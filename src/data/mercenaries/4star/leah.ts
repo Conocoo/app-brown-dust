@@ -18,6 +18,12 @@ export const leah: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 80, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 10, duration: 4, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 35, duration: 4, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

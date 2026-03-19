@@ -18,6 +18,13 @@ export const edwin: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'charm', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'on_death_trigger', value: 0, duration: 12, debuffClass: 'stat_weaken' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 30, duration: 50, buffType: 'shield', target: 'self' },
+      { type: 'regeneration', value: 10, duration: 50, buffType: 'stat_enhance', target: 'self' },
+      { type: 'summon', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+    ],
   },
 }

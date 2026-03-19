@@ -18,6 +18,9 @@ export const stella: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'horizontal',
     rangeSize: 4,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 4, buffType: 'stat_enhance' },
+      { type: 'crit_damage_up', value: 30, duration: 18, buffType: 'stat_enhance' },
+    ],
   },
 }

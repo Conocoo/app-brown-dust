@@ -17,6 +17,9 @@ export const grosa: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.1, debuffClass: 'dot' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

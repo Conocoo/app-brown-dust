@@ -17,6 +17,10 @@ export const gloria: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, duration: 18, buffType: 'special', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_direct', value: 1.5, debuffClass: 'dot' },
+    ],
   },
 }

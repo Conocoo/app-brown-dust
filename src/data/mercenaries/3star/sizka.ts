@@ -18,6 +18,9 @@ export const sizka: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'silence', value: 0, duration: 8, debuffClass: 'cc' },
+      { type: 'on_death_trigger', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+    ],
   },
 }

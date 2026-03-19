@@ -19,15 +19,9 @@ export const maria: MercenaryTemplate = {
     attackRange: 'horizontal',
     rangeSize: 2,
     effects: [
-      { type: 'dispel', value: 0 },
-      { type: 'damage', value: 200, atkScaling: true },
-      { type: 'on_kill_heal_percent', value: 100, target: 'self' },
-      { type: 'on_kill_atk_up', value: 100, duration: 24, target: 'self' },
-      { type: 'atk_down', value: 65, duration: 18, debuffClass: 'stat_weaken' },
-      { type: 'def_down', value: 65, duration: 18, debuffClass: 'stat_weaken' },
-      { type: 'crit_rate_down', value: 65, duration: 18, debuffClass: 'stat_weaken' },
-      { type: 'crit_damage_down', value: 65, duration: 18, debuffClass: 'stat_weaken' },
-      { type: 'agility_down', value: 65, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'dot', value: 0.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'all_stats_down', value: 35, duration: 18, debuffClass: 'stat_weaken' },
     ],
   },
 }

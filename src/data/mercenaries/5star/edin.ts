@@ -17,6 +17,11 @@ export const edin: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 30, duration: 24, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_drain', value: 0.3, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_pierce', value: 1.25, debuffClass: 'dot' },
+      { type: 'extra_turn', value: 0, duration: 999, buffType: 'special', target: 'self' },
+    ],
   },
 }

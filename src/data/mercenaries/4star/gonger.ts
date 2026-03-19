@@ -18,6 +18,10 @@ export const gonger: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'all_stats_down', value: 25, duration: 100, debuffClass: 'stat_weaken' },
+      { type: 'shield', value: 35, duration: 100, debuffClass: 'stat_weaken' },
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

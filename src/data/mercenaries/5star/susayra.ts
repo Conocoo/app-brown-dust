@@ -18,6 +18,11 @@ export const susayra: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'back_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance', target: 'self' },
+      { type: 'revival', value: 0, duration: 1, buffType: 'special', target: 'self' },
+      { type: 'dot_31', value: 1, debuffClass: 'dot' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

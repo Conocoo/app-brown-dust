@@ -18,6 +18,11 @@ export const kaina: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_pierce', value: 0.4, debuffClass: 'dot', atkScaling: true },
+      { type: 'char_type_buff', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'on_attack_trigger', value: 0, duration: 14, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

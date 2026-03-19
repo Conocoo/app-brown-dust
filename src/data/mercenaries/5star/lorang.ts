@@ -18,6 +18,11 @@ export const lorang: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'stun', value: 0, duration: 24, debuffClass: 'cc' },
+      { type: 'summon', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+      { type: 'dot', value: 1.5, debuffClass: 'dot' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,9 @@ export const scrime: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'dot_direct', value: 0.5, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

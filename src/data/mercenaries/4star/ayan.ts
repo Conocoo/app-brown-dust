@@ -18,6 +18,12 @@ export const ayan: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'def_down', value: 45, duration: 4, debuffClass: 'stat_weaken' },
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'stun', value: 0, duration: 6, debuffClass: 'cc' },
+      { type: 'dot', value: 0.15, duration: 6, debuffClass: 'dot', atkScaling: true },
+      { type: 'agility_down', value: 25, duration: 12, debuffClass: 'stat_weaken' },
+    ],
   },
 }

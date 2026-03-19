@@ -17,6 +17,12 @@ export const gobta: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_second',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'stun', value: 0, duration: 6, debuffClass: 'cc' },
+      { type: 'def_down', value: 10, duration: 6, debuffClass: 'stat_weaken' },
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_rate_up', value: 50, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

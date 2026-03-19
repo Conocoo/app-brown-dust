@@ -18,6 +18,11 @@ export const iris: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'charm', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'position_change', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'equipment', value: 0, duration: 18, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

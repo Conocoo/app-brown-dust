@@ -17,6 +17,9 @@ export const grace: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'agility_up', value: 75, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

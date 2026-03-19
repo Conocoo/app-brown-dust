@@ -18,6 +18,11 @@ export const benimaru: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'on_death_trigger', value: 0, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'dot', value: 1.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'dot', value: 0.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'dot', value: 0.02, duration: 6, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

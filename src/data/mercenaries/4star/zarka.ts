@@ -18,6 +18,10 @@ export const zarka: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 65, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'all_stats_down', value: 35, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'silence', value: 0, duration: 18, debuffClass: 'cc' },
+    ],
   },
 }

@@ -20,12 +20,9 @@ export const arines: MercenaryTemplate = {
     attackRange: 'area_n',
     rangeSize: 1,
     effects: [
-      { type: 'temp_hp', value: 100, spScaling: true, duration: 16, buffType: 'stat_enhance', linkedBuffId: 'atk_up' },
-      { type: 'atk_up', value: 85, spScaling: true, duration: 16, buffType: 'stat_enhance' },
-      { type: 'atk_up', value: 85, spScaling: true, duration: 12, buffType: 'stat_enhance' },
-      { type: 'crit_up', value: 20, spScaling: true, duration: 12, buffType: 'stat_enhance' },
-      { type: 'cc_immune', value: 0, duration: 8, buffType: 'special', target: 'self' },
-      { type: 'stat_debuff_immune', value: 0, duration: 8, buffType: 'special' },
+      { type: 'atk_up', value: 45, duration: 6, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 8, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 8, buffType: 'stat_enhance' },
     ],
   },
 }

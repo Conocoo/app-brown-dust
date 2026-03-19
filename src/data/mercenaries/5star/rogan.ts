@@ -18,6 +18,11 @@ export const rogan: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 10, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'added_buff_25', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'revival', value: 0, duration: 26, buffType: 'special', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

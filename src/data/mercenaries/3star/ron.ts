@@ -17,6 +17,10 @@ export const ron: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

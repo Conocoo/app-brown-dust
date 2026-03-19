@@ -17,6 +17,8 @@ export const ludia: MercenaryTemplate = {
     timing: 'passive',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

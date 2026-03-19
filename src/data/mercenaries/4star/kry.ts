@@ -17,6 +17,9 @@ export const kry: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'regeneration', value: 10, duration: 4, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 35, duration: 4, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,11 @@ export const kanna: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 50, duration: 18, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_drain', value: 0.3, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 1, debuffClass: 'stat_weaken' },
+      { type: 'def_up', value: 65, duration: 2, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

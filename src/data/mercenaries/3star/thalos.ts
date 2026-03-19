@@ -18,6 +18,9 @@ export const thalos: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'def_down', value: 20, duration: 8, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 2, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

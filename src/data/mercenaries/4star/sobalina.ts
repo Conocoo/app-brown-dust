@@ -18,6 +18,12 @@ export const sobalina: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot_31', value: 0.3, debuffClass: 'dot', atkScaling: true },
+      { type: 'summon', value: 0, duration: 12, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 35, duration: 999, buffType: 'shield', target: 'self' },
+      { type: 'count_guard', value: 0, duration: 2, buffType: 'special', target: 'self' },
+    ],
   },
 }

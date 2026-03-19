@@ -18,6 +18,9 @@ export const orienne: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 50, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'summon', value: 0, duration: 12, debuffClass: 'stat_weaken' },
+    ],
   },
 }

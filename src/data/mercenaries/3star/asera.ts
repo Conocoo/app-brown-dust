@@ -18,6 +18,9 @@ export const asera: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'regeneration', value: 2, duration: 5, buffType: 'stat_enhance' },
+      { type: 'regeneration', value: 10, buffType: 'stat_enhance' },
+    ],
   },
 }

@@ -17,6 +17,10 @@ export const deomaron: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.06, duration: 6, debuffClass: 'dot' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 10, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

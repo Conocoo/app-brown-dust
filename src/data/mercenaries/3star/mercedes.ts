@@ -17,6 +17,9 @@ export const mercedes: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'thorns', value: 0.45, duration: 10, buffType: 'special', target: 'self' },
+      { type: 'taunt', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

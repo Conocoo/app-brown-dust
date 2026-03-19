@@ -18,6 +18,11 @@ export const alche: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 20, duration: 12, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 4, debuffClass: 'stat_weaken' },
+      { type: 'crit_damage_up', value: 5, duration: 40, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

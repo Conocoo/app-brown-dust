@@ -18,6 +18,12 @@ export const seto: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, duration: 20, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_31', value: 1, duration: 12, debuffClass: 'dot', atkScaling: true },
+      { type: 'shield', value: 100, duration: 12, debuffClass: 'stat_weaken' },
+    ],
   },
 }

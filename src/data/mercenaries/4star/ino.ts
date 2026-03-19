@@ -18,6 +18,9 @@ export const ino: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'back_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'on_death_trigger', value: 0, duration: 24, buffType: 'stat_enhance' },
+      { type: 'dispel', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

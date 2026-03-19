@@ -18,6 +18,10 @@ export const marlene: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'def_down', value: 20, duration: 18, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+    ],
   },
 }

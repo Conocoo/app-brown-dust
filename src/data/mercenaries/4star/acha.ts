@@ -17,6 +17,12 @@ export const acha: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 15, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_rate_up', value: 50, duration: 6, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_damage_up', value: 50, duration: 6, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.4, duration: 6, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

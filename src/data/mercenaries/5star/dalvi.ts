@@ -18,6 +18,11 @@ export const dalvi: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'back_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_death_trigger', value: 0, duration: 6, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_direct', value: 1.5, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

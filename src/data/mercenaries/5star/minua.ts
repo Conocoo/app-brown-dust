@@ -17,6 +17,10 @@ export const minua: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 100, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_30', value: 1.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'counter_attack', value: 0, duration: 60, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

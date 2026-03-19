@@ -18,6 +18,12 @@ export const nerua: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_rate_up', value: 30, duration: 100, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_damage_up', value: 50, duration: 100, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 5, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 100, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

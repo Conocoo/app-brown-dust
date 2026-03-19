@@ -18,6 +18,12 @@ export const rafina: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'damage_limit', value: 0.32, duration: 8, buffType: 'special', target: 'self' },
+      { type: 'shield', value: 0, duration: 8, buffType: 'shield', target: 'self' },
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'stun', value: 0, duration: 4, debuffClass: 'cc' },
+      { type: 'taunt_immune', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

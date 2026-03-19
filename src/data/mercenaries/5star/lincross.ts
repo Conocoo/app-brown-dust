@@ -18,6 +18,12 @@ export const lincross: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'count_guard', value: 0, duration: 30, buffType: 'special', target: 'self' },
+      { type: 'char_type_buff', value: 1, debuffClass: 'stat_weaken' },
+      { type: 'direct_damage', value: 0.29, debuffClass: 'stat_weaken' },
+      { type: 'summon', value: 0, duration: 14, debuffClass: 'stat_weaken' },
+    ],
   },
 }

@@ -17,6 +17,10 @@ export const sarubia: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'next_ally',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'shield', value: 10, duration: 6, buffType: 'shield' },
+      { type: 'atk_up', value: 20, duration: 6, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance' },
+    ],
   },
 }

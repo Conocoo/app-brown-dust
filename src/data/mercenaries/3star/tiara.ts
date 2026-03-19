@@ -17,6 +17,9 @@ export const tiara: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'stun', value: 0, duration: 6, debuffClass: 'cc' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

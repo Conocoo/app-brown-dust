@@ -18,6 +18,10 @@ export const farrel: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.05, duration: 10, debuffClass: 'dot', atkScaling: true },
+      { type: 'crit_damage_up', value: 5, duration: 25, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -17,6 +17,9 @@ export const karg: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot', value: 1, debuffClass: 'dot' },
+      { type: 'on_death_trigger', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+    ],
   },
 }

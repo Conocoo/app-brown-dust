@@ -18,6 +18,10 @@ export const pierre: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'stun', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'all_stats_down', value: 30, duration: 16, debuffClass: 'stat_weaken' },
+      { type: 'dot', value: 1, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

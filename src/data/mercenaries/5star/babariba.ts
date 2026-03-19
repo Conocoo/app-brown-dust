@@ -17,6 +17,11 @@ export const babariba: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'next_ally',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 8, buffType: 'stat_enhance' },
+      { type: 'def_up', value: 90, duration: 8, buffType: 'stat_enhance' },
+    ],
   },
 }

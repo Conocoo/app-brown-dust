@@ -18,6 +18,11 @@ export const agaron: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 30, duration: 36, buffType: 'shield', target: 'self' },
+      { type: 'added_buff_27', value: 0, duration: 36, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_30', value: 0.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'regeneration', value: 2, duration: 36, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

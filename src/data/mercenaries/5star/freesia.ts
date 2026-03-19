@@ -18,6 +18,10 @@ export const freesia: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.45, debuffClass: 'dot' },
+      { type: 'summon', value: 0, duration: 999, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,12 @@ export const celia: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'area_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'insert_buff', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 65, duration: 999, buffType: 'shield', target: 'self' },
+      { type: 'duration_change', value: 1, debuffClass: 'stat_weaken' },
+    ],
   },
 }

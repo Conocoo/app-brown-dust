@@ -18,6 +18,13 @@ export const lakshmi: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'direct_damage', value: 0.6, debuffClass: 'stat_weaken' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 100, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 30, duration: 50, buffType: 'shield', target: 'self' },
+      { type: 'def_up', value: 50, duration: 50, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

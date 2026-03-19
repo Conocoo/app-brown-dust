@@ -17,6 +17,8 @@ export const calorone: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.45, debuffClass: 'dot' },
+    ],
   },
 }

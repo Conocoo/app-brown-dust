@@ -18,6 +18,10 @@ export const scarlet: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'all_stats_down', value: 35, duration: 12, debuffClass: 'stat_weaken' },
+      { type: 'shield', value: 50, duration: 12, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 10, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

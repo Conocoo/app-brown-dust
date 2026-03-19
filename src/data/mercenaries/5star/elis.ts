@@ -18,6 +18,10 @@ export const elis: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'charm', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'position_change', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

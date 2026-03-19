@@ -18,6 +18,11 @@ export const floria: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 3, buffType: 'stat_enhance' },
+      { type: 'shield', value: 20, duration: 35, buffType: 'shield' },
+      { type: 'regeneration', value: 2, duration: 35, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance' },
+    ],
   },
 }

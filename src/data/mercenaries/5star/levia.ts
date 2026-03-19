@@ -18,6 +18,12 @@ export const levia: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot_direct', value: 5, debuffClass: 'dot' },
+      { type: 'dot_direct', value: 3, debuffClass: 'dot' },
+      { type: 'added_buff_27', value: 0, duration: 100, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 4, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 70, duration: 100, buffType: 'shield', target: 'self' },
+    ],
   },
 }

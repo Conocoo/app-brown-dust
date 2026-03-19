@@ -18,6 +18,10 @@ export const vermont: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, duration: 21, buffType: 'special', target: 'self' },
+      { type: 'revival', value: 0, duration: 1, buffType: 'special', target: 'self' },
+      { type: 'silence', value: 0, duration: 12, debuffClass: 'cc' },
+    ],
   },
 }

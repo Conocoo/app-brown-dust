@@ -18,6 +18,12 @@ export const sandstorm_warrior: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 25, duration: 6, debuffClass: 'stat_weaken' },
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'damage_limit', value: 0.65, duration: 999, buffType: 'special', target: 'self' },
+      { type: 'crit_damage_up', value: 10, duration: 30, buffType: 'stat_enhance', target: 'self' },
+      { type: 'atk_up', value: 5, duration: 30, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

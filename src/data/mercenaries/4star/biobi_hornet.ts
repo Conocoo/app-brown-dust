@@ -18,6 +18,12 @@ export const biobi_hornet: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, duration: 999, buffType: 'special', target: 'self' },
+      { type: 'revival', value: 0, duration: 1, buffType: 'special', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'summon', value: 0, duration: 18, debuffClass: 'stat_weaken' },
+    ],
   },
 }

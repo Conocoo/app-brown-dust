@@ -18,6 +18,10 @@ export const impaired_elephant: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 70, duration: 999, buffType: 'shield', target: 'self' },
+    ],
   },
 }

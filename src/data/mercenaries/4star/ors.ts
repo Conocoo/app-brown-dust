@@ -18,6 +18,10 @@ export const ors: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.1, duration: 15, debuffClass: 'dot', atkScaling: true },
+      { type: 'atk_up', value: 50, duration: 32, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 1, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

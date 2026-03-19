@@ -18,6 +18,11 @@ export const dr_logic: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot_direct', value: 1, debuffClass: 'dot', atkScaling: true },
+      { type: 'dot_variant', value: 0.1, duration: 5, debuffClass: 'dot', atkScaling: true },
+      { type: 'equipment', value: 0, duration: 18, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 80, duration: 4, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

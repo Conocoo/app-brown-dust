@@ -18,6 +18,10 @@ export const lumen: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 4,
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, buffType: 'special', target: 'self' },
+      { type: 'dot_30', value: 1.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

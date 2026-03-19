@@ -18,6 +18,9 @@ export const hyeon_wol: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_damage_up', value: 24, duration: 12, buffType: 'stat_enhance' },
+      { type: 'dispel', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

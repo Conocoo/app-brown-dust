@@ -17,6 +17,12 @@ export const veronia: MercenaryTemplate = {
     timing: 'passive',
     target: 'next_ally',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'atk_up', value: 75, duration: 16, buffType: 'stat_enhance' },
+      { type: 'shield', value: 50, duration: 8, buffType: 'shield' },
+    ],
   },
 }

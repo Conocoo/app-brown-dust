@@ -18,6 +18,9 @@ export const elija: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

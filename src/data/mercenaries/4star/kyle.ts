@@ -18,6 +18,10 @@ export const kyle: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'dot_variant', value: 0.1, duration: 6, debuffClass: 'dot', atkScaling: true },
+      { type: 'stun', value: 0, duration: 6, debuffClass: 'cc' },
+      { type: 'crit_rate_up', value: 100, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

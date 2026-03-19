@@ -18,6 +18,12 @@ export const kellan: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_rate_up', value: 20, duration: 18, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 1, debuffClass: 'stat_weaken' },
+      { type: 'explosion', value: 2, debuffClass: 'dot', atkScaling: true },
+      { type: 'crit_damage_up', value: 5, duration: 25, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 18, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

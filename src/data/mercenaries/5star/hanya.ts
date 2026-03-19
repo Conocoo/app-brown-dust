@@ -18,6 +18,9 @@ export const hanya: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot_direct', value: 1, debuffClass: 'dot', atkScaling: true },
+      { type: 'taunt_immune', value: 0, duration: 4, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

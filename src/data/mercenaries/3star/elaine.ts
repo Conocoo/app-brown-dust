@@ -18,6 +18,9 @@ export const elaine: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, debuffClass: 'stat_weaken' },
+      { type: 'shield', value: 30, duration: 8, debuffClass: 'stat_weaken' },
+    ],
   },
 }

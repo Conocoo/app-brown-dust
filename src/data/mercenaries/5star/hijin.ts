@@ -18,6 +18,11 @@ export const hijin: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, duration: 2, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.1, duration: 10, debuffClass: 'dot', atkScaling: true },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 18, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

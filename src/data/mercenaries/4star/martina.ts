@@ -17,6 +17,11 @@ export const martina: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_down', value: 30, duration: 8, debuffClass: 'stat_weaken' },
+      { type: 'shield', value: 30, duration: 8, debuffClass: 'stat_weaken' },
+      { type: 'taunt', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

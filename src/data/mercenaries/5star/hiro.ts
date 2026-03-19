@@ -18,6 +18,10 @@ export const hiro: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 1, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 18, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

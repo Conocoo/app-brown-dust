@@ -18,6 +18,12 @@ export const sura: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'temp_hp', value: 12, duration: 75, buffType: 'special', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_31', value: 0.9, debuffClass: 'dot' },
+      { type: 'shield', value: 50, duration: 20, buffType: 'shield', target: 'self' },
+      { type: 'count_guard', value: 0, duration: 20, buffType: 'special', target: 'self' },
+    ],
   },
 }

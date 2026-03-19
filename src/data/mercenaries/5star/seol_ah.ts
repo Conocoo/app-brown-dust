@@ -17,6 +17,10 @@ export const seol_ah: MercenaryTemplate = {
     timing: 'passive',
     target: 'next_ally',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'crit_rate_up', value: 10, duration: 6, buffType: 'stat_enhance' },
+      { type: 'crit_damage_up', value: 15, duration: 6, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 6, buffType: 'stat_enhance' },
+    ],
   },
 }

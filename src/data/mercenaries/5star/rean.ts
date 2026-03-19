@@ -18,6 +18,11 @@ export const rean: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 40, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.1, duration: 6, debuffClass: 'dot', atkScaling: true },
+      { type: 'all_stats_up', value: 70, duration: 3, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 3, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

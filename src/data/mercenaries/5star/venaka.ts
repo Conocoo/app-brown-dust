@@ -18,6 +18,9 @@ export const venaka: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'horizontal',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'shield', value: 40, duration: 100, buffType: 'shield' },
+      { type: 'dispel', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

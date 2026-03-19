@@ -17,6 +17,11 @@ export const hell: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_second',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

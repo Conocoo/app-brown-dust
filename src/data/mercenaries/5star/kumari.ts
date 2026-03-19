@@ -18,6 +18,13 @@ export const kumari: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'summon', value: 0, duration: 16, debuffClass: 'stat_weaken' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'direct_damage', value: 0.45, debuffClass: 'stat_weaken' },
+      { type: 'direct_damage', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'taunt_immune', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

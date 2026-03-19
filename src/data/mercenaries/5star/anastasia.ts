@@ -18,6 +18,13 @@ export const anastasia: MercenaryTemplate = {
     target: 'enemy_third',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'dot_pierce', value: 0.55, debuffClass: 'dot' },
+      { type: 'dot', value: 0.5, duration: 4, debuffClass: 'dot', atkScaling: true },
+      { type: 'shield', value: 50, duration: 4, debuffClass: 'stat_weaken' },
+      { type: 'stun', value: 0, duration: 4, debuffClass: 'cc' },
+      { type: 'shield', value: 30, duration: 4, debuffClass: 'stat_weaken' },
+    ],
   },
 }

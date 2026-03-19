@@ -17,6 +17,12 @@ export const shion: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot_variant', value: 0.01, duration: 4, debuffClass: 'dot' },
+      { type: 'all_stats_down', value: 35, duration: 4, debuffClass: 'stat_weaken' },
+      { type: 'agility_up', value: 40, duration: 6, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_rate_up', value: 50, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'atk_up', value: 50, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

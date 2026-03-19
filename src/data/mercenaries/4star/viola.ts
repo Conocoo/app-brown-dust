@@ -18,6 +18,10 @@ export const viola: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'back_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'silence', value: 0, duration: 10, debuffClass: 'cc' },
+      { type: 'dot', value: 0.03, duration: 6, debuffClass: 'dot' },
+      { type: 'summon', value: 0, duration: 10, debuffClass: 'stat_weaken' },
+    ],
   },
 }

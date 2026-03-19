@@ -17,6 +17,9 @@ export const rosa: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'def_down', value: 30, duration: 12, debuffClass: 'stat_weaken' },
+    ],
   },
 }

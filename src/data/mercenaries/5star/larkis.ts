@@ -18,6 +18,11 @@ export const larkis: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'direct_damage', value: 1, debuffClass: 'stat_weaken', atkScaling: true },
+      { type: 'direct_damage', value: 1.5, debuffClass: 'stat_weaken' },
+    ],
   },
 }

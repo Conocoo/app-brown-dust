@@ -18,6 +18,10 @@ export const morgana: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.1, duration: 12, debuffClass: 'dot', atkScaling: true },
+      { type: 'explosion', value: 0.5, debuffClass: 'dot' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,9 @@ export const krull: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'silence', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+    ],
   },
 }

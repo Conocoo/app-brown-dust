@@ -18,6 +18,11 @@ export const eleaneer: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'back_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 65, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_pierce', value: 0.05, debuffClass: 'dot' },
+      { type: 'temp_hp', value: 0.75, duration: 14, buffType: 'special', target: 'self' },
+    ],
   },
 }

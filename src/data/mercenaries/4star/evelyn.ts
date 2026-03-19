@@ -18,6 +18,12 @@ export const evelyn: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 36, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 5, duration: 36, buffType: 'stat_enhance', target: 'self' },
+      { type: 'all_stats_down', value: 45, duration: 8, debuffClass: 'stat_weaken' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

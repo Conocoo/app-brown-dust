@@ -17,6 +17,10 @@ export const arlos: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 8, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

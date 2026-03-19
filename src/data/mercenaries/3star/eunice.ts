@@ -18,6 +18,9 @@ export const eunice: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'regeneration', value: 2, duration: 5, buffType: 'stat_enhance' },
+      { type: 'atk_up', value: 20, duration: 10, buffType: 'stat_enhance' },
+    ],
   },
 }

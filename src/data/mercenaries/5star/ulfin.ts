@@ -18,6 +18,10 @@ export const ulfin: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

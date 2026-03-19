@@ -17,6 +17,11 @@ export const arkan: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_variant', value: 0.3, duration: 5, debuffClass: 'dot' },
+      { type: 'stun', value: 0, duration: 5, debuffClass: 'cc' },
+    ],
   },
 }

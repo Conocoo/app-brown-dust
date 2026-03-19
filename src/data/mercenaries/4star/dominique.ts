@@ -17,6 +17,10 @@ export const dominique: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_second',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'focus_fire', value: 0, duration: 6, debuffClass: 'cc' },
+      { type: 'taunt_immune', value: 0, duration: 24, buffType: 'stat_enhance', target: 'self' },
+      { type: 'atk_down', value: 50, duration: 24, debuffClass: 'stat_weaken' },
+    ],
   },
 }

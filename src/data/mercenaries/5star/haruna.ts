@@ -17,6 +17,13 @@ export const haruna: MercenaryTemplate = {
     timing: 'passive',
     target: 'enemy_second',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, duration: 60, buffType: 'stat_enhance', target: 'self' },
+      { type: 'temp_hp', value: 2, duration: 20, buffType: 'special', atkScaling: true, target: 'self' },
+      { type: 'insert_buff', value: 0, duration: 60, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

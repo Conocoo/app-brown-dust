@@ -17,6 +17,10 @@ export const dirty_unicorn: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 70, duration: 999, buffType: 'shield', target: 'self' },
+    ],
   },
 }

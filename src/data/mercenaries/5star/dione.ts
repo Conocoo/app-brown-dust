@@ -18,6 +18,13 @@ export const dione: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'ignore_taunt_range', value: 0, duration: 20, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt_immune', value: 0, duration: 20, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'dot_drain', value: 0.09, debuffClass: 'dot' },
+      { type: 'damage_limit', value: 0.31, duration: 18, buffType: 'special', target: 'self' },
+      { type: 'atk_up', value: 30, duration: 18, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

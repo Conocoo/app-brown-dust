@@ -20,9 +20,8 @@ export const wiggle: MercenaryTemplate = {
     attackRange: 'cross',
     rangeSize: 1,
     effects: [
-      { type: 'stun', value: 0, duration: 18, debuffClass: 'cc', dmgTakenUp: 50 },
-      { type: 'harmful_immune', value: 0, duration: 999, buffType: 'special', target: 'self' },
-      { type: 'burn', value: 4, atkScaling: true, duration: 5, debuffClass: 'dot' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.04, duration: 5, debuffClass: 'dot', atkScaling: true },
     ],
   },
 }

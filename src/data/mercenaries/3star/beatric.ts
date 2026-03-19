@@ -17,6 +17,9 @@ export const beatric: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+    ],
   },
 }

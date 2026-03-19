@@ -18,6 +18,11 @@ export const britain: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'dot_31', value: 1, debuffClass: 'dot', atkScaling: true },
+      { type: 'atk_down', value: 55, duration: 1, debuffClass: 'stat_weaken' },
+      { type: 'atk_up', value: 100, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,10 @@ export const agni: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'summon', value: 0, duration: 4, debuffClass: 'stat_weaken' },
+      { type: 'damage_limit', value: 0.31, duration: 1, buffType: 'special', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,10 @@ export const octavia: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'summon', value: 0, duration: 999, debuffClass: 'stat_weaken' },
+      { type: 'summon', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+    ],
   },
 }

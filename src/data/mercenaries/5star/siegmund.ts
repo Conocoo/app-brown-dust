@@ -17,6 +17,9 @@ export const siegmund: MercenaryTemplate = {
     timing: 'passive',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'shield', value: 65, duration: 35, buffType: 'shield', target: 'self' },
+      { type: 'regeneration', value: 12, duration: 35, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

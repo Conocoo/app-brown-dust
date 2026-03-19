@@ -18,6 +18,10 @@ export const kuwik: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 15, duration: 8, buffType: 'stat_enhance' },
+      { type: 'crit_damage_up', value: 15, duration: 8, buffType: 'stat_enhance' },
+      { type: 'dispel', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

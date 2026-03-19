@@ -18,6 +18,10 @@ export const granhildr: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'reflect', value: 0, duration: 100, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.15, debuffClass: 'dot' },
+      { type: 'regeneration', value: 6, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

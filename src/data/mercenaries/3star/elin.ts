@@ -18,6 +18,9 @@ export const elin: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 35, duration: 18, buffType: 'stat_enhance' },
+      { type: 'crit_damage_up', value: 35, duration: 18, buffType: 'stat_enhance' },
+    ],
   },
 }

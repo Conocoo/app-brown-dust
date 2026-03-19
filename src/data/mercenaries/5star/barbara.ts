@@ -18,6 +18,13 @@ export const barbara: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'summon', value: 0, duration: 8, debuffClass: 'stat_weaken' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'damage_limit', value: 0.43, duration: 1, buffType: 'special', target: 'self' },
+      { type: 'equipment', value: 0, duration: 1, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

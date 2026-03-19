@@ -17,6 +17,10 @@ export const rimuru_tempest: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 10, duration: 50, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

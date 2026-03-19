@@ -17,6 +17,10 @@ export const lucius: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, duration: 100, buffType: 'special', target: 'self' },
+      { type: 'dot_30', value: 0.35, debuffClass: 'dot' },
+      { type: 'added_buff_27', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,14 @@ export const el_clear: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'atk_down', value: 200, duration: 200, debuffClass: 'stat_weaken' },
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

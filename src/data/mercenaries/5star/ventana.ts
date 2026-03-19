@@ -17,6 +17,12 @@ export const ventana: MercenaryTemplate = {
     timing: 'before_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'on_death_trigger', value: 0, duration: 1, debuffClass: 'stat_weaken' },
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'direct_damage', value: 0.5, debuffClass: 'stat_weaken' },
+      { type: 'damage_limit', value: 0.31, duration: 1, buffType: 'special', target: 'self' },
+      { type: 'equipment', value: 0, duration: 1, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,10 @@ export const deserted_teddy_bear: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 70, duration: 999, buffType: 'shield', target: 'self' },
+    ],
   },
 }

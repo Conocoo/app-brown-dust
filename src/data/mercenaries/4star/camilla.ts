@@ -17,6 +17,10 @@ export const camilla: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_damage_up', value: 30, duration: 20, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 80, duration: 8, debuffClass: 'stat_weaken' },
+    ],
   },
 }

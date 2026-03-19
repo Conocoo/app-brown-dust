@@ -18,6 +18,10 @@ export const galania: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 0, buffType: 'stat_enhance' },
+      { type: 'atk_up', value: 20, duration: 28, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 28, buffType: 'stat_enhance' },
+    ],
   },
 }

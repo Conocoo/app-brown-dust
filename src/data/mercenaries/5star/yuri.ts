@@ -18,6 +18,12 @@ export const yuri: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'summon', value: 0, duration: 2, debuffClass: 'stat_weaken' },
+      { type: 'dot_pierce', value: 0.5, debuffClass: 'dot' },
+      { type: 'stealth', value: 0, duration: 14, buffType: 'special', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 14, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -17,6 +17,9 @@ export const bran: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_second',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'crit_rate_up', value: 35, duration: 24, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

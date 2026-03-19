@@ -17,6 +17,11 @@ export const xenon: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot_drain', value: 0.18, debuffClass: 'dot' },
+      { type: 'hp_up', value: 6000, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 80, duration: 16, debuffClass: 'stat_weaken' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

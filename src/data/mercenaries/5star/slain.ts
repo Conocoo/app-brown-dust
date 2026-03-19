@@ -17,6 +17,12 @@ export const slain: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot_31', value: 0.4, debuffClass: 'dot' },
+      { type: 'dot_31', value: 0.4, duration: 4, debuffClass: 'dot', atkScaling: true },
+      { type: 'shield', value: 95, duration: 2, buffType: 'shield', target: 'self' },
+      { type: 'crit_damage_up', value: 50, duration: 50, buffType: 'stat_enhance', target: 'self' },
+      { type: 'atk_up', value: 50, duration: 50, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

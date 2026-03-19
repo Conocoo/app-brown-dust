@@ -18,6 +18,11 @@ export const bellasier: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

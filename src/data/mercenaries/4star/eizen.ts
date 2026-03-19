@@ -17,6 +17,10 @@ export const eizen: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'dot_direct', value: 0.75, debuffClass: 'dot', atkScaling: true },
+      { type: 'stun', value: 0, duration: 6, debuffClass: 'cc' },
+    ],
   },
 }

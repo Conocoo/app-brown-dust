@@ -17,6 +17,9 @@ export const zenith: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'agility_up', value: 65, duration: 10, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -17,6 +17,9 @@ export const kaoli: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'dot', value: 0.1, debuffClass: 'dot' },
+      { type: 'thorns', value: 1, duration: 50, buffType: 'special', target: 'self' },
+    ],
   },
 }

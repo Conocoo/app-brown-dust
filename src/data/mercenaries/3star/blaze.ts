@@ -17,6 +17,10 @@ export const blaze: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'explosion', value: 1.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'explosion', value: 1.5, debuffClass: 'dot', atkScaling: true },
+      { type: 'temp_hp', value: 1, duration: 4, buffType: 'special', target: 'self' },
+    ],
   },
 }

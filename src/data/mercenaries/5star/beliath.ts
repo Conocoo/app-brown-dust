@@ -18,6 +18,11 @@ export const beliath: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, buffType: 'special' },
+      { type: 'atk_up', value: 30, duration: 12, buffType: 'stat_enhance' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'shield', value: 70, duration: 999, buffType: 'shield' },
+    ],
   },
 }

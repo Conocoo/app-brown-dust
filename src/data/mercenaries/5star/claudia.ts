@@ -18,6 +18,13 @@ export const claudia: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+      { type: 'added_buff_27', value: 0, duration: 6, debuffClass: 'stat_weaken' },
+      { type: 'heal_boost', value: 0.75, duration: 6, debuffClass: 'stat_weaken' },
+      { type: 'count_guard', value: 0, duration: 24, buffType: 'special', target: 'self' },
+      { type: 'damage_limit', value: 0.31, duration: 24, buffType: 'special', target: 'self' },
+      { type: 'shield', value: 70, duration: 14, buffType: 'shield', target: 'self' },
+    ],
   },
 }

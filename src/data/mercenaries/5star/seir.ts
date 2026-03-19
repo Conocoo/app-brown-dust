@@ -17,6 +17,12 @@ export const seir: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 16, duration: 24, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot_pierce', value: 0.65, debuffClass: 'dot' },
+      { type: 'taunt', value: 0, duration: 14, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

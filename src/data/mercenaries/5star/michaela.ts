@@ -18,6 +18,9 @@ export const michaela: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'back_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance' },
+    ],
   },
 }

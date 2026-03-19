@@ -18,6 +18,11 @@ export const albion: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 4, buffType: 'stat_enhance' },
+      { type: 'agility_up', value: 30, duration: 14, buffType: 'stat_enhance' },
+      { type: 'shield', value: 10, duration: 14, buffType: 'shield' },
+      { type: 'taunt', value: 0, duration: 12, buffType: 'stat_enhance' },
+    ],
   },
 }

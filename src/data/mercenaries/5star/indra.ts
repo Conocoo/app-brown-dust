@@ -17,6 +17,8 @@ export const indra: MercenaryTemplate = {
     timing: 'passive',
     target: 'next_ally',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'revival', value: 400, buffType: 'special' },
+    ],
   },
 }

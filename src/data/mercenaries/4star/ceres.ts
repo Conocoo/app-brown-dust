@@ -18,6 +18,9 @@ export const ceres: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'front_n',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance' },
+      { type: 'dispel', value: 0, buffType: 'stat_enhance' },
+    ],
   },
 }

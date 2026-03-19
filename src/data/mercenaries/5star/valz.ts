@@ -18,6 +18,9 @@ export const valz: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'back_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'count_guard', value: 0, duration: 2, buffType: 'special', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,9 @@ export const refithea: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 20, duration: 12, buffType: 'stat_enhance' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance' },
+    ],
   },
 }

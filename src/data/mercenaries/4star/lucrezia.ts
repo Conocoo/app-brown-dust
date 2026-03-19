@@ -18,6 +18,11 @@ export const lucrezia: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'charm', value: 0, duration: 16, debuffClass: 'cc' },
+      { type: 'position_change', value: 0, duration: 16, debuffClass: 'cc' },
+      { type: 'summon', value: 0, duration: 16, debuffClass: 'stat_weaken' },
+      { type: 'counter_attack', value: 0, duration: 24, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

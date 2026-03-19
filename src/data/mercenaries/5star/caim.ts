@@ -18,6 +18,10 @@ export const caim: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 1, buffType: 'stat_enhance', target: 'self' },
+      { type: 'heal_boost', value: 1, duration: 10, debuffClass: 'stat_weaken' },
+      { type: 'stun', value: 0, duration: 12, debuffClass: 'cc' },
+    ],
   },
 }

@@ -18,6 +18,9 @@ export const corette: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'all_stats_down', value: 15, duration: 6, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

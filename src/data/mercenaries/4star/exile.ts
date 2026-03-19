@@ -18,6 +18,11 @@ export const exile: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'revival', value: 0, duration: 1, debuffClass: 'stat_weaken' },
+      { type: 'revival', value: 0, duration: 1, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 14, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 8, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

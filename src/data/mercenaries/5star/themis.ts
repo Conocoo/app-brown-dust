@@ -18,6 +18,9 @@ export const themis: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 6, buffType: 'stat_enhance' },
+      { type: 'crit_rate_up', value: 10, duration: 10, buffType: 'stat_enhance' },
+    ],
   },
 }

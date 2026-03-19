@@ -18,6 +18,12 @@ export const taylor: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'direct_damage', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'stun', value: 0, duration: 18, debuffClass: 'cc' },
+      { type: 'hp_up', value: 3500, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

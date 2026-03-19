@@ -18,6 +18,12 @@ export const valtor: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'back_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.55, debuffClass: 'dot' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'regeneration', value: 4, duration: 70, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

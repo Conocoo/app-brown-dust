@@ -19,9 +19,7 @@ export const cordelia: MercenaryTemplate = {
     attackRange: 'horizontal',
     rangeSize: 2,
     effects: [
-      { type: 'advanced_burn', value: 25, atkScaling: true, duration: 5, debuffClass: 'dot', dmgTakenUp: 20 },
-      { type: 'damage', value: 50, atkScaling: true },
-      { type: 'on_kill_heal_percent', value: 50, target: 'self' },
+      { type: 'dot', value: 0.07, duration: 5, debuffClass: 'dot', atkScaling: true },
       { type: 'shield', value: 25, duration: 12, buffType: 'shield', target: 'self' },
     ],
   },

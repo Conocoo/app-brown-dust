@@ -17,6 +17,10 @@ export const aaron: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_rate_up', value: 40, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

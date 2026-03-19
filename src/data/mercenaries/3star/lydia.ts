@@ -18,6 +18,9 @@ export const lydia: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'agility_down', value: 50, duration: 6, debuffClass: 'stat_weaken' },
+    ],
   },
 }

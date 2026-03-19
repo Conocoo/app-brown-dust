@@ -17,6 +17,8 @@ export const astrid: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'regeneration', value: 8, duration: 10, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

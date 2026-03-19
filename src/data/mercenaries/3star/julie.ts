@@ -19,12 +19,8 @@ export const julie: MercenaryTemplate = {
     attackRange: 'x_shape',
     rangeSize: 1,
     effects: [
-      { type: 'purify_cc', value: 0 },
-      { type: 'regeneration', value: 10, spScaling: true, duration: 14, buffType: 'stat_enhance' },
-      { type: 'heal_percent', value: 5 },
-      { type: 'agility_up', value: 50, spScaling: true, duration: 12, buffType: 'stat_enhance', ignoreImmunity: true },
-      { type: 'on_hit_def_up', value: 0, duration: 12, buffType: 'special' },
-      { type: 'def_up', value: 100, duration: 1, buffType: 'stat_enhance' },
+      { type: 'regeneration', value: 2, duration: 5, buffType: 'stat_enhance' },
+      { type: 'agility_up', value: 20, duration: 10, buffType: 'stat_enhance' },
     ],
   },
 }

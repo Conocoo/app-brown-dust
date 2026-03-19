@@ -18,6 +18,13 @@ export const ymir: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'summon', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_down', value: 40, duration: 4, debuffClass: 'stat_weaken' },
+      { type: 'shield', value: 100, duration: 4, debuffClass: 'stat_weaken' },
+    ],
   },
 }

@@ -18,6 +18,10 @@ export const isaac: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'def_down', value: 115, duration: 999, debuffClass: 'stat_weaken' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 18, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

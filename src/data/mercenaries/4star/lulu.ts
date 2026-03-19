@@ -18,6 +18,9 @@ export const lulu: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 16, buffType: 'stat_enhance' },
+      { type: 'regeneration', value: 10, duration: 5, buffType: 'stat_enhance' },
+    ],
   },
 }

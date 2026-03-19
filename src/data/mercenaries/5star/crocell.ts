@@ -18,6 +18,11 @@ export const crocell: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'front_n',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'crit_rate_up', value: 10, duration: 10, buffType: 'stat_enhance' },
+      { type: 'crit_damage_up', value: 120, duration: 10, buffType: 'stat_enhance' },
+      { type: 'shield', value: 20, duration: 24, buffType: 'shield' },
+      { type: 'equipment', value: 0, duration: 10, buffType: 'stat_enhance' },
+    ],
   },
 }

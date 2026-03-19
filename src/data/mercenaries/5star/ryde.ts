@@ -18,6 +18,12 @@ export const ryde: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 20, buffType: 'stat_enhance' },
+      { type: 'shield', value: 50, duration: 20, buffType: 'shield' },
+      { type: 'on_attack_trigger', value: 0, duration: 2, buffType: 'stat_enhance' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'atk_up', value: 170, duration: 34, buffType: 'stat_enhance' },
+    ],
   },
 }

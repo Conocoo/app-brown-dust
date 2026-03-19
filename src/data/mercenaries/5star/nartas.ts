@@ -18,6 +18,10 @@ export const nartas: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 4,
-    effects: [],
+    effects: [
+      { type: 'dot_31', value: 1, debuffClass: 'dot', atkScaling: true },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+    ],
   },
 }

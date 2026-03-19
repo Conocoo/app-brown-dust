@@ -18,6 +18,12 @@ export const garinoth: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_damage_up', value: 300, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.35, debuffClass: 'dot', atkScaling: true },
+      { type: 'dot', value: 0.04, duration: 6, debuffClass: 'dot' },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+    ],
   },
 }

@@ -17,6 +17,11 @@ export const diane: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_back',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'extra_turn_2', value: 0, duration: 10, buffType: 'special', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 10, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

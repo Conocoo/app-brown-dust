@@ -17,6 +17,10 @@ export const denarisa: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'shield', value: 35, duration: 999, buffType: 'shield', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'summon', value: 0, duration: 10, debuffClass: 'stat_weaken' },
+    ],
   },
 }

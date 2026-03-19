@@ -18,6 +18,10 @@ export const bdm_n0524: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 50, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

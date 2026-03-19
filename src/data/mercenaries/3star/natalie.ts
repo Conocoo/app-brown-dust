@@ -17,6 +17,9 @@ export const natalie: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'focus_fire', value: 0, duration: 4, debuffClass: 'cc' },
+      { type: 'shield', value: 35, duration: 6, debuffClass: 'stat_weaken' },
+    ],
   },
 }

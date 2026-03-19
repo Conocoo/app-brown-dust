@@ -18,6 +18,10 @@ export const cynthia: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'stun', value: 0, duration: 12, debuffClass: 'cc' },
+      { type: 'dot', value: 0.2, debuffClass: 'dot', atkScaling: true },
+      { type: 'counter_attack', value: 0, duration: 24, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

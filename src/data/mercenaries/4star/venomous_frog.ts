@@ -18,6 +18,13 @@ export const venomous_frog: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 5,
-    effects: [],
+    effects: [
+      { type: 'dot_direct', value: 0.11, debuffClass: 'dot' },
+      { type: 'direct_damage', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'def_down', value: 50, duration: 3, debuffClass: 'stat_weaken' },
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'turn_pass', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

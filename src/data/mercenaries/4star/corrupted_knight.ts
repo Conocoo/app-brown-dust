@@ -18,6 +18,11 @@ export const corrupted_knight: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot_30', value: 1, debuffClass: 'dot' },
+      { type: 'all_stats_down', value: 25, duration: 8, debuffClass: 'stat_weaken' },
+      { type: 'range_shrink', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 6, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

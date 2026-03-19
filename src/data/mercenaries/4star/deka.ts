@@ -18,6 +18,9 @@ export const deka: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'cross',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'dot', value: 0.5, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

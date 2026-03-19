@@ -18,6 +18,9 @@ export const nowa: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'def_up', value: 15, duration: 6, buffType: 'stat_enhance' },
+      { type: 'counter_attack', value: 0, duration: 18, buffType: 'stat_enhance' },
+    ],
   },
 }

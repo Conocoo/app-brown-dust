@@ -18,6 +18,12 @@ export const corrupted_assassin: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot_30', value: 1, debuffClass: 'dot' },
+      { type: 'all_stats_down', value: 25, duration: 8, debuffClass: 'stat_weaken' },
+      { type: 'taunt_immune', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_damage_up', value: 10, duration: 30, buffType: 'stat_enhance', target: 'self' },
+      { type: 'atk_up', value: 5, duration: 30, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

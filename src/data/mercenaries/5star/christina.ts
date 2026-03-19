@@ -18,6 +18,10 @@ export const christina: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 75, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'added_buff_25', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,10 @@ export const martius: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_rate_up', value: 15, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'crit_damage_up', value: 35, duration: 12, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

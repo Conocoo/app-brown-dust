@@ -17,6 +17,10 @@ export const ren: MercenaryTemplate = {
     timing: 'passive',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 14, buffType: 'stat_enhance', target: 'self' },
+      { type: 'shield', value: 50, duration: 50, buffType: 'shield', target: 'self' },
+      { type: 'regeneration', value: 4, duration: 50, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

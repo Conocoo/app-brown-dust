@@ -18,6 +18,10 @@ export const ragares: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance' },
+      { type: 'on_attack_trigger', value: 0, duration: 2, buffType: 'stat_enhance' },
+      { type: 'on_attack_trigger', value: 0, duration: 2, buffType: 'stat_enhance' },
+    ],
   },
 }

@@ -18,6 +18,12 @@ export const venomous_bee: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dot_direct', value: 0.11, debuffClass: 'dot' },
+      { type: 'direct_damage', value: 3, debuffClass: 'stat_weaken' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'turn_pass', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

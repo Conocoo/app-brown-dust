@@ -17,6 +17,10 @@ export const ingrid: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'atk_down', value: 65, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'on_attack_trigger', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'agility_up', value: 50, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

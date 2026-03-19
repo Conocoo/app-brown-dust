@@ -18,6 +18,8 @@ export const victor: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'single',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, debuffClass: 'stat_weaken' },
+    ],
   },
 }

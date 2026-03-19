@@ -18,6 +18,11 @@ export const charlotte: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'all_stats_down', value: 40, duration: 12, debuffClass: 'stat_weaken' },
+      { type: 'summon', value: 0, duration: 6, debuffClass: 'stat_weaken' },
+      { type: 'dot', value: 0.05, duration: 6, debuffClass: 'dot', atkScaling: true },
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+    ],
   },
 }

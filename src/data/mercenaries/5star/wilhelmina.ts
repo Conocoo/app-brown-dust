@@ -17,6 +17,9 @@ export const wilhelmina: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'insert_buff', value: 0, buffType: 'stat_enhance', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 100, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

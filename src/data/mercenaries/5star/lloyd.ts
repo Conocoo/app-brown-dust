@@ -17,6 +17,10 @@ export const lloyd: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 1, buffType: 'stat_enhance', target: 'self' },
+      { type: 'instead_death', value: 0, duration: 70, buffType: 'special', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 70, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

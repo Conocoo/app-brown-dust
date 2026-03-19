@@ -18,6 +18,9 @@ export const maxwell: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'regeneration', value: 5, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'def_up', value: 65, duration: 2, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

@@ -18,6 +18,10 @@ export const kaike: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'char_type_buff', value: 3, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 2, debuffClass: 'stat_weaken' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

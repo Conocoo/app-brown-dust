@@ -17,6 +17,11 @@ export const arwen: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'counter_attack', value: 0, duration: 20, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 1.35, debuffClass: 'dot' },
+      { type: 'count_guard', value: 0, duration: 8, buffType: 'special', target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 8, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

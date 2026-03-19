@@ -18,6 +18,10 @@ export const eunrang: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'front_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'crit_damage_up', value: 300, duration: 2, buffType: 'stat_enhance', target: 'self' },
+      { type: 'atk_up', value: 200, duration: 2, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 12, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

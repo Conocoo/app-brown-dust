@@ -18,6 +18,11 @@ export const antonio: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'back_n',
     rangeSize: 2,
-    effects: [],
+    effects: [
+      { type: 'focus_fire', value: 0, duration: 18, debuffClass: 'cc' },
+      { type: 'char_type_buff', value: 3, buffType: 'stat_enhance', target: 'self' },
+      { type: 'char_type_buff', value: 3, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

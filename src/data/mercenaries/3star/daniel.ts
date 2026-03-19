@@ -18,6 +18,8 @@ export const daniel: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'atk_up', value: 20, duration: 10, buffType: 'stat_enhance' },
+    ],
   },
 }

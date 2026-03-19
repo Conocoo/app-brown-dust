@@ -18,6 +18,10 @@ export const shoman: MercenaryTemplate = {
     target: 'enemy_second',
     attackRange: 'area_n',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'summon', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.5, debuffClass: 'dot' },
+    ],
   },
 }

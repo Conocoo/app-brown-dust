@@ -18,6 +18,10 @@ export const baine: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'horizontal',
     rangeSize: 3,
-    effects: [],
+    effects: [
+      { type: 'added_buff_25', value: 0, duration: 35, buffType: 'stat_enhance', target: 'self' },
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'taunt', value: 0, duration: 18, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

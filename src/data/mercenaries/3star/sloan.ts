@@ -17,12 +17,8 @@ export const sloan: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'single',
     effects: [
-      { type: 'poison_counter', value: 0, duration: 999, buffType: 'special', target: 'self' },
-      { type: 'on_hit_recovery', value: 0, duration: 999, buffType: 'special', target: 'self' },
-      { type: 'poison', value: 12, atkScaling: true, duration: 6, debuffClass: 'dot' },
-      { type: 'shield', value: 35, duration: 12, buffType: 'shield', triggerSkill: 'purify_dot', target: 'self' },
-      { type: 'decay', value: 2.5, duration: 10, debuffClass: 'dot' },
-      { type: 'heal_percent', value: 10, target: 'self' },
+      { type: 'counter_attack', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'dot', value: 0.025, duration: 10, debuffClass: 'dot' },
     ],
   },
 }

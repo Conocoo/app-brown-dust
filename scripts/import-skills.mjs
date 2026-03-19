@@ -110,6 +110,49 @@ function updateSkillHeader(src, timing, target, attackRange, rangeSize) {
   })
 }
 
+/**
+ * RE effect 객체 → SkillEffect TS 리터럴 문자열
+ * - buffType 있음 + 스킬이 적 대상 → target: 'self' 오버라이드
+ */
+function serializeEffect(effect, skillTarget) {
+  const isEnemyTargeting = !['self', 'next_ally'].includes(skillTarget)
+  const isBuff = !!effect.buffType
+
+  const parts = [`type: '${effect.type}'`]
+  if (typeof effect.value === 'number') parts.push(`value: ${effect.value}`)
+  if (effect.duration) parts.push(`duration: ${effect.duration}`)
+  if (effect.buffType) parts.push(`buffType: '${effect.buffType}'`)
+  if (effect.debuffClass) parts.push(`debuffClass: '${effect.debuffClass}'`)
+  if (effect.atkScaling) parts.push(`atkScaling: true`)
+  if (isEnemyTargeting && isBuff) parts.push(`target: 'self'`)
+
+  return `{ ${parts.join(', ')} }`
+}
+
+/**
+ * RE 데이터로 effects 배열을 교체한다.
+ * 빈 배열이든 기존 내용이 있든 항상 덮어씀.
+ */
+function updateEffects(src, reEffects, skillTarget) {
+  const mapped = reEffects.filter(e => e.mapped)
+  if (mapped.length === 0) return src
+
+  // 들여쓰기 감지 (effects: 앞의 공백)
+  const indentMatch = src.match(/([ \t]*)effects:/)
+  const indent = indentMatch ? indentMatch[1] : '    '
+  const effectIndent = indent + '  '
+
+  const effectLines = mapped
+    .map(e => `${effectIndent}${serializeEffect(e, skillTarget)}`)
+    .join(',\n')
+
+  // effects: [ ... ] 전체 교체 (빈 배열 포함)
+  return src.replace(
+    /effects:\s*\[[\s\S]*?\]/,
+    `effects: [\n${effectLines},\n${indent}]`
+  )
+}
+
 function processFile(filePath) {
   const id = basename(filePath, '.ts')
   const src = readFileSync(filePath, 'utf-8')
@@ -143,7 +186,8 @@ function processFile(filePath) {
   const newRange = RANGE_MAP[reSkill.rangePattern] ?? 'single'
   const newRangeSize = reSkill.rangeSize > 0 ? reSkill.rangeSize : null
 
-  const newSrc = updateSkillHeader(src, newTiming, newTarget, newRange, newRangeSize)
+  let newSrc = updateSkillHeader(src, newTiming, newTarget, newRange, newRangeSize)
+  newSrc = updateEffects(newSrc, reSkill.effects ?? [], newTarget)
 
   if (newSrc === src) {
     unchanged++
@@ -151,7 +195,6 @@ function processFile(filePath) {
   }
 
   if (DRY_RUN) {
-    // 무엇이 바뀌었는지 간략 출력
     const oldTimingM = src.match(/timing:\s*'([^']+)'/)
     const oldTargetM = src.match(/target:\s*'([^']+)'/)
     const oldRangeM = src.match(/attackRange:\s*'([^']+)'/)
@@ -163,6 +206,8 @@ function processFile(filePath) {
     if (oldTarget !== newTarget) changes.push(`target: ${oldTarget}→${newTarget}`)
     if (oldRange !== newRange) changes.push(`range: ${oldRange}→${newRange}`)
     if (newRangeSize !== null && !src.includes(`rangeSize: ${newRangeSize}`)) changes.push(`rangeSize: →${newRangeSize}`)
+    const mappedCount = (reSkill.effects ?? []).filter(e => e.mapped).length
+    if (/effects:\s*\[\s*\]/.test(src) && mappedCount > 0) changes.push(`effects: []→[${mappedCount}개]`)
     console.log(`  [${id}] ${changes.join(', ')}`)
   } else {
     writeFileSync(filePath, newSrc, 'utf-8')

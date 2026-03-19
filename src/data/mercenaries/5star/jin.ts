@@ -17,6 +17,11 @@ export const jin: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'added_buff_27', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'equipment', value: 0, duration: 999, buffType: 'stat_enhance', target: 'self' },
+      { type: 'revival', value: 0, duration: 999, buffType: 'special', target: 'self' },
+      { type: 'dot', value: 1.5, debuffClass: 'dot', atkScaling: true },
+    ],
   },
 }

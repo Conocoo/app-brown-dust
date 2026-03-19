@@ -18,6 +18,10 @@ export const venomous_flower: MercenaryTemplate = {
     target: 'next_ally',
     attackRange: 'area_n',
     rangeSize: 5,
-    effects: [],
+    effects: [
+      { type: 'taunt_immune', value: 0, duration: 32, buffType: 'stat_enhance' },
+      { type: 'revival', value: 0, duration: 2, buffType: 'special' },
+      { type: 'char_type_buff', value: 4, buffType: 'stat_enhance' },
+    ],
   },
 }

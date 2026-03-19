@@ -18,6 +18,11 @@ export const kiria: MercenaryTemplate = {
     target: 'enemy_back',
     attackRange: 'horizontal',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'dispel', value: 0, debuffClass: 'cc' },
+      { type: 'dot_pierce', value: 0.3, debuffClass: 'dot' },
+      { type: 'dot_direct', value: 1.05, debuffClass: 'dot' },
+      { type: 'crit_rate_up', value: 75, duration: 999, buffType: 'stat_enhance', target: 'self' },
+    ],
   },
 }

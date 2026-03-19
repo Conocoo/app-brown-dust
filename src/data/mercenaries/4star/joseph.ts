@@ -18,6 +18,9 @@ export const joseph: MercenaryTemplate = {
     target: 'enemy_front',
     attackRange: 'x_shape',
     rangeSize: 1,
-    effects: [],
+    effects: [
+      { type: 'on_death_trigger', value: 0, duration: 24, debuffClass: 'stat_weaken' },
+      { type: 'silence', value: 0, duration: 12, debuffClass: 'cc' },
+    ],
   },
 }

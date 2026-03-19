@@ -17,6 +17,9 @@ export const kozak: MercenaryTemplate = {
     timing: 'after_attack',
     target: 'enemy_front',
     attackRange: 'single',
-    effects: [],
+    effects: [
+      { type: 'shield', value: 20, duration: 10, debuffClass: 'stat_weaken' },
+      { type: 'dot', value: 0.02, duration: 10, debuffClass: 'dot' },
+    ],
   },
 }
