@@ -5,7 +5,7 @@
  * Reads skill/mercenary TS source files and generates markdown docs.
  *
  * Usage: node scripts/generate-docs.mjs
- * Output: Docs/스킬-목록.md, Docs/용병-목록.md
+ * Output: ../Docs/웹앱/스킬-목록.md, ../Docs/웹앱/용병-목록.md
  */
 
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs'
@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(__dirname, '..')
-const DOCS_DIR = join(ROOT, 'Docs')
+const DOCS_DIR = join(ROOT, '..', 'Docs', '웹앱')
 const SKILLS_DIR = join(ROOT, 'src', 'data', 'skills')
 const MERCS_DIR = join(ROOT, 'src', 'data', 'mercenaries')
 
