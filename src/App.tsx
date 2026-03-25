@@ -1,11 +1,11 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
-import type { BattleCharacter, GamePhase, BattleLogEntry, StatusEffect, Rune } from './types/game'
+import type { BattleCharacter, GamePhase, BattleLogEntry, StatusEffect } from './types/game'
 import { getAllMercenaries, getMercenaryById } from './data/mercenaries'
 
 import { simulateBattle } from './logic/battle'
 import { applyRunes } from './logic/rune'
 import Board from './components/Board'
-import CharacterInfo from './components/CharacterInfo'
+
 import CharacterList from './components/CharacterList'
 import OrderSetter from './components/OrderSetter'
 import BattleLog from './components/BattleLog'
@@ -524,28 +524,6 @@ export default function App() {
     setVisibleLogCount(battleLogs.length)
   }, [battleLogs.length])
 
-  // 룬 변경 (배치 단계 전용)
-  const handleRuneChange = useCallback((row: number, col: number, runes: Rune[]) => {
-    setGrid((prev: (BattleCharacter | null)[][]) => {
-      const next = prev.map((r: (BattleCharacter | null)[]) => [...r])
-      const char = next[row][col]
-      if (!char) return next
-      const tmpl = getMercenaryById(char.templateId)
-      if (!tmpl) return next
-      const runed = applyRunes(tmpl, runes)
-      next[row][col] = {
-        ...char,
-        hp: runed.maxHp,
-        maxHp: runed.maxHp,
-        atk: runed.atk,
-        def: runed.def,
-        critRate: runed.critRate,
-        critDamage: runed.critDamage,
-        runes,
-      }
-      return next
-    })
-  }, [])
 
   // 다시 하기
   const handleReset = useCallback(() => {
@@ -574,42 +552,6 @@ export default function App() {
     }
   }, [])
 
-  // 정보 패널에 표시할 캐릭터: 그리드 선택 > 목록 선택
-  const selectedCharacter: BattleCharacter | null = (() => {
-    if (selectedCell) return grid[selectedCell.row][selectedCell.col]
-    if (selectedCharId) {
-      const tmpl = getMercenaryById(selectedCharId)
-      if (!tmpl) return null
-      const runed = applyRunes(tmpl, tmpl.runes)
-      return {
-        templateId: tmpl.id,
-        name: tmpl.name,
-        type: tmpl.type,
-        hp: runed.maxHp,
-        maxHp: runed.maxHp,
-        atk: runed.atk,
-        supportPower: tmpl.supportPower ?? 0,
-        def: runed.def,
-        emoji: tmpl.emoji,
-        imageId: tmpl.imageId,
-        critRate: runed.critRate,
-        critDamage: runed.critDamage,
-        agility: tmpl.agility,
-        team: 'player' as const,
-        row: -1,
-        col: -1,
-        isCasting: false,
-        order: -1,
-        skill: tmpl.skill,
-        tempHp: 0,
-        statusEffects: [],
-        runes: tmpl.runes ?? [],
-        damageReduce: tmpl.damageReduce ?? 0,
-      selfDestruct: tmpl.selfDestruct,
-      }
-    }
-    return null
-  })()
 
   const handleEnterBattle = useCallback(() => {
     const g = createEmptyGrid()
@@ -655,15 +597,6 @@ export default function App() {
   return (
     <div className="app">
       <h1>브라운더스트 전투 시뮬레이터</h1>
-
-      <CharacterInfo
-        character={selectedCharacter}
-        isBattle={phase === 'battling' || phase === 'result'}
-        isPlacing={phase === 'placing'}
-        onRuneChange={selectedCell
-          ? (runes) => handleRuneChange(selectedCell.row, selectedCell.col, runes)
-          : undefined}
-      />
 
       <Board
         grid={grid}
