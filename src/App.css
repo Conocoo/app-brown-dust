@@ -1,7 +1,9 @@
 .app {
-  max-width: 1400px;
+  width: 1200px;
+  max-width: 100%;
   padding: 20px;
   text-align: center;
+  margin: 0 auto;
 }
 
 .app.home {
