@@ -737,7 +737,8 @@ h1 {
   justify-content: center;
   flex-wrap: wrap;
   flex: 1;
-  overflow-y: auto;
+  min-height: 0;
+  overflow-y: scroll;
   padding: 4px;
   align-content: flex-start;
 }
