@@ -663,6 +663,9 @@ h1 {
 /* ===== 캐릭터 목록 ===== */
 .character-list {
   margin-bottom: 20px;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
 }
 
 /* --- 필터 바 --- */
@@ -733,9 +736,10 @@ h1 {
   gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  max-height: 320px;
+  flex: 1;
   overflow-y: auto;
   padding: 4px;
+  align-content: flex-start;
 }
 
 .character-card {
