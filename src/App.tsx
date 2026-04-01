@@ -596,7 +596,10 @@ export default function App() {
 
   return (
     <div className="app">
-      <h1>브라운더스트 전투 시뮬레이터</h1>
+      <h1>
+        <button className="btn-back" onClick={handleReset}>←</button>
+        브라운더스트 전투 시뮬레이터
+      </h1>
 
       <Board
         grid={grid}
