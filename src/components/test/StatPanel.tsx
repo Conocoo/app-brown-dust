@@ -1,8 +1,10 @@
 // STEP 3 테스트 패널: 스탯 계산 검증
 import { useState } from 'react'
 import { getAllMercenaries, getMercenaryById } from '../../data/mercenaries'
+import { getSkillByCode } from '../../data/skills'
 import { calcStatsAtLevel, maxStats, levelMultiply } from '../../logic/stat'
 import { applyRunes } from '../../logic/rune'
+import { getRepeatCount } from '../../logic/skill'
 import type { RuneSlots } from '../../types/rune'
 
 const EMPTY_RUNES: RuneSlots = [null, null, null]
@@ -18,6 +20,7 @@ export default function StatPanel() {
   const withRunes = applyRunes(base, EMPTY_RUNES)
   const maxL = merc.maxLevel ?? 115
   const lm = levelMultiply(level)
+  const skill = getSkillByCode(merc.skillCode)
 
   return (
     <div className="test-panel">
@@ -98,6 +101,30 @@ export default function StatPanel() {
           * 레벨 성장 공식: raw + raw × growthRate × levelMultiply(level)<br />
           * 비율 스탯(DEF, CritRate 등)은 레벨 성장 없음 (장비/버프로만 변동)
         </p>
+      </section>
+
+      <section className="test-section">
+        <h3>스킬 정보</h3>
+        {!skill ? (
+          <p style={{ color: '#666', fontSize: '0.85rem' }}>스킬 없음</p>
+        ) : (
+          <table className="stat-table">
+            <tbody>
+              <tr><td>이름</td><td>{skill.nameKr}</td></tr>
+              <tr><td>타입</td><td>{skill.type}</td></tr>
+              <tr><td>타이밍</td><td>{skill.timing}</td></tr>
+              <tr>
+                <td>쿨타임</td>
+                <td>{skill.coolTimeCount === 0 ? '매 턴 발동' : `${skill.coolTimeCount}턴`}</td>
+              </tr>
+              <tr><td>반복 횟수</td><td>{getRepeatCount(skill.repeatCount)}회</td></tr>
+              <tr><td>범위 패턴</td><td>{skill.rangePattern} (raw: {skill.rangePatternRaw})</td></tr>
+              <tr><td>타겟 방식</td><td>{skill.searchType} (raw: {skill.searchTypeRaw})</td></tr>
+              <tr><td>범위 크기</td><td>{skill.rangeSize}</td></tr>
+              <tr><td>연결 버프</td><td>{skill.buffs.length}개</td></tr>
+            </tbody>
+          </table>
+        )}
       </section>
 
       <section className="test-section">
