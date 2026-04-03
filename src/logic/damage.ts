@@ -1,223 +1,201 @@
-import type { BattleCharacter, StatusEffect } from '../types/game'
+// 데미지 계산 로직
+// 명세: Docs/명세/전투/07-데미지.md
+// ProcessAttack 전체 파이프라인 구현
 
-/** 기본 데미지 계산: ATK × (1 - DEF/100). DEF는 % 감소율 */
-export function calculateDamage(atk: number, defPercent: number): number {
-  return atk * Math.max(0, 1 - defPercent / 100)
+import { WELL512 } from './random'
+
+// ─── 입력 타입 ────────────────────────────────────────────
+
+/** 공격자 스탯 (데미지 계산에 필요한 부분) */
+export interface AttackerStats {
+  atk: number
+  critRate: number        // % 정수 (예: 15 = 15%)
+  critDamage: number      // % 정수 (예: 200 = 200%)
+  piercing: number        // % 정수 (예: 30 = 30%)
+  fixedDamageRate: number // [0.0, 1.0], 대부분 0
 }
 
-/** 상태 효과에서 특정 type의 합산 value 계산 */
-function sumEffectValue(effects: StatusEffect[], type: string): number {
-  return effects.filter((e) => e.type === type).reduce((sum, e) => sum + e.value, 0)
+/** 방어자 스탯 (데미지 계산에 필요한 부분) */
+export interface DefenderStats {
+  def: number            // % 정수 (예: 30 = 30%, 피격률 = 1 - 0.30 = 0.70)
+  hp: number
+  agility: number        // % 정수, 스침 확률
+  critResist: number     // % 정수, 치명타 피해 저항
 }
 
-/** 채널별 합산: multiply 채널 합계 (channel 미지정 시 multiply 기본) */
-function sumMultiply(effects: StatusEffect[], type: string): number {
-  return effects
-    .filter((e) => e.type === type && e.channel !== 'plus')
-    .reduce((sum, e) => sum + e.value, 0)
-}
+// ─── 결과 타입 ────────────────────────────────────────────
 
-/** 채널별 합산: plus 채널 합계 */
-function sumPlus(effects: StatusEffect[], type: string): number {
-  return effects
-    .filter((e) => e.type === type && e.channel === 'plus')
-    .reduce((sum, e) => sum + e.value, 0)
-}
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.min(max, Math.max(min, value))
-}
-
-/**
- * 버프/디버프 반영한 유효 공격력
- * 패턴 A: max(0, base * (1 + clamp(mul, -0.8, 3.0))) + plus
- */
-export function getEffectiveAtk(char: BattleCharacter): number {
-  const mulUp = sumMultiply(char.statusEffects, 'atk_up')
-  const mulDown = sumMultiply(char.statusEffects, 'atk_down')
-  const multiply = clamp((mulUp - mulDown) / 100, -0.8, 3.0)
-  const plusUp = sumPlus(char.statusEffects, 'atk_up')
-  const plusDown = sumPlus(char.statusEffects, 'atk_down')
-  const plus = plusUp - plusDown
-  return Math.max(0, char.atk * (1 + multiply)) + plus
-}
-
-/** 버프/디버프 반영한 유효 방어력 (% 기반, 합연산) */
-export function getEffectiveDef(char: BattleCharacter): number {
-  const bonus = sumEffectValue(char.statusEffects, 'def_up')
-  const penalty = sumEffectValue(char.statusEffects, 'def_down')
-  return Math.max(0, char.def + bonus - penalty)
-}
-
-/**
- * 버프 반영한 유효 치명확률
- * 패턴 B: clamp((base + plus) * (1 + mul), 0, 1)
- */
-export function getEffectiveCritRate(char: BattleCharacter): number {
-  const mulUp = sumMultiply(char.statusEffects, 'crit_up')
-  const mulDown = sumMultiply(char.statusEffects, 'crit_rate_down')
-  const multiply = (mulUp - mulDown) / 100
-  const plusUp = sumPlus(char.statusEffects, 'crit_up')
-  const plusDown = sumPlus(char.statusEffects, 'crit_rate_down')
-  const plus = (plusUp - plusDown) / 100
-  return clamp((char.critRate / 100 + plus) * (1 + multiply), 0, 1) * 100
-}
-
-/**
- * 버프/디버프 반영한 유효 치명피해
- * 패턴 B (상한 없음): max(0, (base + plus) * (1 + mul))
- */
-export function getEffectiveCritDamage(char: BattleCharacter): number {
-  const mulUp = sumMultiply(char.statusEffects, 'crit_damage_up')
-  const mulDown = sumMultiply(char.statusEffects, 'crit_damage_down')
-  const multiply = (mulUp - mulDown) / 100
-  const plusUp = sumPlus(char.statusEffects, 'crit_damage_up')
-  const plusDown = sumPlus(char.statusEffects, 'crit_damage_down')
-  const plus = plusUp - plusDown
-  return Math.max(0, (char.critDamage + plus) * (1 + multiply))
-}
-
-/**
- * 버프/디버프 반영한 유효 민첩
- * 패턴 B: clamp((base + plus) * (1 + mul), 0, 1)
- */
-export function getEffectiveAgility(char: BattleCharacter): number {
-  const mulUp = sumMultiply(char.statusEffects, 'agility_up')
-  const mulDown = sumMultiply(char.statusEffects, 'agility_down')
-  const multiply = (mulUp - mulDown) / 100
-  const plusUp = sumPlus(char.statusEffects, 'agility_up')
-  const plusDown = sumPlus(char.statusEffects, 'agility_down')
-  const plus = (plusUp - plusDown) / 100
-  return clamp((char.agility / 100 + plus) * (1 + multiply), 0, 1) * 100
-}
-
-/**
- * 버프/디버프 반영한 유효 피해 감소
- * 패턴 B: clamp((base + plus) * (1 + mul), 0, 1)
- */
-export function getEffectiveDamageReduce(char: BattleCharacter): number {
-  const mulUp = sumMultiply(char.statusEffects, 'damage_reduce_up')
-  const mulDown = sumMultiply(char.statusEffects, 'damage_reduce_down')
-  const multiply = (mulUp - mulDown) / 100
-  const plusUp = sumPlus(char.statusEffects, 'damage_reduce_up')
-  const plusDown = sumPlus(char.statusEffects, 'damage_reduce_down')
-  const plus = (plusUp - plusDown) / 100
-  return clamp((char.damageReduce / 100 + plus) * (1 + multiply), 0, 1)
-}
-
-/**
- * 보호율 계산 (원본: GetProtectedRate)
- * - shield_fix가 있으면 고정값 사용 (ProtectFix — 곱연산 스킵)
- * - 일반 shield는 곱연산 누적: rate = (1-v1/100) × (1-v2/100) × ...
- * - 상한: 최대 70% 감소 → rate 최소 0.3
- * @returns 데미지 배율 (0.3~1.0). 낮을수록 방어 높음
- */
-export function calcProtectedRate(defender: BattleCharacter): number {
-  // ProtectFix: 고정 보호율 (곱연산 스킵, 첫 번째 값 사용)
-  const fix = defender.statusEffects.find((e) => e.type === 'shield_fix')
-  if (fix) {
-    return Math.max(0.3, 1 - fix.value / 100)
-  }
-
-  const shields = defender.statusEffects.filter((e) => e.type === 'shield')
-  if (shields.length === 0) return 1.0
-
-  let rate = 1.0
-  for (const s of shields) {
-    rate *= 1 - s.value / 100
-  }
-  // 상한: 최대 70% 감소 → rate 최소 0.3
-  return Math.max(0.3, rate)
-}
-
-/**
- * 수신 데미지율 (원본: GetReciveDamageRate)
- * shield_penalty (피해 증가) 효과만 곱연산 누적
- * @returns 데미지 배율 (>= 1.0). 높을수록 피해 증가
- */
-export function calcReciveDamageRate(defender: BattleCharacter): number {
-  const penalties = defender.statusEffects.filter((e) => e.type === 'shield_penalty')
-  if (penalties.length === 0) return 1.0
-
-  let rate = 1.0
-  for (const p of penalties) {
-    rate *= 1 + p.value / 100
-  }
-  return rate
-}
-
-/** @deprecated Use calcProtectedRate instead */
-export const calcShieldReduction = calcProtectedRate
-
-/** 받는 피해량 증가 반영 (dmg_taken_up 효과 + 복합 상태효과의 dmgTakenUp 합산) */
-export function getDmgTakenMultiplier(defender: BattleCharacter): number {
-  const increase = sumEffectValue(defender.statusEffects, 'dmg_taken_up')
-  const bundled = defender.statusEffects.reduce((sum, e) => sum + (e.dmgTakenUp ?? 0), 0)
-  return 1 + (increase + bundled) / 100
-}
-
-/** 최종 데미지 계산 결과 */
-export interface FullDamageResult {
+export interface DamageResult {
+  isCritical: boolean
+  isDodge: boolean
+  /** 가변 데미지 (방어/스침 적용) */
   variableDamage: number
+  /** 고정 데미지 (방어/스침 무시) */
   fixedDamage: number
+  /** 총 최종 데미지 */
   totalDamage: number
+  /** 스침 발동 시 디버프 턴 감소 여부 */
+  debuffTurnReduced: boolean
+}
+
+// ─── 상수 ─────────────────────────────────────────────────
+
+const CRIT_ROLL_MAX = 10000
+const DODGE_ROLL_MAX = 10000
+/** 스침 시 가변 데미지 감소율 */
+const GRAZE_DAMAGE_REDUCTION = 0.35
+/** 스침 시 디버프 턴 감소율 */
+const GRAZE_DEBUFF_REDUCTION = 0.5
+/** 방어율 최대 경감 상한 (rate 최솟값 = 0.3 → 70% 경감) */
+const PROTECT_RATE_MAX_LIMIT = 0.3
+
+// ─── 핵심 함수 ────────────────────────────────────────────
+
+/**
+ * 유효 ATK 계산.
+ * multiply 버프는 [-0.8, 3.0] 클램프 후 base_atk에 적용.
+ * 이 함수는 버프 없이 raw ATK만 그대로 반환 (버프는 battle.ts에서 처리).
+ */
+export function effectiveAtk(atk: number, sumMultiply = 0, sumPlus = 0): number {
+  const multiply = Math.max(-0.8, Math.min(3.0, sumMultiply))
+  return Math.max(0, atk * (1 + multiply)) + sumPlus
 }
 
 /**
- * 최종 데미지 계산 (버프/디버프/보호막 모두 반영)
- * 고정/가변 데미지 분리: 고정 데미지는 DEF를 무시
- * 스침(graze)은 가변 데미지에만 적용
+ * 방어율 계산 (곱연산 누적, 최솟값 0.3).
+ * protectRates: 각 방어 버프의 rate 값 배열 (예: [0.7, 0.5] = 30%+50% 방어)
  */
-export function calculateFullDamage(
-  attacker: BattleCharacter,
-  defender: BattleCharacter,
-  skillMultiplier: number = 1.0,
-  critMultiplier: number = 1.0,
-  isGraze: boolean = false
-): FullDamageResult {
-  const atk = getEffectiveAtk(attacker)
-  const def = getEffectiveDef(defender)
-  const fixedRate = attacker.fixedDamageRate ?? 0
+export function calcProtectedRate(protectRates: number[]): number {
+  let rate = 1.0
+  for (const r of protectRates) {
+    rate *= r
+  }
+  return Math.max(PROTECT_RATE_MAX_LIMIT, rate)
+}
 
-  // Variable damage: DEF applied
-  const variableAtk = atk * (1 - fixedRate)
-  let variableDamage = calculateDamage(variableAtk, def) * skillMultiplier * critMultiplier
+/**
+ * 관통 적용 후 유효 방어율.
+ * effective_def = protectedRate * (1 - piercing)
+ */
+export function effectiveDefRate(protectedRate: number, piercing: number): number {
+  return Math.max(0, protectedRate * (1 - piercing))
+}
 
-  // Graze: 35% reduction to variable damage only
-  if (isGraze) {
-    variableDamage *= 0.65
+/**
+ * 데미지 계산 메인 함수.
+ * rng가 없으면 확정 시나리오 (is_crit / is_dodge) 파라미터로 제어.
+ */
+export function calcDamage(
+  attacker: AttackerStats,
+  defender: DefenderStats,
+  options: {
+    rng?: WELL512
+    forceCrit?: boolean
+    forceDodge?: boolean
+    /** 방어자 protectedRate (버프 없으면 1.0) */
+    protectedRate?: number
+    /** 방어자 피해증가 배율 (버프 없으면 1.0) */
+    reciveDamageRate?: number
+  } = {}
+): DamageResult {
+  const {
+    rng,
+    forceCrit = false,
+    forceDodge = false,
+    protectedRate = 1.0,
+    reciveDamageRate = 1.0,
+  } = options
+
+  // 1. 기본 데미지
+  let base = attacker.atk
+
+  // 2. 치명타 판정
+  let isCritical = forceCrit
+  if (rng) {
+    const roll = rng.getRandom(0, CRIT_ROLL_MAX)
+    isCritical = (attacker.critRate / 100) > roll / CRIT_ROLL_MAX
   }
 
-  // DamageReduce: variable damage only
-  const damageReduce = getEffectiveDamageReduce(defender)
-  if (damageReduce > 0) {
-    variableDamage *= (1 - damageReduce)
+  if (isCritical) {
+    const critDmgRate = attacker.critDamage / 100     // 200% → 2.0
+    const critResist = defender.critResist / 100
+    const effectiveCrit = Math.max(0, critDmgRate * (1 - critResist))
+    base += base * effectiveCrit
   }
 
-  // Fixed damage: DEF ignored
-  let fixedDamage = atk * fixedRate * skillMultiplier * critMultiplier
+  // 3. 고정/가변 분리
+  const fixedRate = Math.max(0, Math.min(1, attacker.fixedDamageRate))
+  const fixedDamage = base * fixedRate
+  let variableDamage = base - fixedDamage
 
-  // dmg_taken_up applies to both
-  const dmgTakenMul = getDmgTakenMultiplier(defender)
-  variableDamage *= dmgTakenMul
-  fixedDamage *= dmgTakenMul
+  // 4. 스침 판정 (가변만)
+  let isDodge = forceDodge
+  if (rng) {
+    const roll = rng.getRandom(0, DODGE_ROLL_MAX)
+    isDodge = (defender.agility / 100) > roll / DODGE_ROLL_MAX
+  }
 
-  // ProtectedRate (shield) applies to both
-  const protectedRate = calcProtectedRate(defender)
-  variableDamage *= protectedRate
-  fixedDamage *= protectedRate
+  if (isDodge) {
+    variableDamage -= variableDamage * GRAZE_DAMAGE_REDUCTION  // ×0.65
+  }
 
-  // ReciveDamageRate (shield_penalty) applies to both
-  const reciveDmgRate = calcReciveDamageRate(defender)
-  variableDamage *= reciveDmgRate
-  fixedDamage *= reciveDmgRate
+  // 5. 방어율 적용 (가변만)
+  // def가 % 정수(30 = 30%)이므로 0~1 범위로 변환하여 protectedRate에 곱연산
+  // protectedRate는 이미 버프 포함 계산값; 버프 없으면 기본 DEF만 반영
+  const defFraction = defender.def / 100  // 30% → 0.3
+  const baseProtected = Math.max(PROTECT_RATE_MAX_LIMIT, 1.0 - defFraction)
+  const finalProtected = effectiveDefRate(
+    Math.min(baseProtected, protectedRate),  // 더 낮은 rate (더 강한 방어) 사용
+    attacker.piercing / 100
+  )
 
-  const finalVariable = Math.max(0, Math.round(variableDamage))
-  const finalFixed = Math.max(0, Math.round(fixedDamage))
+  variableDamage = (variableDamage - variableDamage * finalProtected) * reciveDamageRate
+  variableDamage = Math.max(0, variableDamage)
+
+  const totalDamage = Math.round(variableDamage) + Math.round(fixedDamage)
 
   return {
-    variableDamage: finalVariable,
-    fixedDamage: finalFixed,
-    totalDamage: finalVariable + finalFixed,
+    isCritical,
+    isDodge,
+    variableDamage: Math.round(variableDamage),
+    fixedDamage: Math.round(fixedDamage),
+    totalDamage,
+    debuffTurnReduced: isDodge,  // 스침 발동 시 디버프 턴 50% 감소
   }
+}
+
+/**
+ * 스침 발동 시 디버프 턴 감소 계산.
+ * 명세 §4.1: reduced = floor(maxTurn * 0.5), currentTurn = maxTurn - reduced
+ */
+export function calcGrazeDebuffTurn(maxTurn: number): number {
+  const reduced = Math.floor(maxTurn * GRAZE_DEBUFF_REDUCTION)
+  return maxTurn - reduced
+}
+
+/**
+ * 데미지 적용 파이프라인 시뮬레이션 (단일 대상, 버프 없음 간소화 버전).
+ * 실제 전투에서는 battle.ts가 에너지가드/보너스HP/카운트가드를 처리한다.
+ */
+export function applyDamageToHp(
+  currentHp: number,
+  damage: number,
+  bonusHp = 0,
+): { remainingHp: number; remainingBonusHp: number; isDead: boolean } {
+  let remaining = damage
+  let remainingBonusHp = bonusHp
+
+  // 보너스 HP 소모
+  if (remainingBonusHp > 0) {
+    if (remaining <= remainingBonusHp) {
+      remainingBonusHp -= remaining
+      remaining = 0
+    } else {
+      remaining -= remainingBonusHp
+      remainingBonusHp = 0
+    }
+  }
+
+  const remainingHp = Math.max(0, currentHp - remaining)
+  return { remainingHp, remainingBonusHp, isDead: remainingHp <= 0 }
 }

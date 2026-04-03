@@ -1,69 +1,113 @@
-import type { BattleCharacter } from '../types/game'
+// 개별 그리드 셀 — 배치 모드 / 전투 모드 공용
 
 interface CellProps {
-  character: BattleCharacter | null
-  isPlayerSide: boolean
-  isSelected: boolean
-  onClick: () => void
-  onRightClick: () => void
-  disabled: boolean
-  draggable?: boolean
-  onDragStart?: () => void
-  onDragOver?: (e: React.DragEvent) => void
-  onDrop?: () => void
+  name?: string
+  emoji?: string
+  hp?: number
+  maxHp?: number
+  isDead?: boolean
+  isCasting?: boolean
+  isSelected?: boolean
+  isCurrent?: boolean
+  mode: 'placing' | 'battle'
+  onClick?: () => void
+}
+
+function hpColor(ratio: number): string {
+  if (ratio > 0.6) return '#4caf50'
+  if (ratio > 0.3) return '#f5a623'
+  return '#e94560'
 }
 
 export default function Cell({
-  character, isPlayerSide, isSelected, onClick, onRightClick, disabled,
-  draggable: isDraggable, onDragStart, onDragOver, onDrop,
+  name, emoji, hp, maxHp, isDead, isCasting,
+  isSelected, isCurrent, mode, onClick,
 }: CellProps) {
-  const hpPercent = character ? (character.hp / character.maxHp) * 100 : 0
-  const isDefeated = character !== null && character.hp <= 0
+  const ratio = (hp != null && maxHp && maxHp > 0) ? hp / maxHp : 1
+  const borderColor = isSelected ? '#e94560' : isCurrent ? '#f5a623' : '#0f3460'
+  const borderWidth = (isSelected || isCurrent) ? '2px' : '1px'
 
-  const handleContextMenu = (e: React.MouseEvent) => {
-    e.preventDefault()
-    if (!disabled) onRightClick()
-  }
+  const isEmpty = !name
 
   return (
     <div
-      className={`cell ${isPlayerSide ? 'cell-player' : 'cell-enemy'} ${isSelected ? 'cell-selected' : ''} ${disabled ? 'cell-disabled' : ''} ${isDefeated ? 'cell-defeated' : ''}`}
-      onClick={disabled ? undefined : onClick}
-      onContextMenu={handleContextMenu}
-      draggable={isDraggable}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
+      onClick={onClick}
+      style={{
+        position: 'relative',
+        width: '90px',
+        height: '90px',
+        border: `${borderWidth} solid ${borderColor}`,
+        borderRadius: '6px',
+        background: isDead ? '#1a0a0a' : '#0f1e3a',
+        cursor: onClick ? 'pointer' : 'default',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        userSelect: 'none',
+      }}
     >
-      {character ? (
-        <div className={`cell-character ${isDefeated ? 'cell-char-defeated' : ''}`}>
-          <div className="cell-status">
-            {character.isCasting && !isDefeated && <span className="status-casting" title="캐스팅 중">*</span>}
-          </div>
-          {character.order >= 0 && (
-            <span className="cell-order">{character.order + 1}</span>
+      {isEmpty ? (
+        mode === 'placing' && (
+          <span style={{ color: '#555', fontSize: '1.5rem' }}>+</span>
+        )
+      ) : (
+        <>
+          {/* 사망 오버레이 */}
+          {isDead && (
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'rgba(0,0,0,0.7)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '1.5rem', zIndex: 2,
+            }}>☠</div>
           )}
-          {character.imageId ? (
-            <img className="cell-img" src={`/images/thumbnails/char${character.imageId}icon.png`} alt={character.name} />
-          ) : (
-            <>
-              <span className="cell-emoji">{character.emoji}</span>
-              <span className="cell-name">{character.name}</span>
-            </>
+
+          {/* 캐스팅 링 */}
+          {isCasting && !isDead && (
+            <div style={{
+              position: 'absolute', inset: '2px',
+              border: '2px solid #f5a623',
+              borderRadius: '4px',
+              pointerEvents: 'none',
+              zIndex: 1,
+            }} />
           )}
-          {isDefeated ? (
-            <span className="cell-defeated-mark">X</span>
-          ) : (
-            <div className="hp-bar">
-              <div
-                className="hp-bar-fill"
-                style={{ width: `${hpPercent}%` }}
-              />
+
+          {/* 이모지 */}
+          <div style={{ fontSize: '1.6rem', lineHeight: 1 }}>{emoji ?? '?'}</div>
+
+          {/* 이름 */}
+          <div style={{
+            fontSize: '0.6rem',
+            color: isDead ? '#666' : '#ccc',
+            textAlign: 'center',
+            marginTop: '2px',
+            padding: '0 2px',
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            width: '100%',
+          }}>{name}</div>
+
+          {/* HP 수치 (전투 모드) */}
+          {mode === 'battle' && hp != null && !isDead && (
+            <div style={{ fontSize: '0.55rem', color: hpColor(ratio), marginTop: '1px' }}>
+              {hp.toLocaleString()}
             </div>
           )}
-        </div>
-      ) : (
-        <span className="cell-empty">{isPlayerSide ? '+' : ''}</span>
+
+          {/* HP 바 (전투 모드) */}
+          {mode === 'battle' && hp != null && maxHp && (
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '6px', background: '#111' }}>
+              <div style={{
+                height: '100%',
+                width: `${Math.max(0, ratio * 100)}%`,
+                background: hpColor(ratio),
+              }} />
+            </div>
+          )}
+        </>
       )}
     </div>
   )

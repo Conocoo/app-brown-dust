@@ -1,129 +1,238 @@
-import type { BattleCharacter, BattleLogEntry } from '../types/game'
-import { PlayRandomManager } from './random'
-import { executeTurn, applyPassiveSkills, processPostDeathBuffs } from './turn'
+// 전투 메인 루프
+// 명세: Docs/명세/전투/04-전투-흐름.md
+
+import type { BattleCharacter, BattleLogEntry } from '../types/battle'
+import { executeTurn } from './turn'
+import { WELL512 } from './random'
+import { calcStatsAtLevel } from './stat'
+import { applyRunes } from './rune'
+import { getMercenaryById } from '../data/mercenaries'
+import { getSkillByCode } from '../data/skills'
+import type { RuneSlots } from '../types/rune'
+
+// ─── 상수 ──────────────────────────────────────────────────
 
 const MAX_ROUNDS = 300
+const GAME_OVER_BUFF_ROUND = 7
 
-// 게임오버 버프 설정 (원본: CharBalanceList)
-const GAMEOVER_BUFF_ROUND = 7       // 이 라운드부터 강제 버프
-const GAMEOVER_BUFF_FREQUENCY = 1   // 매 N 라운드마다
+// ─── 전투 결과 ─────────────────────────────────────────────
 
-let gameoverBuffId = 0
+export type BattleWinner = 'A' | 'B' | 'draw'
+
+export interface BattleResult {
+  winner: BattleWinner
+  rounds: number
+  log: BattleLogEntry[]
+  teamA: BattleCharacter[]
+  teamB: BattleCharacter[]
+}
+
+// ─── BattleCharacter 생성 ─────────────────────────────────
+
+let _charCounter = 0
+
+export function createBattleChar(
+  mercId: string,
+  team: 'A' | 'B',
+  level = 115,
+  runes: RuneSlots = [null, null, null],
+  row = 0,
+  col = 0
+): BattleCharacter | null {
+  const merc = getMercenaryById(mercId)
+  if (!merc) return null
+
+  const base = calcStatsAtLevel(merc, level)
+  const stats = applyRunes(base, runes)
+  const skillTemplate = getSkillByCode(merc.skillCode)
+  const key = `${team}_${mercId}_${++_charCounter}`
+
+  const battleSkill = skillTemplate
+    ? [{
+        skillCode: skillTemplate.code,
+        coolTimeCount: skillTemplate.coolTimeCount,
+        repeatCount: Math.max(1, skillTemplate.repeatCount),
+        searchType: skillTemplate.searchTypeRaw,
+        rangeType: skillTemplate.rangePatternRaw,
+        rangeSize: skillTemplate.rangeSize,
+      }]
+    : []
+
+  return {
+    key,
+    id: mercId,
+    name: merc.name,
+    type: merc.type,
+    team,
+    row,
+    col,
+    hp: stats.hp,
+    maxHp: stats.hp,
+    atk: stats.atk,
+    supportPower: stats.supportPower,
+    def: stats.def,
+    critRate: stats.critRate,
+    critDamage: stats.critDamage,
+    agility: stats.agility,
+    piercing: stats.piercing,
+    patience: stats.patience,
+    activeBuffs: [],
+    order: 0,
+    isCasting: false,
+    skills: battleSkill,
+    coolTimeCounters: {},
+    tempHp: 0,
+    imageId: merc.imageId,
+    emoji: merc.emoji,
+    runes,
+  }
+}
+
+// ─── 생존자 체크 ──────────────────────────────────────────
+
+function hasLivingFighter(team: BattleCharacter[]): boolean {
+  return team.some(c => c.hp > 0 && c.type !== 'support')
+}
+
+// ─── 승패 판정 ────────────────────────────────────────────
+
+function checkWinner(teamA: BattleCharacter[], teamB: BattleCharacter[]): BattleWinner | null {
+  const aAlive = hasLivingFighter(teamA)
+  const bAlive = hasLivingFighter(teamB)
+
+  if (!aAlive && !bAlive) return 'draw'
+  if (!aAlive) return 'B'
+  if (!bAlive) return 'A'
+  return null
+}
+
+// ─── CreateWorldSequence — 인터리빙 순서 생성 ────────────
+
+function createWorldSequence(
+  teamA: BattleCharacter[],
+  teamB: BattleCharacter[]
+): BattleCharacter[] {
+  const sequence: BattleCharacter[] = []
+  let ai = 0, bi = 0
+  let isATurn = true
+
+  while (ai < teamA.length || bi < teamB.length) {
+    if (isATurn) {
+      while (ai < teamA.length) {
+        const c = teamA[ai++]
+        if (c.hp > 0) { sequence.push(c); break }
+      }
+    } else {
+      while (bi < teamB.length) {
+        const c = teamB[bi++]
+        if (c.hp > 0) { sequence.push(c); break }
+      }
+    }
+
+    if (ai >= teamA.length) isATurn = false
+    else if (bi >= teamB.length) isATurn = true
+    else isATurn = !isATurn
+  }
+
+  return sequence
+}
+
+// ─── 메인 전투 시뮬레이션 ────────────────────────────────
 
 /**
- * 전투를 시뮬레이션하고 턴별 로그를 반환.
- * @param seed 시드 미지정 시 랜덤 생성. 동일 시드 → 동일 전투 결과.
+ * simulateBattle: 전체 전투를 순수 함수로 실행 → BattleResult 반환.
+ * 명세 §1~3
  */
 export function simulateBattle(
-  playerTeam: BattleCharacter[],
-  enemyTeam: BattleCharacter[],
-  seed?: number
-): BattleLogEntry[] {
-  const battleSeed = seed ?? (Math.floor(Math.random() * 0xFFFFFFFF) >>> 0)
-  const rng = new PlayRandomManager(battleSeed)
+  teamA: BattleCharacter[],
+  teamB: BattleCharacter[],
+  seed = Date.now()
+): BattleResult {
+  const rng = new WELL512(seed)
+  const log: BattleLogEntry[] = []
+  let rounds = 0
 
-  // 전투용 복사본 (statusEffects 독립 배열로 복사)
-  const players = playerTeam.map((c) => ({ ...c, statusEffects: [...c.statusEffects] }))
-  const enemies = enemyTeam.map((c) => ({ ...c, statusEffects: [...c.statusEffects] }))
-  const logs: BattleLogEntry[] = []
+  // 전투 시작 로그
+  log.push({
+    type: 'round_start',
+    charKey: '',
+    detail: `전투 시작 — A팀 ${teamA.length}명 vs B팀 ${teamB.length}명`,
+  })
 
-  const alive = (team: BattleCharacter[]) =>
-    team.filter((c) => c.hp > 0 && c.type !== 'support')
+  while (rounds < MAX_ROUNDS) {
+    rounds++
 
-  // 순서대로 정렬
-  const sortedPlayers = [...players].sort((a, b) => a.order - b.order)
-  const sortedEnemies = [...enemies].sort((a, b) => a.order - b.order)
-
-  // passive 스킬 발동 (게임 시작 시 1회)
-  const allSorted = [...sortedEnemies, ...sortedPlayers]
-  applyPassiveSkills(allSorted, players, enemies, logs, rng)
-
-  // 사후 버프 추적: 캐릭터별 on_death_buff 정보를 미리 저장
-  const deathBuffMap = new Map<BattleCharacter, { type: string; linkedBuffId?: string }[]>()
-  for (const char of [...players, ...enemies]) {
-    const deathBuffs = char.statusEffects.filter(
-      (e) => e.type === 'on_death_buff_allies' || e.type === 'on_death_buff_enemies'
-    )
-    if (deathBuffs.length > 0) {
-      deathBuffMap.set(char, deathBuffs.map((e) => ({ type: e.type, linkedBuffId: e.linkedBuffId })))
-    }
-  }
-
-  // 이미 처리된 사망 캐릭터 추적
-  const processedDeaths = new Set<BattleCharacter>()
-
-  /** 턴 후 새로 사망한 캐릭터의 사후 버프 처리 */
-  function handleNewDeaths(): void {
-    const allChars = [...players, ...enemies]
-    for (const char of allChars) {
-      if (char.hp > 0 || processedDeaths.has(char)) continue
-      processedDeaths.add(char)
-
-      const deathBuffs = deathBuffMap.get(char)
-      if (!deathBuffs || deathBuffs.length === 0) continue
-
-      const charAllies = char.team === 'player' ? players : enemies
-      const charEnemies = char.team === 'player' ? enemies : players
-      processPostDeathBuffs(char, charAllies, charEnemies, logs, deathBuffs, rng)
-    }
-  }
-
-  for (let round = 1; round <= MAX_ROUNDS; round++) {
-    // 라운드 시작 로그 (첫 번째 라운드에 시드 기록)
-    logs.push({
+    log.push({
       type: 'round_start',
-      round,
-      message: `라운드 ${round}`,
-      ...(round === 1 ? { seed: battleSeed } : {}),
+      charKey: '',
+      detail: `=== 라운드 ${rounds} 시작 ===`,
     })
 
-    // 게임오버 버프: 장기전 방지용 강제 ATK 증가 (양팀 전체)
-    if (round >= GAMEOVER_BUFF_ROUND && (round - GAMEOVER_BUFF_ROUND) % GAMEOVER_BUFF_FREQUENCY === 0) {
-      for (const char of [...players, ...enemies]) {
-        if (char.hp <= 0) continue
-        char.statusEffects.push({
-          id: `gameover_${++gameoverBuffId}`,
-          type: 'atk_up',
-          value: 30,
-          remainingTurns: 999,
-          category: 'buff',
-          buffType: 'stat_enhance',
+    // 7라운드부터 게임오버 버프 (ATK +30%) — 간소화: 직접 스탯 증가
+    if (rounds === GAME_OVER_BUFF_ROUND) {
+      for (const c of [...teamA, ...teamB]) {
+        if (c.hp > 0) {
+          const oldAtk = c.atk
+          c.atk = Math.round(c.atk * 1.3)
+          log.push({
+            type: 'buff_applied',
+            charKey: c.key,
+            detail: `게임오버 버프: ${c.name} ATK ${oldAtk} → ${c.atk} (+30%)`,
+          })
+        }
+      }
+    }
+
+    // 라운드별 인터리빙 순서 생성 (생존자만)
+    const sequence = createWorldSequence(
+      teamA.filter(c => c.hp > 0),
+      teamB.filter(c => c.hp > 0)
+    )
+
+    if (sequence.length === 0) break
+
+    // 각 캐릭터 턴 실행
+    for (const char of sequence) {
+      if (char.hp <= 0) continue  // 이전 턴에 사망했을 수 있음
+
+      executeTurn(char, { rng, teamA, teamB, log })
+
+      // 중간 승패 체크
+      const midWinner = checkWinner(teamA, teamB)
+      if (midWinner !== null) {
+        log.push({
+          type: 'battle_end',
+          charKey: '',
+          detail: `전투 종료 (라운드 ${rounds}) — ${midWinner === 'draw' ? '무승부' : midWinner + '팀 승리'}`,
         })
+        return { winner: midWinner, rounds, log, teamA, teamB }
       }
-      logs.push({
-        type: 'buff',
-        message: `라운드 ${round} — 게임오버 버프! 양팀 공격력 +30%`,
+    }
+
+    // 라운드 종료 승패 체크
+    const winner = checkWinner(teamA, teamB)
+    if (winner !== null) {
+      log.push({
+        type: 'battle_end',
+        charKey: '',
+        detail: `전투 종료 (라운드 ${rounds}) — ${winner === 'draw' ? '무승부' : winner + '팀 승리'}`,
       })
+      return { winner, rounds, log, teamA, teamB }
     }
-
-    // 번갈아 턴 진행: 상대1 → 나1 → 상대2 → 나2 → ...
-    const maxLen = Math.max(sortedEnemies.length, sortedPlayers.length)
-
-    for (let i = 0; i < maxLen; i++) {
-      // 적 턴
-      if (i < sortedEnemies.length) {
-        const enemyChar = sortedEnemies[i]
-        if (enemyChar.hp > 0) {
-          executeTurn(enemyChar, enemies, players, logs, rng)
-          handleNewDeaths()
-        }
-        if (alive(players).length === 0) break
-      }
-
-      // 내 턴
-      if (i < sortedPlayers.length) {
-        const playerChar = sortedPlayers[i]
-        if (playerChar.hp > 0) {
-          executeTurn(playerChar, players, enemies, logs, rng)
-          handleNewDeaths()
-        }
-        if (alive(enemies).length === 0) break
-      }
-    }
-
-    // 승패 체크
-    if (alive(players).length === 0 || alive(enemies).length === 0) break
   }
 
-  return logs
+  // 최대 라운드 초과 → 무승부
+  log.push({
+    type: 'battle_end',
+    charKey: '',
+    detail: `최대 라운드(${MAX_ROUNDS}) 초과 → 무승부`,
+  })
+
+  return {
+    winner: 'draw',
+    rounds,
+    log,
+    teamA,
+    teamB,
+  }
 }

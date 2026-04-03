@@ -1,719 +1,398 @@
-import { useState, useCallback, useRef, useEffect } from 'react'
-import type { BattleCharacter, GamePhase, BattleLogEntry, StatusEffect } from './types/game'
-import { getAllMercenaries, getMercenaryById } from './data/mercenaries'
-
-import { simulateBattle } from './logic/battle'
-import { applyRunes } from './logic/rune'
+import { useState, useEffect, useRef } from 'react'
 import Board from './components/Board'
-
-import CharacterList from './components/CharacterList'
-import OrderSetter from './components/OrderSetter'
+import MercenaryPicker from './components/MercenaryPicker'
 import BattleLog from './components/BattleLog'
-import MercenaryDex from './components/MercenaryDex'
-import SkillDex from './components/SkillDex'
+import BattleControls from './components/BattleControls'
+import DataPanel from './components/test/DataPanel'
+import StatPanel from './components/test/StatPanel'
+import DamagePanel from './components/test/DamagePanel'
+import BuffPanel from './components/test/BuffPanel'
+import TargetingPanel from './components/test/TargetingPanel'
+import DeathPanel from './components/test/DeathPanel'
+import SkillPanel from './components/test/SkillPanel'
+import BattleSimPanel from './components/test/BattleSimPanel'
+import { getAllMercenaries } from './data/mercenaries'
+import { simulateBattle, createBattleChar } from './logic/battle'
+import type { BattleCharacter, BattleLogEntry } from './types/battle'
 import './App.css'
 
-const ROWS = 3
-const COLS = 12
-const PLAYER_COLS = 6
+// ─── 타입 ─────────────────────────────────────────────────
 
-function createEmptyGrid(): (BattleCharacter | null)[][] {
-  return Array.from({ length: ROWS }, () => Array(COLS).fill(null))
+type MainTab = 'battle' | 'dex' | 'test'
+type TestPanel = 'data' | 'stat' | 'damage' | 'buff' | 'targeting' | 'death' | 'skill' | 'battle_sim'
+type GamePhase = 'placing' | 'battling' | 'result'
+
+interface CharSnapshot { hp: number; isDead: boolean }
+type BattleSnapshot = Map<string, CharSnapshot>
+
+// ─── 상수 ─────────────────────────────────────────────────
+
+const TEST_MENU: [TestPanel, string][] = [
+  ['data', '데이터'],
+  ['stat', '스탯 계산'],
+  ['damage', '데미지'],
+  ['buff', '버프/상태효과'],
+  ['targeting', '타겟팅'],
+  ['death', '사망 체인'],
+  ['skill', '스킬 실행'],
+  ['battle_sim', '전투 시뮬레이션'],
+]
+
+// ─── 스냅샷 빌더 ──────────────────────────────────────────
+
+function buildSnapshots(
+  charsA: BattleCharacter[],
+  charsB: BattleCharacter[],
+  log: BattleLogEntry[]
+): BattleSnapshot[] {
+  const initial: BattleSnapshot = new Map()
+  for (const c of [...charsA, ...charsB]) {
+    initial.set(c.key, { hp: c.hp, isDead: false })
+  }
+
+  const snaps: BattleSnapshot[] = [initial]
+  let cur = new Map(initial)
+
+  for (const entry of log) {
+    cur = new Map(cur)
+
+    if (entry.type === 'attack' && entry.targetKey && entry.damage !== undefined) {
+      const s = cur.get(entry.targetKey)
+      if (s) cur.set(entry.targetKey, { ...s, hp: Math.max(0, s.hp - entry.damage) })
+    }
+
+    if (entry.type === 'death') {
+      const s = cur.get(entry.charKey)
+      if (s) cur.set(entry.charKey, { ...s, isDead: true })
+    }
+
+    if ((entry.type === 'revival' || entry.type === 'instead_death') && entry.restoreHp !== undefined) {
+      const s = cur.get(entry.charKey)
+      if (s) cur.set(entry.charKey, { hp: entry.restoreHp, isDead: false })
+    }
+
+    snaps.push(cur)
+  }
+
+  return snaps
 }
 
-/** 상대 팀을 랜덤 배치 */
-function placeEnemies(grid: (BattleCharacter | null)[][]): void {
-  const shuffled = [...getAllMercenaries()].sort(() => Math.random() - 0.5)
-  const count = Math.min(3, shuffled.length)
-  const positions: { row: number; col: number }[] = []
-
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = PLAYER_COLS; c < COLS; c++) {
-      positions.push({ row: r, col: c })
-    }
-  }
-  const shuffledPositions = positions.sort(() => Math.random() - 0.5)
-
-  for (let i = 0; i < count; i++) {
-    const pos = shuffledPositions[i]
-    const tmpl = shuffled[i]
-    const runed = applyRunes(tmpl, tmpl.runes)
-    grid[pos.row][pos.col] = {
-      templateId: tmpl.id,
-      name: tmpl.name,
-      type: tmpl.type,
-      hp: runed.maxHp,
-      maxHp: runed.maxHp,
-      atk: runed.atk,
-      supportPower: tmpl.supportPower ?? 0,
-      def: runed.def,
-      emoji: tmpl.emoji,
-      imageId: tmpl.imageId,
-      critRate: runed.critRate,
-      critDamage: runed.critDamage,
-      agility: tmpl.agility,
-      team: 'enemy',
-      row: pos.row,
-      col: pos.col,
-      isCasting: false,
-      order: i,
-      skill: tmpl.skill,
-      tempHp: 0,
-      statusEffects: [],
-      runes: tmpl.runes ?? [],
-      damageReduce: tmpl.damageReduce ?? 0,
-      selfDestruct: tmpl.selfDestruct,
-    }
-  }
-}
-
-type DragSource =
-  | { type: 'character'; id: string }
-  | { type: 'cell'; row: number; col: number }
-  | null
-
-type ActiveTab = 'main' | 'mercenary_dex' | 'skill_dex'
+// ─── 앱 ───────────────────────────────────────────────────
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('main')
-  const [grid, setGrid] = useState<(BattleCharacter | null)[][]>(createEmptyGrid)
-  const [phase, setPhase] = useState<GamePhase>('home')
-  const [selectedCharId, setSelectedCharId] = useState<string | null>(null)
-  const [selectedCell, setSelectedCell] = useState<{ row: number; col: number } | null>(null)
-  const [battleLogs, setBattleLogs] = useState<BattleLogEntry[]>([])
-  const [visibleLogCount, setVisibleLogCount] = useState(0)
-  const [winner, setWinner] = useState<'player' | 'enemy' | 'draw' | null>(null)
-  const [currentRound, setCurrentRound] = useState(0)
-  const [playerOrder, setPlayerOrder] = useState<BattleCharacter[]>([])
+  const [tab, setTab] = useState<MainTab>('battle')
+  const [testPanel, setTestPanel] = useState<TestPanel>('data')
 
-  // 속도 제어
-  const [battleSpeed, setBattleSpeed] = useState(1)
-  const [isPaused, setIsPaused] = useState(false)
-  const [isManual, setIsManual] = useState(false)
+  // 배치 상태
+  const [phase, setPhase] = useState<GamePhase>('placing')
+  const [slotsA, setSlotsA] = useState<(string | null)[]>(Array(9).fill(null))
+  const [slotsB, setSlotsB] = useState<(string | null)[]>(Array(9).fill(null))
+  const [selectedCell, setSelectedCell] = useState<{ team: 'A' | 'B'; idx: number } | null>(null)
 
-  // 드래그
-  const [dragSource, setDragSource] = useState<DragSource>(null)
-  const dragSourceRef = useRef<DragSource>(null)
-  const dropSucceededRef = useRef(false)
+  // 전투 상태
+  const [charsA, setCharsA] = useState<BattleCharacter[]>([])
+  const [charsB, setCharsB] = useState<BattleCharacter[]>([])
+  const [battleLog, setBattleLog] = useState<BattleLogEntry[]>([])
+  const [snapshots, setSnapshots] = useState<BattleSnapshot[]>([])
+  const [winner, setWinner] = useState<string>('')
+  const [logIdx, setLogIdx] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [speed, setSpeed] = useState(300)
 
-  const timerRef = useRef<number | null>(null)
-  const battleTeamsRef = useRef<{ players: BattleCharacter[]; enemies: BattleCharacter[] } | null>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // 배치된 플레이어 캐릭터
-  const placedPlayers = grid
-    .flat()
-    .filter((c): c is BattleCharacter => c !== null && c.team === 'player')
-
-  const placedIds = placedPlayers.map((c) => c.templateId)
-
-  // 캐릭터 선택 (목록에서)
-  const handleSelectCharacter = useCallback((id: string) => {
-    setSelectedCharId((prev) => (prev === id ? null : id))
-  }, [])
-
-  // 격자 좌클릭
-  const handleCellClick = useCallback(
-    (row: number, col: number) => {
-      // 배치 단계 외: 캐릭터 있으면 selectedCell만 변경 (정보 패널용)
-      if (phase !== 'placing') {
-        if (grid[row][col]) setSelectedCell({ row, col })
-        return
-      }
-      // 적 진영 클릭 → 정보 보기만
-      if (col >= PLAYER_COLS) {
-        if (grid[row][col]) setSelectedCell({ row, col })
-        return
-      }
-
-      const existing = grid[row][col]
-
-      // 이미 배치된 캐릭터 좌클릭 → 선택
-      if (existing && existing.team === 'player') {
-        setSelectedCell({ row, col })
-        return
-      }
-
-      // 빈 셀에 선택된 캐릭터 배치
-      if (selectedCharId) {
-        const tmpl = getMercenaryById(selectedCharId)
-        if (!tmpl) return
-        const runed = applyRunes(tmpl, tmpl.runes)
-        setGrid((prev) => {
-          const next = prev.map((r) => [...r])
-          const currentPlayerCount = prev.flat().filter((c): c is BattleCharacter => c !== null && c.team === 'player').length
-          next[row][col] = {
-            templateId: tmpl.id,
-            name: tmpl.name,
-            type: tmpl.type,
-            hp: runed.maxHp,
-            maxHp: runed.maxHp,
-            atk: runed.atk,
-            supportPower: tmpl.supportPower ?? 0,
-            def: runed.def,
-            emoji: tmpl.emoji,
-            imageId: tmpl.imageId,
-            critRate: runed.critRate,
-            critDamage: runed.critDamage,
-            agility: tmpl.agility,
-            team: 'player',
-            row,
-            col,
-            isCasting: false,
-            order: currentPlayerCount,
-            skill: tmpl.skill,
-            tempHp: 0,
-            statusEffects: [],
-            runes: tmpl.runes ?? [],
-            damageReduce: tmpl.damageReduce ?? 0,
-      selfDestruct: tmpl.selfDestruct,
-          }
-          return next
-        })
-        setSelectedCharId(null)
-        setSelectedCell({ row, col })
-      }
-    },
-    [phase, selectedCharId, grid]
+  // 메르센 메타 맵 (배치 모드용)
+  const mercMeta = useRef<Map<string, { name: string; emoji: string }>>(
+    new Map(getAllMercenaries().map(m => [m.id, { name: m.name, emoji: m.emoji }]))
   )
 
-  // 격자 우클릭: 배치 취소
-  const handleCellRightClick = useCallback(
-    (row: number, col: number) => {
-      if (phase !== 'placing') return
-      if (col >= PLAYER_COLS) return
+  // ─── 재생 타이머 ─────────────────────────────────────────
 
-      const existing = grid[row][col]
-      if (existing && existing.team === 'player') {
-        setGrid((prev) => {
-          const next = prev.map((r) => [...r])
-          const removedOrder = next[row][col]?.order ?? -1
-          next[row][col] = null
-          // 제거된 순번 이후의 플레이어 순번을 재정렬
-          if (removedOrder >= 0) {
-            for (const r of next) {
-              for (let i = 0; i < r.length; i++) {
-                if (r[i] && r[i]!.team === 'player' && r[i]!.order > removedOrder) {
-                  r[i] = { ...r[i]!, order: r[i]!.order - 1 }
-                }
-              }
-            }
-          }
-          return next
-        })
-        if (selectedCell?.row === row && selectedCell?.col === col) {
-          setSelectedCell(null)
-        }
-      }
-    },
-    [phase, grid, selectedCell]
-  )
-
-  // 드래그: 목록에서 시작
-  const handleDragStartFromList = useCallback((id: string) => {
-    const source: DragSource = { type: 'character', id }
-    setDragSource(source)
-    dragSourceRef.current = source
-    dropSucceededRef.current = false
-    setSelectedCharId(id)
-  }, [])
-
-  // 드래그: 셀에서 시작
-  const handleDragStartFromCell = useCallback((row: number, col: number) => {
-    const source: DragSource = { type: 'cell', row, col }
-    setDragSource(source)
-    dragSourceRef.current = source
-    dropSucceededRef.current = false
-  }, [])
-
-  // 드래그: 셀 위로
-  const handleDragOverCell = useCallback((e: React.DragEvent, _row: number, _col: number) => {
-    if (dragSource) {
-      e.preventDefault()
-      e.dataTransfer.dropEffect = 'move'
-    }
-  }, [dragSource])
-
-  // 드래그: 셀에 드롭
-  const handleDropOnCell = useCallback(
-    (row: number, col: number) => {
-      if (phase !== 'placing' || !dragSource) return
-      if (col >= PLAYER_COLS) return
-
-      setGrid((prev) => {
-        const next = prev.map((r) => [...r])
-        const targetCell = next[row][col]
-
-        if (dragSource.type === 'character') {
-          // 목록에서 드래그 → 빈 셀에 배치
-          if (targetCell !== null) return next
-          const tmpl = getMercenaryById(dragSource.id)
-          if (!tmpl) return next
-          const runed = applyRunes(tmpl, tmpl.runes)
-          const currentPlayerCount = prev.flat().filter((c): c is BattleCharacter => c !== null && c.team === 'player').length
-          next[row][col] = {
-            templateId: tmpl.id,
-            name: tmpl.name,
-            type: tmpl.type,
-            hp: runed.maxHp,
-            maxHp: runed.maxHp,
-            atk: runed.atk,
-            supportPower: tmpl.supportPower ?? 0,
-            def: runed.def,
-            emoji: tmpl.emoji,
-            imageId: tmpl.imageId,
-            critRate: runed.critRate,
-            critDamage: runed.critDamage,
-            agility: tmpl.agility,
-            team: 'player',
-            row,
-            col,
-            isCasting: false,
-            order: currentPlayerCount,
-            skill: tmpl.skill,
-            tempHp: 0,
-            statusEffects: [],
-            runes: tmpl.runes ?? [],
-            damageReduce: tmpl.damageReduce ?? 0,
-      selfDestruct: tmpl.selfDestruct,
-          }
-        } else if (dragSource.type === 'cell') {
-          // 셀에서 셀로 이동
-          const srcChar = next[dragSource.row][dragSource.col]
-          if (!srcChar) return next
-          if (targetCell !== null) return next
-          next[dragSource.row][dragSource.col] = null
-          next[row][col] = { ...srcChar, row, col }
-        }
-
-        return next
-      })
-      dropSucceededRef.current = true
-      setDragSource(null)
-      dragSourceRef.current = null
-      setSelectedCharId(null)
-      setSelectedCell({ row, col })
-    },
-    [phase, dragSource]
-  )
-
-  // 드래그 종료: 보드 밖에 드롭하면 용병 제거
   useEffect(() => {
-    const handleDragEnd = () => {
-      const source = dragSourceRef.current
-      if (source && source.type === 'cell' && !dropSucceededRef.current) {
-        setGrid((prev) => {
-          const next = prev.map((r) => [...r])
-          const removedOrder = next[source.row][source.col]?.order ?? -1
-          next[source.row][source.col] = null
-          // 제거된 순번 이후의 플레이어 순번을 재정렬
-          if (removedOrder >= 0) {
-            for (const r of next) {
-              for (let i = 0; i < r.length; i++) {
-                if (r[i] && r[i]!.team === 'player' && r[i]!.order > removedOrder) {
-                  r[i] = { ...r[i]!, order: r[i]!.order - 1 }
-                }
-              }
-            }
-          }
-          return next
-        })
-        setSelectedCell((prev) =>
-          prev?.row === source.row && prev?.col === source.col ? null : prev
-        )
-      }
-      setDragSource(null)
-      dragSourceRef.current = null
-      dropSucceededRef.current = false
-    }
-    document.addEventListener('dragend', handleDragEnd)
-    return () => document.removeEventListener('dragend', handleDragEnd)
-  }, [])
-
-  // 배치 완료 → 순서 지정 단계로 (배치 순서 유지)
-  const handleGoToOrdering = useCallback(() => {
-    if (placedPlayers.length === 0) return
-    const chars = placedPlayers.map((c) => ({ ...c }))
-    setPlayerOrder(chars)
-    setPhase('ordering')
-  }, [placedPlayers])
-
-  // 순서 업데이트
-  const handleOrderUpdate = useCallback((updated: BattleCharacter[]) => {
-    const allOrdered = updated.every((c) => c.order >= 0)
-    setPlayerOrder(updated)
-
-    if (allOrdered) {
-      setGrid((prev) => {
-        const next = prev.map((r) => [...r])
-        for (const char of updated) {
-          next[char.row][char.col] = { ...char }
-        }
-        return next
-      })
-    }
-  }, [])
-
-  // 로그를 그리드에 반영
-  const applyLogToGrid = useCallback((logs: BattleLogEntry[], upTo: number) => {
-    setGrid((prev) => {
-      const next = prev.map((r) => [...r])
-      for (const row of next) {
-        for (let i = 0; i < row.length; i++) {
-          if (row[i]) {
-            row[i] = { ...row[i]!, hp: row[i]!.maxHp, isCasting: false, statusEffects: [] }
-          }
-        }
-      }
-      const state = new Map<string, { hp: number; isCasting: boolean; statusEffects: StatusEffect[] }>()
-      for (const row of next) {
-        for (const cell of row) {
-          if (cell) {
-            state.set(`${cell.team}-${cell.templateId}`, { hp: cell.maxHp, isCasting: false, statusEffects: [] })
-          }
-        }
-      }
-      for (let i = 0; i < upTo && i < logs.length; i++) {
-        const log = logs[i]
-        if ((log.type === 'attack' || log.type === 'reflect' || log.type === 'rebirth' || log.type === 'revival') && log.defenderHpAfter !== undefined) {
-          if (log.targetKey) {
-            const s = state.get(log.targetKey)
-            if (s) s.hp = log.defenderHpAfter
-          }
-        }
-        if (log.type === 'casting' && log.message) {
-          state.forEach((val, key) => {
-            const name = getNameFromTemplate(key.split('-').slice(1).join('-'))
-            if (log.message!.includes(name)) {
-              val.isCasting = true
-            }
-          })
-        }
-        if (log.targetKey && log.targetStatusEffects !== undefined) {
-          const s = state.get(log.targetKey)
-          if (s) s.statusEffects = [...log.targetStatusEffects]
-        }
-      }
-      for (const row of next) {
-        for (let i = 0; i < row.length; i++) {
-          if (row[i]) {
-            const key = `${row[i]!.team}-${row[i]!.templateId}`
-            const s = state.get(key)
-            if (s) {
-              row[i] = { ...row[i]!, hp: s.hp, isCasting: s.isCasting, statusEffects: s.statusEffects }
-            }
-          }
-        }
-      }
-      return next
-    })
-  }, [])
-
-  // 전투 시작
-  const handleStartBattle = useCallback(() => {
-    const playerTeam = playerOrder.filter((c) => c.order >= 0)
-    const enemyTeam = grid
-      .flat()
-      .filter((c): c is BattleCharacter => c !== null && c.team === 'enemy')
-
-    const logs = simulateBattle(playerTeam, enemyTeam)
-    battleTeamsRef.current = { players: playerTeam, enemies: enemyTeam }
-
-    setBattleLogs(logs)
-    setVisibleLogCount(0)
-    setPhase('battling')
-    setCurrentRound(1)
-    setBattleSpeed(1)
-    setIsPaused(false)
-    setIsManual(false)
-  }, [grid, playerOrder])
-
-  // 전투 재생 인터벌 관리
-  useEffect(() => {
-    if (phase !== 'battling') return
-    if (isPaused || isManual) {
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
-      }
+    if (!isPlaying) return
+    if (logIdx >= battleLog.length) {
+      setIsPlaying(false)
+      setPhase('result')
       return
     }
 
-    const ms = 600 / battleSpeed
-    timerRef.current = window.setInterval(() => {
-      setVisibleLogCount((prev) => {
-        if (prev >= battleLogs.length) {
-          if (timerRef.current) clearInterval(timerRef.current)
-          timerRef.current = null
-          return prev
-        }
-        return prev + 1
-      })
-    }, ms) as unknown as number
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
-      }
-    }
-  }, [phase, battleSpeed, isPaused, isManual, battleLogs.length])
-
-  // 로그 카운트 변경 → 그리드 업데이트 + 완료 체크
-  useEffect(() => {
-    if (battleLogs.length === 0 || visibleLogCount === 0) return
-
-    const log = battleLogs[visibleLogCount - 1]
-    if (log?.type === 'round_start' && log.round) {
-      setCurrentRound(log.round)
-    }
-
-    applyLogToGrid(battleLogs, visibleLogCount)
-
-    if (visibleLogCount >= battleLogs.length && phase === 'battling') {
-      if (timerRef.current) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
-      }
-
-      const teams = battleTeamsRef.current
-      if (teams) {
-        const finalPlayers = teams.players.map((c) => ({ ...c }))
-        const finalEnemies = teams.enemies.map((c) => ({ ...c }))
-        replayHp(finalPlayers, finalEnemies, battleLogs)
-
-        const playersAlive = finalPlayers.some((c) => c.hp > 0 && c.type !== 'support')
-        const enemiesAlive = finalEnemies.some((c) => c.hp > 0 && c.type !== 'support')
-
-        if (!enemiesAlive && playersAlive) setWinner('player')
-        else if (!playersAlive && enemiesAlive) setWinner('enemy')
-        else setWinner('draw')
-      }
-
+    if (speed === 0) {
+      // 최대 속도: 전부 한번에
+      setLogIdx(battleLog.length)
+      setIsPlaying(false)
       setPhase('result')
+      return
     }
-  }, [visibleLogCount, battleLogs, phase, applyLogToGrid])
 
-  // 속도 제어 핸들러
-  const handlePauseToggle = useCallback(() => {
-    setIsPaused((prev) => !prev)
-  }, [])
+    timerRef.current = setTimeout(() => {
+      setLogIdx(prev => prev + 1)
+    }, speed)
 
-  const handleManualToggle = useCallback(() => {
-    setIsManual((prev) => !prev)
-    setIsPaused(false)
-  }, [])
-
-  const handleManualStep = useCallback(() => {
-    if (visibleLogCount < battleLogs.length) {
-      setVisibleLogCount((prev) => prev + 1)
-    }
-  }, [visibleLogCount, battleLogs.length])
-
-  const handleSkipRound = useCallback(() => {
-    let target = visibleLogCount
-    for (let i = visibleLogCount; i < battleLogs.length; i++) {
-      target = i + 1
-      if (i > visibleLogCount && battleLogs[i].type === 'round_start') {
-        break
-      }
-    }
-    setVisibleLogCount(Math.min(target, battleLogs.length))
-  }, [visibleLogCount, battleLogs])
-
-  const handleSkipAll = useCallback(() => {
-    setVisibleLogCount(battleLogs.length)
-  }, [battleLogs.length])
-
-
-  // 다시 하기
-  const handleReset = useCallback(() => {
-    if (timerRef.current) clearInterval(timerRef.current)
-    const g = createEmptyGrid()
-    placeEnemies(g)
-    setGrid(g)
-    setPhase('home')
-    setSelectedCharId(null)
-    setSelectedCell(null)
-    setBattleLogs([])
-    setVisibleLogCount(0)
-    setWinner(null)
-    setCurrentRound(0)
-    setPlayerOrder([])
-    setBattleSpeed(1)
-    setIsPaused(false)
-    setIsManual(false)
-    setDragSource(null)
-    battleTeamsRef.current = null
-  }, [])
-
-  useEffect(() => {
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [])
+  }, [isPlaying, logIdx, battleLog.length, speed])
 
+  // ─── 전투 시작 ───────────────────────────────────────────
 
-  const handleEnterBattle = useCallback(() => {
-    const g = createEmptyGrid()
-    placeEnemies(g)
-    setGrid(g)
+  function startBattle() {
+    const a = slotsA
+      .map((id, i) => id ? createBattleChar(id, 'A', 115, [null, null, null], Math.floor(i / 3), i % 3) : null)
+      .filter((c): c is BattleCharacter => c !== null)
+
+    const b = slotsB
+      .map((id, i) => id ? createBattleChar(id, 'B', 115, [null, null, null], Math.floor(i / 3), i % 3) : null)
+      .filter((c): c is BattleCharacter => c !== null)
+
+    if (a.length === 0 || b.length === 0) return
+
+    // 초기 스냅샷을 시뮬 전에 저장해야 하므로 먼저 초기 HP 기록
+    const initHps = new Map([...a, ...b].map(c => [c.key, c.hp]))
+
+    const res = simulateBattle(a, b, Date.now())
+
+    // 시뮬 후 char.hp는 최종 값. 스냅샷 빌더를 위해 초기 HP를 복원
+    for (const c of [...a, ...b]) {
+      c.hp = initHps.get(c.key) ?? c.hp
+    }
+
+    const snaps = buildSnapshots(a, b, res.log)
+
+    setCharsA(a)
+    setCharsB(b)
+    setBattleLog(res.log)
+    setSnapshots(snaps)
+    setWinner(
+      res.winner === 'draw' ? '무승부' :
+      res.winner === 'A' ? 'A팀 승리' : 'B팀 승리'
+    )
+    setLogIdx(0)
+    setIsPlaying(true)
+    setPhase('battling')
+  }
+
+  // ─── 현재 스냅샷 ─────────────────────────────────────────
+
+  const currentSnapshot = snapshots[logIdx] ?? snapshots[snapshots.length - 1] ?? new Map()
+
+  // 현재 행동 중인 캐릭터 key (turn_start 엔트리 추적)
+  const currentKey = (() => {
+    for (let i = logIdx - 1; i >= 0; i--) {
+      if (battleLog[i].type === 'turn_start') return battleLog[i].charKey
+    }
+    return ''
+  })()
+
+  // ─── 배치 핸들러 ─────────────────────────────────────────
+
+  function handleCellClick(team: 'A' | 'B', idx: number) {
+    const slots = team === 'A' ? slotsA : slotsB
+    if (selectedCell?.team === team && selectedCell.idx === idx) {
+      // 이미 선택된 셀 클릭 → 선택 해제 / 비우기
+      const setter = team === 'A' ? setSlotsA : setSlotsB
+      setter(prev => prev.map((v, i) => i === idx ? null : v))
+      setSelectedCell(null)
+    } else if (slots[idx]) {
+      // 채워진 셀: 제거
+      const setter = team === 'A' ? setSlotsA : setSlotsB
+      setter(prev => prev.map((v, i) => i === idx ? null : v))
+      setSelectedCell(null)
+    } else {
+      setSelectedCell({ team, idx })
+    }
+  }
+
+  function handlePickerSelect(mercId: string) {
+    if (!selectedCell) return
+    const setter = selectedCell.team === 'A' ? setSlotsA : setSlotsB
+    setter(prev => prev.map((v, i) => i === selectedCell.idx ? mercId : v))
+    setSelectedCell(null)
+  }
+
+  function resetGame() {
     setPhase('placing')
-  }, [])
-
-  if (activeTab === 'mercenary_dex') {
-    return (
-      <div className="app">
-        <MercenaryDex onBack={() => setActiveTab('main')} />
-      </div>
-    )
+    setSlotsA(Array(9).fill(null))
+    setSlotsB(Array(9).fill(null))
+    setSelectedCell(null)
+    setBattleLog([])
+    setSnapshots([])
+    setLogIdx(0)
+    setIsPlaying(false)
   }
 
-  if (activeTab === 'skill_dex') {
-    return (
-      <div className="app">
-        <SkillDex onBack={() => setActiveTab('main')} />
-      </div>
-    )
-  }
+  const validA = slotsA.filter(Boolean).length
+  const validB = slotsB.filter(Boolean).length
 
-  if (phase === 'home') {
-    return (
-      <div className="app home">
-        <h1>브라운더스트 전투 시뮬레이터</h1>
-        <p className="home-desc">용병을 배치하고 전투를 시뮬레이션하세요.</p>
-        <div className="home-buttons">
-          <button className="btn-start" onClick={handleEnterBattle}>
-            전투 시작
-          </button>
-          <button className="btn-home" onClick={() => setActiveTab('mercenary_dex')}>용병 도감</button>
-          <button className="btn-home" onClick={() => setActiveTab('skill_dex')}>스킬 도감</button>
-          <button className="btn-home" disabled>카드 도감</button>
-          <button className="btn-home" disabled>규칙 설명</button>
-        </div>
-      </div>
-    )
-  }
+  // ─── 렌더 ─────────────────────────────────────────────────
 
   return (
     <div className="app">
-      <h1>
-        <button className="btn-back" onClick={handleReset}>←</button>
-        브라운더스트 전투 시뮬레이터
-      </h1>
+      <header className="app-header">
+        <h1>브라운더스트 전투 시뮬레이터</h1>
+        <nav className="tab-nav">
+          <button className={tab === 'battle' ? 'tab active' : 'tab'} onClick={() => setTab('battle')}>전투</button>
+          <button className={tab === 'dex' ? 'tab active' : 'tab'} onClick={() => setTab('dex')}>도감</button>
+          <button className={tab === 'test' ? 'tab active' : 'tab'} onClick={() => setTab('test')}>🔧 테스트</button>
+        </nav>
+      </header>
 
-      <Board
-        grid={grid}
-        onCellClick={handleCellClick}
-        onCellRightClick={handleCellRightClick}
-        selectedCell={selectedCell}
-        disabled={phase !== 'placing'}
-        currentRound={phase === 'battling' || phase === 'result' ? currentRound : undefined}
-        onDragStart={phase === 'placing' ? handleDragStartFromCell : undefined}
-        onDragOver={phase === 'placing' ? handleDragOverCell : undefined}
-        onDrop={phase === 'placing' ? handleDropOnCell : undefined}
-      />
+      <main className="app-main">
+        {/* ── 전투 탭 ── */}
+        {tab === 'battle' && (
+          <div>
+            {/* 배치 단계 */}
+            {phase === 'placing' && (
+              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
+                {/* 용병 픽커 */}
+                <MercenaryPicker
+                  onSelect={handlePickerSelect}
+                  selectedId={selectedCell ? (selectedCell.team === 'A' ? slotsA : slotsB)[selectedCell.idx] : null}
+                />
 
-      {phase === 'placing' && (
-        <>
-          <CharacterList
-            characters={getAllMercenaries()}
-            placedIds={placedIds}
-            selectedId={selectedCharId}
-            onSelect={handleSelectCharacter}
-            onDragStart={handleDragStartFromList}
-            disabled={false}
-          />
-          <button
-            className="btn-start"
-            onClick={handleGoToOrdering}
-            disabled={placedPlayers.length === 0}
-          >
-            순서 지정으로 ({placedPlayers.length}명 배치됨)
-          </button>
-        </>
-      )}
+                {/* 두 팀 보드 */}
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ fontSize: '0.85rem', color: '#888' }}>
+                    {selectedCell
+                      ? `${selectedCell.team}팀 슬롯 ${selectedCell.idx + 1} 선택됨 — 용병을 클릭하세요`
+                      : '슬롯을 클릭하여 용병 배치 / 다시 클릭하면 제거'}
+                  </div>
 
-      {phase === 'ordering' && (
-        <OrderSetter
-          characters={playerOrder}
-          onOrderSet={handleOrderUpdate}
-        />
-      )}
+                  <div style={{ display: 'flex', gap: '3rem' }}>
+                    <Board
+                      label="A팀"
+                      slots={slotsA}
+                      mercMeta={mercMeta.current}
+                      mode="placing"
+                      selectedIdx={selectedCell?.team === 'A' ? selectedCell.idx : undefined}
+                      onCellClick={idx => handleCellClick('A', idx)}
+                    />
+                    <Board
+                      label="B팀"
+                      slots={slotsB}
+                      mercMeta={mercMeta.current}
+                      mode="placing"
+                      selectedIdx={selectedCell?.team === 'B' ? selectedCell.idx : undefined}
+                      onCellClick={idx => handleCellClick('B', idx)}
+                    />
+                  </div>
 
-      {phase === 'ordering' && playerOrder.every((c) => c.order >= 0) && (
-        <button className="btn-start" onClick={handleStartBattle}>
-          전투 시작!
-        </button>
-      )}
-
-      {/* 전투 속도 제어 */}
-      {phase === 'battling' && (
-        <div className="battle-controls">
-          <div className="speed-buttons">
-            <button className={battleSpeed === 1 ? 'speed-active' : ''} onClick={() => setBattleSpeed(1)}>1x</button>
-            <button className={battleSpeed === 2 ? 'speed-active' : ''} onClick={() => setBattleSpeed(2)}>2x</button>
-            <button className={battleSpeed === 4 ? 'speed-active' : ''} onClick={() => setBattleSpeed(4)}>4x</button>
-          </div>
-          <div className="playback-buttons">
-            <button onClick={handlePauseToggle}>
-              {isPaused ? '▶ 재개' : '⏸ 일시정지'}
-            </button>
-            <button className={isManual ? 'speed-active' : ''} onClick={handleManualToggle}>
-              {isManual ? '🔄 자동' : '👆 수동'}
-            </button>
-            {isManual && (
-              <button onClick={handleManualStep} disabled={visibleLogCount >= battleLogs.length}>
-                다음 ▶
-              </button>
+                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <button
+                      className="test-btn"
+                      onClick={startBattle}
+                      disabled={validA === 0 || validB === 0}
+                      style={{ fontSize: '1rem', padding: '0.6rem 2rem' }}
+                    >
+                      ⚔ 전투 시작
+                    </button>
+                    <span style={{ color: '#888', fontSize: '0.85rem' }}>
+                      A팀 {validA}명 vs B팀 {validB}명
+                    </span>
+                  </div>
+                </div>
+              </div>
             )}
-            <button onClick={handleSkipRound}>라운드 건너뛰기 ⏭</button>
-            <button onClick={handleSkipAll}>전체 건너뛰기 ⏩</button>
+
+            {/* 전투 단계 */}
+            {(phase === 'battling' || phase === 'result') && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {/* 컨트롤 */}
+                {phase === 'battling' && (
+                  <BattleControls
+                    isPlaying={isPlaying}
+                    speed={speed}
+                    currentIdx={logIdx}
+                    totalSteps={battleLog.length}
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onStep={() => setLogIdx(prev => Math.min(prev + 1, battleLog.length))}
+                    onStepBack={() => { setIsPlaying(false); setLogIdx(prev => Math.max(prev - 1, 0)) }}
+                    onSpeedChange={setSpeed}
+                    onReset={() => { setIsPlaying(false); setLogIdx(0) }}
+                  />
+                )}
+
+                {/* 결과 배너 */}
+                {phase === 'result' && (
+                  <div style={{
+                    background: '#16213e',
+                    borderRadius: '8px',
+                    padding: '1rem 2rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#e94560' }}>
+                      {winner}
+                    </div>
+                    <button className="test-btn" onClick={resetGame} style={{ fontSize: '0.9rem' }}>
+                      다시 하기
+                    </button>
+                  </div>
+                )}
+
+                {/* 보드 + 로그 */}
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                  <Board
+                    label="A팀"
+                    chars={charsA}
+                    snapshot={currentSnapshot}
+                    mode="battle"
+                    currentKey={currentKey}
+                  />
+
+                  <BattleLog log={battleLog} currentIdx={logIdx} />
+
+                  <Board
+                    label="B팀"
+                    chars={charsB}
+                    snapshot={currentSnapshot}
+                    mode="battle"
+                    currentKey={currentKey}
+                  />
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      )}
+        )}
 
-      {(phase === 'battling' || phase === 'result') && (
-        <BattleLog logs={battleLogs} visibleCount={visibleLogCount} />
-      )}
+        {/* ── 도감 탭 ── */}
+        {tab === 'dex' && (
+          <div className="placeholder"><p>도감 탭 — 추후 구현 예정</p></div>
+        )}
 
-      {phase === 'result' && (
-        <div className="result">
-          <h2 className="result-title">
-            {winner === 'player' && '승리!'}
-            {winner === 'enemy' && '패배...'}
-            {winner === 'draw' && '무승부'}
-          </h2>
-          <button className="btn-reset" onClick={handleReset}>
-            다시 하기
-          </button>
-        </div>
-      )}
+        {/* ── 테스트 탭 ── */}
+        {tab === 'test' && (
+          <div className="test-layout">
+            <aside className="test-sidebar">
+              <h2>테스트 패널</h2>
+              <ul>
+                {TEST_MENU.map(([id, label]) => (
+                  <li key={id}>
+                    <button
+                      className={testPanel === id ? 'test-menu-item active' : 'test-menu-item'}
+                      onClick={() => setTestPanel(id)}
+                    >
+                      {label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+
+            <section className="test-content">
+              {testPanel === 'data' && <DataPanel />}
+              {testPanel === 'stat' && <StatPanel />}
+              {testPanel === 'damage' && <DamagePanel />}
+              {testPanel === 'buff' && <BuffPanel />}
+              {testPanel === 'targeting' && <TargetingPanel />}
+              {testPanel === 'death' && <DeathPanel />}
+              {testPanel === 'skill' && <SkillPanel />}
+              {testPanel === 'battle_sim' && <BattleSimPanel />}
+            </section>
+          </div>
+        )}
+      </main>
     </div>
   )
-}
-
-/** templateId에서 캐릭터 이름 찾기 */
-function getNameFromTemplate(templateId: string): string {
-  const found = getMercenaryById(templateId)
-  return found?.name ?? templateId
-}
-
-/** 로그를 재생하며 최종 HP 계산 */
-function replayHp(
-  players: BattleCharacter[],
-  enemies: BattleCharacter[],
-  logs: BattleLogEntry[]
-): void {
-  const all = [...players, ...enemies]
-  const byKey = new Map<string, BattleCharacter>()
-  for (const c of all) {
-    byKey.set(`${c.team}-${c.templateId}`, c)
-  }
-  for (const log of logs) {
-    if ((log.type !== 'attack' && log.type !== 'reflect') || log.defenderHpAfter === undefined) continue
-    if (log.targetKey) {
-      const c = byKey.get(log.targetKey)
-      if (c) c.hp = log.defenderHpAfter
-    }
-  }
 }

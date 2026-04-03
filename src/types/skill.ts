@@ -1,58 +1,76 @@
-import type { BuffType, DebuffClass, AttackTargetType, AttackRange } from './game'
+// 스킬 타입 정의
+// skills.json (원본 스킬 템플릿) + mercenary-config.json (용병별 스킬) 기반
 
-/** 스킬 발동 시점 */
+/** 14종 범위 패턴 (SkillActionType) */
+export type RangePattern =
+  | 'single'            // SAT_NORMAL (1)
+  | 'piercing'          // SAT_PIERCING 전방 직선 (2)
+  | 'cross'             // SAT_RANGE1 십자 (3)
+  | 'square'            // SAT_RANGE2 사각형 (4)
+  | 'vertical'          // SAT_SPREAD 세로 (5)
+  | 'x_shape'           // SAT_RANGE_X X자 (6)
+  | 'reverse_piercing'  // SAT_REVERSE_PIERCING 후방 직선 (7)
+  | 'triangle'          // SAT_RANGE_TRIANGLE 삼각형 (8)
+  | 'horizontal'        // SAT_SPREAD_HORIZONTAL 수평 (9)
+  | 'wide'              // SAT_WIDE_SPREAD 광역 (10)
+  | 'column'            // SAT_ONE_X_FULL_Y 1열 전체 (11)
+  | 'fat_cross'         // SAT_FAT_CROSS 두꺼운 십자 (12)
+  | 'chain'             // SAT_LINKED_CROSS_CHAINING 체이닝 (13)
+  | 'range_piercing'    // SAT_RANGE_PIERCING 범위 관통 (14)
+
+/** 9종 대상 검색 방식 (SkillTargetSearchType) */
+export type SearchType =
+  | 'enemy_front'         // STST_FIRST (1)
+  | 'enemy_back'          // STST_LAST (2)
+  | 'random'              // STST_RANDOM (3)
+  | 'enemy_second'        // STST_SECOND (4)
+  | 'next_ally'           // STST_SUPPORT_NEXT_SEQUENCE (5)
+  | 'start_buff'          // STST_STARTBUFF (6)
+  | 'self'                // STST_SELF_TARGET (7)
+  | 'chaos'               // STST_INDUCING_CHAOS (8)
+  | 'enemy_third'         // STST_THIRD (9)
+
+/** 스킬 발동 타이밍 */
 export type SkillTiming = 'before_attack' | 'after_attack' | 'passive'
 
-/** 스킬 대상 선택 */
-export type SkillTargetType = AttackTargetType | 'next_ally' | 'self'
+export interface SkillBuffRef {
+  buffCode: number
+  subBuffCode?: number
+}
 
-/** 스킬 개별 효과 */
-export interface SkillEffect {
-  type: string
-  value: number
-  /** 이 효과에만 적용할 대상 오버라이드 (없으면 CharacterSkill.target 사용) */
-  target?: SkillTargetType
-  /** 지속 턴 수 (없으면 즉시 효과) */
+/** skills.json 원본 스킬 템플릿 */
+export interface SkillTemplate {
+  code: number
+  nameKr: string
+  nameEn: string
+  type: 'attack' | 'support'
+  timing: 'attack' | SkillTiming
+  rangePattern: RangePattern
+  /** rangePattern 숫자값 (타겟팅 로직에서 사용) */
+  rangePatternRaw: number
+  rangeSize: number
+  searchType: SearchType
+  /** searchType 숫자값 (타겟팅 로직에서 사용) */
+  searchTypeRaw: number
+  repeatCount: number
+  coolTimeCount: number
+  /** 연결된 버프 참조 목록 */
+  buffs: SkillBuffRef[]
+}
+
+/** mercenary-config.json의 스킬 효과 override */
+export interface SkillEffectOverride {
+  value?: number
   duration?: number
-  /** 버프 분류 (shield/stat_enhance/special) */
-  buffType?: BuffType
-  /** 디버프 분류 (cc/dot/stat_weaken) */
-  debuffClass?: DebuffClass
-  /** true면 해로운효과 면역 관통 */
-  ignoreImmunity?: boolean
-  /** true면 value를 시전자 ATK의 %로 계산 (예: value 25 → ATK × 25%) */
   atkScaling?: boolean
-  /** true면 value를 시전자 지원력의 %로 계산 (예: value 85 → supportPower × 85%) */
   spScaling?: boolean
-  /** 부가 효과: 받는 피해량 증가 (%). 상태효과에 함께 저장됨 */
-  dmgTakenUp?: number
-  /** 이 효과 적용 후 연쇄 발동할 스킬 ID */
-  triggerSkill?: string
-  /** 이 효과 제거 시 함께 제거할 상태효과 type */
-  linkedBuffId?: string
-  /** 효과 채널: multiply(승산) vs plus(가산). 미지정 시 multiply */
-  channel?: 'multiply' | 'plus'
-  /** 카운트 가드 등 횟수 기반 효과의 초기 횟수 */
-  count?: number
+  target?: string
+  range?: RangePattern
 }
 
-/** 용병 캐릭터 스킬 (용병당 1개, 게임 원본 SkillBasicList 구조 반영) */
-export interface CharacterSkill {
-  /** 스킬명 (UI 표시용) */
-  name?: string
+/** 용병별 스킬 항목 (mercenary-config.json) */
+export interface MercenarySkill {
+  skillId: string
+  effects: SkillEffectOverride[]
   timing: SkillTiming
-  /** 기본 대상 (개별 효과에서 target 오버라이드 가능) */
-  target: SkillTargetType
-  attackRange: AttackRange
-  rangeSize?: number
-  effects: SkillEffect[]
-}
-
-/** 스킬 정의 (트리거 효과용 템플릿) */
-export interface Skill {
-  id: string
-  name: string
-  timing: SkillTiming
-  target: SkillTargetType
-  effects: SkillEffect[]
 }

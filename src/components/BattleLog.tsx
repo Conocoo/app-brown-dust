@@ -1,102 +1,69 @@
-import type { BattleLogEntry } from '../types/game'
+// 전투 로그 패널
+
+import { useEffect, useRef } from 'react'
+import type { BattleLogEntry } from '../types/battle'
 
 interface BattleLogProps {
-  logs: BattleLogEntry[]
-  visibleCount: number
+  log: BattleLogEntry[]
+  currentIdx: number
 }
 
-export default function BattleLog({ logs, visibleCount }: BattleLogProps) {
-  // 최신 로그가 상단에 오도록 역순 표시
-  const visible = logs.slice(0, visibleCount)
-  const reversed = [...visible].reverse()
+const LOG_COLORS: Record<string, string> = {
+  round_start: '#7ec8e3',
+  turn_start: '#666',
+  casting: '#f5a623',
+  attack: '#e8e8e8',
+  skill_effect: '#b8e8b8',
+  buff_applied: '#c8d8f8',
+  buff_expired: '#777',
+  dot_damage: '#f5a623',
+  dot_heal: '#4caf50',
+  death: '#e94560',
+  revival: '#4caf50',
+  instead_death: '#f5a623',
+  battle_end: '#e94560',
+}
+
+export default function BattleLog({ log, currentIdx }: BattleLogProps) {
+  const bottomRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [currentIdx])
+
+  const visible = log.slice(0, currentIdx)
 
   return (
-    <div className="battle-log">
-      <h3>전투 로그</h3>
-      <div className="log-entries">
-        {reversed.map((log, i) => {
-          // 원래 인덱스 (key용)
-          const originalIdx = visibleCount - 1 - i
-
-          if (log.type === 'round_start') {
-            return (
-              <div key={originalIdx} className="log-entry log-round">
-                ── {log.message} ──
-              </div>
-            )
-          }
-
-          // 내부용 로그는 표시하지 않음
-          if (log.type === 'status_update') return null
-
-          const teamClass = log.attackerTeam === 'player' ? 'log-player-action' : 'log-enemy-action'
-          const teamLabel = log.attackerTeam === 'player' ? '[아군]' : '[적군]'
-
-          if (log.type === 'casting') {
-            return (
-              <div key={originalIdx} className={`log-entry log-casting ${teamClass}`}>
-                <span className="log-team-label">{teamLabel}</span> {log.message}
-              </div>
-            )
-          }
-
-          if (log.type === 'support') {
-            return (
-              <div key={originalIdx} className={`log-entry log-support ${teamClass}`}>
-                <span className="log-team-label">{teamLabel}</span>
-                {log.skillName && <span className="log-skill-badge log-skill-support">{log.skillName}</span>}
-                {' '}{log.message}
-                {log.isCritical && <span className="log-crit">치명타!</span>}
-              </div>
-            )
-          }
-
-          // rebirth, revival, post_death: 사망 판정 체인 로그
-          if (log.type === 'rebirth' || log.type === 'revival' || log.type === 'post_death') {
-            return (
-              <div key={originalIdx} className={`log-entry log-revival ${teamClass}`}>
-                {log.attackerTeam && <span className="log-team-label">{teamLabel}</span>}
-                {' '}{log.message}
-              </div>
-            )
-          }
-
-          // buff, debuff, immune: message 기반 표시
-          if (log.type === 'buff' || log.type === 'debuff' || log.type === 'immune') {
-            return (
-              <div key={originalIdx} className={`log-entry ${teamClass} ${log.defeated ? 'log-defeat' : ''}`}>
-                {log.attackerTeam && <span className="log-team-label">{teamLabel}</span>}
-                {' '}{log.message}
-                {log.defeated && <span className="log-ko"> 쓰러짐!</span>}
-              </div>
-            )
-          }
-
-          // attack, reflect: 공격 템플릿
-          return (
-            <div key={originalIdx} className={`log-entry ${teamClass} ${log.defeated ? 'log-defeat' : ''}`}>
-              <span className="log-team-label">{teamLabel}</span>
-              {log.type === 'reflect'
-                ? <span className="log-skill-badge log-skill-normal">반격</span>
-                : log.skillName
-                  ? <span className="log-skill-badge log-skill-attack">{log.skillName}</span>
-                  : <span className="log-skill-badge log-skill-normal">일반공격</span>
-              }
-              {' '}
-              <span>
-                {log.attacker} → {log.defender}에게{' '}
-                <strong>{log.damage}</strong> 데미지!
-              </span>
-              {log.isCritical && <span className="log-crit">치명타!</span>}
-              {log.isGraze && <span className="log-graze">스침</span>}
-              {log.defeated && <span className="log-ko"> 쓰러짐!</span>}
-            </div>
-          )
-        })}
-        {visibleCount < logs.length && visibleCount > 0 && (
-          <div className="log-entry log-loading">전투 진행 중...</div>
-        )}
-      </div>
+    <div style={{
+      flex: 1,
+      background: '#0f1e3a',
+      border: '1px solid #0f3460',
+      borderRadius: '6px',
+      padding: '0.5rem',
+      overflowY: 'auto',
+      fontSize: '0.72rem',
+      lineHeight: 1.6,
+      minWidth: 0,
+    }}>
+      {visible.map((entry, i) => (
+        <div
+          key={i}
+          style={{
+            color: LOG_COLORS[entry.type] ?? '#ccc',
+            borderTop: entry.type === 'round_start' && i > 0 ? '1px solid #1a2a4a' : undefined,
+            paddingTop: entry.type === 'round_start' ? '0.3rem' : undefined,
+            fontWeight: (entry.type === 'round_start' || entry.type === 'battle_end') ? 600 : undefined,
+          }}
+        >
+          {entry.detail}
+          {entry.damage !== undefined && entry.type === 'attack' && (
+            <span style={{ color: entry.isCritical ? '#f5a623' : '#aaa' }}>
+              {' '}({entry.damage.toLocaleString()}{entry.isCritical ? ' 치명타' : ''}{entry.isDodge ? ' 스침' : ''})
+            </span>
+          )}
+        </div>
+      ))}
+      <div ref={bottomRef} />
     </div>
   )
 }

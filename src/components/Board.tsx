@@ -1,73 +1,84 @@
-import type { BattleCharacter } from '../types/game'
-import Cell from './Cell'
+// 3×3 팀 그리드 보드
 
-const PLAYER_COLS = 6
+import Cell from './Cell'
+import type { BattleCharacter } from '../types/battle'
+
+interface CharSnapshot {
+  hp: number
+  isDead: boolean
+}
 
 interface BoardProps {
-  /** 3x12 격자: [row][col], col 0-5는 플레이어, col 6-11은 적 */
-  grid: (BattleCharacter | null)[][]
-  onCellClick: (row: number, col: number) => void
-  onCellRightClick: (row: number, col: number) => void
-  selectedCell: { row: number; col: number } | null
-  disabled: boolean
-  currentRound?: number
-  onDragStart?: (row: number, col: number) => void
-  onDragOver?: (e: React.DragEvent, row: number, col: number) => void
-  onDrop?: (row: number, col: number) => void
+  label: string
+  /** 배치 모드: merc ID 9슬롯 */
+  slots?: (string | null)[]
+  /** 전투 모드: BattleCharacter 배열 */
+  chars?: BattleCharacter[]
+  /** 전투 모드: key → 현재 HP/사망 상태 */
+  snapshot?: Map<string, CharSnapshot>
+  /** 이름/이모지 조회 (배치 모드에서 mercId로 메타데이터 가져오기) */
+  mercMeta?: Map<string, { name: string; emoji: string }>
+  mode: 'placing' | 'battle'
+  /** 선택된 슬롯 인덱스 (배치 모드) */
+  selectedIdx?: number
+  /** 현재 행동 중인 캐릭터 key (전투 모드) */
+  currentKey?: string
+  onCellClick?: (idx: number) => void
 }
 
 export default function Board({
-  grid, onCellClick, onCellRightClick, selectedCell, disabled, currentRound,
-  onDragStart, onDragOver, onDrop,
+  label, slots, chars, snapshot, mercMeta,
+  mode, selectedIdx, currentKey, onCellClick,
 }: BoardProps) {
+  const ROWS = 3
+  const COLS = 3
+
   return (
-    <div className="board">
-      <div className="board-header">
-        <span className="board-label">내 팀</span>
-        {currentRound !== undefined && (
-          <span className="board-round">라운드 {currentRound}</span>
-        )}
-        <span className="board-label">상대 팀</span>
-      </div>
-      <div className="board-grid">
-        {/* 플레이어 영역 */}
-        <div className="board-side board-side-player">
-          {grid.map((row, rowIdx) =>
-            row.slice(0, PLAYER_COLS).map((char, colIdx) => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+      <div style={{ fontSize: '0.9rem', color: '#aaa', fontWeight: 600 }}>{label}</div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: `repeat(${COLS}, 90px)`,
+        gridTemplateRows: `repeat(${ROWS}, 90px)`,
+        gap: '6px',
+      }}>
+        {Array.from({ length: ROWS * COLS }, (_, idx) => {
+          const row = Math.floor(idx / COLS)
+          const col = idx % COLS
+
+          if (mode === 'placing') {
+            const mercId = slots?.[idx] ?? null
+            const meta = mercId ? mercMeta?.get(mercId) : undefined
+            return (
               <Cell
-                key={`${rowIdx}-${colIdx}`}
-                character={char}
-                isPlayerSide={true}
-                isSelected={selectedCell?.row === rowIdx && selectedCell?.col === colIdx}
-                onClick={() => onCellClick(rowIdx, colIdx)}
-                onRightClick={() => onCellRightClick(rowIdx, colIdx)}
-                disabled={disabled}
-                draggable={!disabled && char !== null && char.team === 'player'}
-                onDragStart={() => onDragStart?.(rowIdx, colIdx)}
-                onDragOver={(e) => onDragOver?.(e, rowIdx, colIdx)}
-                onDrop={() => onDrop?.(rowIdx, colIdx)}
+                key={idx}
+                mode="placing"
+                name={meta?.name}
+                emoji={meta?.emoji}
+                isSelected={selectedIdx === idx}
+                onClick={() => onCellClick?.(idx)}
               />
-            ))
-          )}
-        </div>
-        {/* 간격 */}
-        <div className="board-gap" />
-        {/* 적 영역 */}
-        <div className="board-side board-side-enemy">
-          {grid.map((row, rowIdx) =>
-            row.slice(PLAYER_COLS).map((char, colIdx) => (
-              <Cell
-                key={`${rowIdx}-${colIdx + PLAYER_COLS}`}
-                character={char}
-                isPlayerSide={false}
-                isSelected={selectedCell?.row === rowIdx && selectedCell?.col === colIdx + PLAYER_COLS}
-                onClick={() => onCellClick(rowIdx, colIdx + PLAYER_COLS)}
-                onRightClick={() => onCellRightClick(rowIdx, colIdx + PLAYER_COLS)}
-                disabled={disabled}
-              />
-            ))
-          )}
-        </div>
+            )
+          }
+
+          // 전투 모드: chars 배열에서 row/col 매칭
+          const char = chars?.find(c => c.row === row && c.col === col) ?? null
+          const snap = char ? snapshot?.get(char.key) : undefined
+
+          return (
+            <Cell
+              key={idx}
+              mode="battle"
+              name={char?.name}
+              emoji={char?.emoji}
+              hp={snap?.hp ?? char?.hp}
+              maxHp={char?.maxHp}
+              isDead={snap?.isDead ?? false}
+              isCurrent={char?.key === currentKey}
+              onClick={onCellClick ? () => onCellClick(idx) : undefined}
+            />
+          )
+        })}
       </div>
     </div>
   )
