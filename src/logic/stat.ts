@@ -7,10 +7,12 @@ import type { MercenaryData } from '../types/character'
 
 /**
  * CharBalanceData.GetLevelMultiply
- * levelMultiply = (level-1) + 5.0 × floor(level / 10)
+ * levelMultiply = (level-1) + 5.0 × floor(level / 5)
+ * specialGrowLevelFrequency=5, specialGrowLevelMultiply=5 (balance-constants.json)
+ * 명세 문서의 frequency=10은 오기; 실제 데이터 기준 frequency=5가 정확.
  */
 export function levelMultiply(level: number): number {
-  return (level - 1) + 5.0 * Math.floor(level / 10)
+  return (level - 1) + 5.0 * Math.floor(level / 5)
 }
 
 // ─── 타입별 성장률 ────────────────────────────────────────
