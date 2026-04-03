@@ -3,7 +3,7 @@
 
 import type { SkillTemplate, RangePattern, SearchType } from '../types/skill'
 
-import rawSkills from '../../../Docs/명세/data/skills.json'
+import rawSkills from './raw/skills.json'
 
 interface RawBuffRef {
   buffCode: number

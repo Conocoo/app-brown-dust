@@ -4,8 +4,8 @@
 import type { MercenaryData } from '../types/character'
 import type { MercenarySkill } from '../types/skill'
 
-import rawMercenaries from '../../../Docs/명세/data/mercenaries.json'
-import rawConfigs from '../../../Docs/명세/data/mercenary-config.json'
+import rawMercenaries from './raw/mercenaries.json'
+import rawConfigs from './raw/mercenary-config.json'
 
 // ─── 내부 타입 (JSON 원본 형태) ───────────────────────────
 

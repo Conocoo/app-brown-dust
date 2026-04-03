@@ -3,7 +3,7 @@
 
 import type { RuneData } from '../types/rune'
 
-import rawRunes from '../../../Docs/명세/data/runes.json'
+import rawRunes from './raw/runes.json'
 
 const runeMap = new Map<number, RuneData>()
 

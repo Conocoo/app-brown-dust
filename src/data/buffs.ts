@@ -3,7 +3,7 @@
 
 import type { BuffData } from '../types/buff'
 
-import rawBuffs from '../../../Docs/명세/data/buffs.json'
+import rawBuffs from './raw/buffs.json'
 
 const buffMap = new Map<number, BuffData>()
 
