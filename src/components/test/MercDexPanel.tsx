@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { getAllMercenaries, getMercenaryById } from '../../data/mercenaries'
 import { getSkillByCode } from '../../data/skills'
+import { getBuffByCode } from '../../data/buffs'
 import { calcStatsAtLevel, maxStats } from '../../logic/stat'
 import { getRepeatCount } from '../../logic/skill'
 
@@ -189,7 +190,6 @@ export default function MercDexPanel() {
                     ['범위 패턴', `${skill.rangePattern} (${skill.rangePatternRaw})`],
                     ['타겟 방식', `${skill.searchType} (${skill.searchTypeRaw})`],
                     ['범위 크기', String(skill.rangeSize)],
-                    ['연결 버프', `${skill.buffs.length}개`],
                   ].map(([label, value]) => (
                     <div key={label} style={{
                       background: '#0f1e3a', borderRadius: '6px', padding: '0.4rem 0.75rem',
@@ -200,6 +200,50 @@ export default function MercDexPanel() {
                     </div>
                   ))}
                 </div>
+
+                {/* 연결 버프 목록 */}
+                {skill.buffs.length > 0 && (
+                  <div style={{ marginTop: '0.5rem' }}>
+                    <div style={{ color: '#888', fontSize: '0.75rem', marginBottom: '0.4rem' }}>
+                      연결 버프 ({skill.buffs.length}개)
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                      {skill.buffs.map((b, i) => {
+                        const buff = getBuffByCode(b.buffCode)
+                        if (!buff) return (
+                          <div key={i} style={{ background: '#0f1e3a', borderRadius: '6px', padding: '0.5rem 0.75rem', color: '#666', fontSize: '0.75rem' }}>
+                            [알 수 없는 버프 #{b.buffCode}]
+                          </div>
+                        )
+                        const tooltip = buff.tooltipKr
+                          ? buff.tooltipKr.replace(/\[[^\]]+\]/g, '').trim()
+                          : ''
+                        const turnLabel = buff.turn === 1000 ? '영구' : buff.turn === 0 ? '즉시' : `${buff.turn}턴`
+                        return (
+                          <div key={i} style={{ background: '#0f1e3a', borderRadius: '6px', padding: '0.5rem 0.75rem', fontSize: '0.75rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tooltip ? '0.3rem' : 0 }}>
+                              <span style={{ color: '#aaa' }}>#{buff.code} {buff.classType}</span>
+                              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                <span style={{ color: buff.category === 'buff' ? '#7ec8e3' : '#e94560', fontWeight: 600 }}>
+                                  {buff.category === 'buff' ? '버프' : '디버프'}
+                                </span>
+                                <span style={{ color: '#666' }}>{turnLabel}</span>
+                                {buff.magicValue1 !== 0 && (
+                                  <span style={{ color: '#f5a623' }}>{buff.magicValue1}</span>
+                                )}
+                              </div>
+                            </div>
+                            {tooltip && (
+                              <div style={{ color: '#888', lineHeight: 1.4, whiteSpace: 'pre-wrap' }}>
+                                {tooltip.replace(/\\n/g, '\n')}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </section>
