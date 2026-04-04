@@ -3,6 +3,7 @@ import Board from './components/Board'
 import MercenaryPicker from './components/MercenaryPicker'
 import BattleLog from './components/BattleLog'
 import BattleControls from './components/BattleControls'
+import MercDexPanel from './components/test/MercDexPanel'
 import DataPanel from './components/test/DataPanel'
 import StatPanel from './components/test/StatPanel'
 import DamagePanel from './components/test/DamagePanel'
@@ -19,7 +20,7 @@ import './App.css'
 // ─── 타입 ─────────────────────────────────────────────────
 
 type MainTab = 'battle' | 'dex' | 'test'
-type TestPanel = 'data' | 'stat' | 'damage' | 'buff' | 'targeting' | 'death' | 'skill' | 'battle_sim'
+type TestPanel = 'merc_dex' | 'data' | 'stat' | 'damage' | 'buff' | 'targeting' | 'death' | 'skill' | 'battle_sim'
 type GamePhase = 'placing' | 'battling' | 'result'
 
 interface CharSnapshot { hp: number; isDead: boolean }
@@ -28,6 +29,7 @@ type BattleSnapshot = Map<string, CharSnapshot>
 // ─── 상수 ─────────────────────────────────────────────────
 
 const TEST_MENU: [TestPanel, string][] = [
+  ['merc_dex', '용병 도감'],
   ['data', '데이터'],
   ['stat', '스탯 계산'],
   ['damage', '데미지'],
@@ -381,6 +383,7 @@ export default function App() {
             </aside>
 
             <section className="test-content">
+              {testPanel === 'merc_dex' && <MercDexPanel />}
               {testPanel === 'data' && <DataPanel />}
               {testPanel === 'stat' && <StatPanel />}
               {testPanel === 'damage' && <DamagePanel />}
