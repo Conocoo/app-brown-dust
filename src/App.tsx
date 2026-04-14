@@ -4,6 +4,7 @@ import MercenaryPicker from './components/MercenaryPicker'
 import BattleLog from './components/BattleLog'
 import BattleControls from './components/BattleControls'
 import MercDexPanel from './components/test/MercDexPanel'
+import SkillDex from './components/SkillDex'
 import DataPanel from './components/test/DataPanel'
 import StatPanel from './components/test/StatPanel'
 import DamagePanel from './components/test/DamagePanel'
@@ -20,6 +21,7 @@ import './App.css'
 // ─── 타입 ─────────────────────────────────────────────────
 
 type MainTab = 'battle' | 'dex' | 'test'
+type DexTab = 'mercenary' | 'skill'
 type TestPanel = 'merc_dex' | 'data' | 'stat' | 'damage' | 'buff' | 'targeting' | 'death' | 'skill' | 'battle_sim'
 type GamePhase = 'placing' | 'battling' | 'result'
 
@@ -68,7 +70,17 @@ function buildSnapshots(
       if (s) cur.set(entry.charKey, { ...s, isDead: true })
     }
 
-    if ((entry.type === 'revival' || entry.type === 'instead_death') && entry.restoreHp !== undefined) {
+    if (entry.type === 'dot_damage' && entry.damage !== undefined) {
+      const s = cur.get(entry.charKey)
+      if (s) cur.set(entry.charKey, { ...s, hp: Math.max(0, s.hp - entry.damage) })
+    }
+
+    if (entry.type === 'dot_heal' && entry.restoreHp !== undefined) {
+      const s = cur.get(entry.charKey)
+      if (s) cur.set(entry.charKey, { ...s, hp: s.hp + entry.restoreHp })
+    }
+
+    if ((entry.type === 'revival' || entry.type === 'rebirth' || entry.type === 'instead_death') && entry.restoreHp !== undefined) {
       const s = cur.get(entry.charKey)
       if (s) cur.set(entry.charKey, { hp: entry.restoreHp, isDead: false })
     }
@@ -83,6 +95,7 @@ function buildSnapshots(
 
 export default function App() {
   const [tab, setTab] = useState<MainTab>('battle')
+  const [dexTab, setDexTab] = useState<DexTab>('mercenary')
   const [testPanel, setTestPanel] = useState<TestPanel>('data')
 
   // 배치 상태
@@ -360,7 +373,22 @@ export default function App() {
 
         {/* ── 도감 탭 ── */}
         {tab === 'dex' && (
-          <div className="placeholder"><p>도감 탭 — 추후 구현 예정</p></div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', height: 'calc(100vh - 80px)' }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                className={dexTab === 'mercenary' ? 'tab active' : 'tab'}
+                onClick={() => setDexTab('mercenary')}
+              >용병 도감</button>
+              <button
+                className={dexTab === 'skill' ? 'tab active' : 'tab'}
+                onClick={() => setDexTab('skill')}
+              >스킬 도감</button>
+            </div>
+            <div style={{ flex: 1, overflow: 'hidden' }}>
+              {dexTab === 'mercenary' && <MercDexPanel />}
+              {dexTab === 'skill' && <SkillDex />}
+            </div>
+          </div>
         )}
 
         {/* ── 테스트 탭 ── */}

@@ -75,7 +75,7 @@ export default function BattleSimPanel() {
     if (filter === 'all') return log
     if (filter === 'round') return log.filter(e => e.type === 'round_start' || e.type === 'battle_end')
     if (filter === 'attack') return log.filter(e => e.type === 'attack')
-    if (filter === 'death') return log.filter(e => e.type === 'death' || e.type === 'revival' || e.type === 'instead_death')
+    if (filter === 'death') return log.filter(e => e.type === 'death' || e.type === 'revival' || e.type === 'rebirth' || e.type === 'instead_death')
     return log
   }
 

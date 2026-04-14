@@ -222,7 +222,7 @@ export default function MercDexPanel() {
                         return (
                           <div key={i} style={{ background: '#0f1e3a', borderRadius: '6px', padding: '0.5rem 0.75rem', fontSize: '0.75rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: tooltip ? '0.3rem' : 0 }}>
-                              <span style={{ color: '#aaa' }}>#{buff.code} {buff.classType}</span>
+                              <span style={{ color: '#aaa' }}>#{buff.code} {buff.nameKr}</span>
                               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                                 <span style={{ color: buff.category === 'buff' ? '#7ec8e3' : '#e94560', fontWeight: 600 }}>
                                   {buff.category === 'buff' ? '버프' : '디버프'}

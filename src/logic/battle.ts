@@ -6,8 +6,10 @@ import { executeTurn } from './turn'
 import { WELL512 } from './random'
 import { calcStatsAtLevel } from './stat'
 import { applyRunes } from './rune'
+import { applyBuffToChar } from './buff'
 import { getMercenaryById } from '../data/mercenaries'
 import { getSkillByCode } from '../data/skills'
+import { getBuffByCode } from '../data/buffs'
 import type { RuneSlots } from '../types/rune'
 
 // ─── 상수 ──────────────────────────────────────────────────
@@ -81,6 +83,7 @@ export function createBattleChar(
     isCasting: false,
     skills: battleSkill,
     coolTimeCounters: {},
+    baseHp: merc.baseLv1?.hp ?? stats.hp,
     tempHp: 0,
     imageId: merc.imageId,
     emoji: merc.emoji,
@@ -137,6 +140,62 @@ function createWorldSequence(
   return sequence
 }
 
+// ─── 스킬 버프 적용 헬퍼 ──────────────────────────────────
+
+/** 캐릭터의 스킬에서 특정 useType 버프를 자신에게 적용 */
+function applySkillBuffsByUseType(
+  char: BattleCharacter,
+  useType: number,
+  log: BattleLogEntry[]
+): void {
+  for (const skill of char.skills) {
+    const skillTemplate = getSkillByCode(skill.skillCode)
+    if (!skillTemplate) continue
+
+    for (const buffRef of skillTemplate.buffs) {
+      const buffData = getBuffByCode(buffRef.buffCode)
+      if (!buffData) continue
+      if (buffData.useType !== useType) continue
+
+      const instance = applyBuffToChar(char, buffData, char.key)
+      if (instance) {
+        log.push({
+          type: 'buff_applied',
+          charKey: char.key,
+          buffCode: buffData.code,
+          detail: `${char.name} 버프 적용: ${buffData.nameKr} (code ${buffData.code})`,
+        })
+      }
+    }
+  }
+}
+
+// ─── 게임오버 버프 적용 ───────────────────────────────────
+
+const GAME_OVER_BUFF_CODES = [24, 25, 26, 27, 28]
+
+/** 라운드 7부터 매 라운드 누적 — 라운드별 고유 creator로 스택 */
+function applyGameOverBuffs(
+  allChars: BattleCharacter[],
+  round: number,
+  log: BattleLogEntry[]
+): void {
+  const creatorKey = `gameOver_r${round}`
+  for (const c of allChars) {
+    if (c.hp <= 0) continue
+    for (const code of GAME_OVER_BUFF_CODES) {
+      const buffData = getBuffByCode(code)
+      if (!buffData) continue
+      applyBuffToChar(c, buffData, creatorKey)
+    }
+    log.push({
+      type: 'buff_applied',
+      charKey: c.key,
+      detail: `${c.name} 게임오버 디버프 적용 (라운드 ${round})`,
+    })
+  }
+}
+
 // ─── 메인 전투 시뮬레이션 ────────────────────────────────
 
 /**
@@ -159,6 +218,11 @@ export function simulateBattle(
     detail: `전투 시작 — A팀 ${teamA.length}명 vs B팀 ${teamB.length}명`,
   })
 
+  // §1.4 패시브 버프 적용 (전투 시작 시 1회, useType=1)
+  for (const char of [...teamA, ...teamB]) {
+    applySkillBuffsByUseType(char, 1, log)
+  }
+
   while (rounds < MAX_ROUNDS) {
     rounds++
 
@@ -168,18 +232,15 @@ export function simulateBattle(
       detail: `=== 라운드 ${rounds} 시작 ===`,
     })
 
-    // 7라운드부터 게임오버 버프 (ATK +30%) — 간소화: 직접 스탯 증가
-    if (rounds === GAME_OVER_BUFF_ROUND) {
-      for (const c of [...teamA, ...teamB]) {
-        if (c.hp > 0) {
-          const oldAtk = c.atk
-          c.atk = Math.round(c.atk * 1.3)
-          log.push({
-            type: 'buff_applied',
-            charKey: c.key,
-            detail: `게임오버 버프: ${c.name} ATK ${oldAtk} → ${c.atk} (+30%)`,
-          })
-        }
+    // §1.4 게임오버 버프 — 라운드 7부터 매 라운드 누적
+    if (rounds >= GAME_OVER_BUFF_ROUND) {
+      applyGameOverBuffs([...teamA, ...teamB], rounds, log)
+    }
+
+    // turn_start 스킬 적용 (useType=4, 매 라운드)
+    for (const char of [...teamA, ...teamB]) {
+      if (char.hp > 0) {
+        applySkillBuffsByUseType(char, 4, log)
       }
     }
 
@@ -206,6 +267,48 @@ export function simulateBattle(
           detail: `전투 종료 (라운드 ${rounds}) — ${midWinner === 'draw' ? '무승부' : midWinner + '팀 승리'}`,
         })
         return { winner: midWinner, rounds, log, teamA, teamB }
+      }
+
+      // §8 추가 턴 (MoreTurn) 체크
+      if (char.hp > 0) {
+        let extraTurns = 0
+        const moreTurnInfiniteBuff = char.activeBuffs.find(
+          b => b.data.subType === 0x3B && b.data.categoryRaw === 1
+        )
+        if (moreTurnInfiniteBuff) {
+          extraTurns = 2
+          char.activeBuffs = char.activeBuffs.filter(b => b !== moreTurnInfiniteBuff)
+        } else {
+          const moreTurnBuff = char.activeBuffs.find(
+            b => b.data.subType === 0x31 && b.data.categoryRaw === 1
+          )
+          if (moreTurnBuff) {
+            extraTurns = 1
+            char.activeBuffs = char.activeBuffs.filter(b => b !== moreTurnBuff)
+          }
+        }
+
+        for (let et = 0; et < extraTurns; et++) {
+          if (char.hp <= 0) break
+
+          log.push({
+            type: 'turn_start',
+            charKey: char.key,
+            detail: `${char.name} 추가 턴 (${et + 1})`,
+          })
+
+          executeTurn(char, { rng, teamA, teamB, log })
+
+          const extraWinner = checkWinner(teamA, teamB)
+          if (extraWinner !== null) {
+            log.push({
+              type: 'battle_end',
+              charKey: '',
+              detail: `전투 종료 (라운드 ${rounds}) — ${extraWinner === 'draw' ? '무승부' : extraWinner + '팀 승리'}`,
+            })
+            return { winner: extraWinner, rounds, log, teamA, teamB }
+          }
+        }
       }
     }
 

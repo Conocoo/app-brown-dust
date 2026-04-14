@@ -27,9 +27,13 @@
 전투는 **순수 함수**로 실행되어 결정론적 로그 배열(`BattleLogEntry[]`)을 반환하고, UI는 이 로그를 재생하여 상태를 재구성하는 구조:
 1. `MercenaryTemplate` (정적 데이터) → `BattleCharacter` (런타임 인스턴스) 변환
 2. `simulateBattle()` → 전체 전투를 한번에 실행하여 로그 반환
-3. `applyLogToGrid()` → 로그를 순차 재생하여 UI 업데이트 (속도 조절, 수동 스텝 지원)
+3. `buildSnapshots()` → 로그에서 각 시점의 상태 스냅샷 배열(`Map<charKey, {hp, isDead}>[]`) 재구성
+4. UI가 `snapshots[logIdx]`로 임의 시점 탐색 (역방향 포함)
+
+**결정론적 RNG**: `logic/random.ts`에 WELL512a PRNG 구현. `Date.now()` 시드로 초기화, 전투 중 모든 랜덤 결정(크리티컬/회피/타겟팅)이 이 인스턴스를 공유 → 같은 시드면 동일한 전투 결과 보장
 
 ## 데이터 레이어: 레지스트리 패턴
+- **JSON 프리로드**: `data/*.ts`에서 import 시점에 JSON → Map 변환 (buffs.json ~13.7MB, skills.json ~6.9MB). 지연 로딩 없음, 모듈 초기화 시 전체 로드
 - 스킬/용병 모두 Map 기반 `register()` + `getById()` 패턴
 - **스킬 추가 시**: 스킬 파일 생성 → `src/data/skills/index.ts`에 import + `register()` 호출 추가
 - **용병 추가 시**: 용병 파일 생성 → `src/data/mercenaries/index.ts`에 import + `register()` 호출 추가
@@ -43,7 +47,10 @@
 - `turn.ts`: 턴 실행. DoT/회복 처리 → before_attack 스킬 → 일반 공격 → after_attack 스킬. 상태효과 ID는 `nextEffectId()`로 생성 (전역 카운터, 형식: `eff_N`)
 - `targeting.ts`: 타겟 선택. focus_fire → taunt → attackTarget 우선순위. 8가지 범위 패턴. 그리드: 3행×12열 (플레이어 0-5열, 적 6-11열)
 - `damage.ts`: ATK 버프/디버프 클램프 `[-80%, +300%]`. 크리티컬/그레이즈, 쉴드 감소
+- `buff.ts`: 버프 값 계산 엔진. `valueBaseType` 0~26 = **27가지 다형성 모드** (상수/ATK비례/HP비율/데미지 기반 등). `computedValue`에 캐싱. `dupType`/`groupCode`로 중복 방지 (같은 creator+buffCode → 교체, groupCode=1000은 와일드카드 면역)
+- `death.ts`: **5단계 사망 체인** (순서 중요): ①대신죽음(subType 0x05) → ②부활·전체회복(0x1E) → ③사망콜백(미구현) → ④부활·부분회복(0x06) → ⑤진짜 사망. `isDelayDamage=true`면 ①②스킵, 즉사는 ①②스킵+④시도
 - `rune.ts`: 룬 스탯 합산 및 캐릭터 스탯 적용
+- `stat.ts`: 3단계 스탯 파이프라인 — `calcStatsAtLevel()` (레벨 성장) → `applyRunes()` (3슬롯 룬) → `createBattleChar()`. 서포트 타입은 ATK 성장률 0
 
 ## 게임 단계 (GamePhase)
 `home` (홈) → `placing` (배치) → `ordering` (순서 설정) → `battling` (전투 재생) → `result` (결과)
@@ -58,7 +65,7 @@
 - `npm run create-mercenary -- --config <file.json>` — 용병 자동 생성
 - `npm run generate-docs` — 스킬/용병 데이터 기반으로 Docs 자동 갱신
 
-> 테스트 프레임워크 없음 — 검증은 `npm run validate` (타입 체크)만 사용
+> 테스트 프레임워크 없음 — 검증은 `npm run validate` (타입 체크)만 사용. UI의 `test` 탭에 9개 디버그 패널(MercDex/Stat/Damage/Buff/Targeting/Death/Skill/BattleSim/Data)이 있어 서브시스템별 인라인 검증 가능
 
 ## 문서 동기화
 모든 문서는 Hub(`../Docs/`)에서 관리. 코드 변경 시 관련 문서 함께 업데이트:

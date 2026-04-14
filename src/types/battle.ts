@@ -44,6 +44,8 @@ export interface BattleCharacter {
   skills: BattleSkillInfo[]
   /** 스킬별 쿨타임 카운터 (skillCode → 현재 쿨 카운트) */
   coolTimeCounters: Record<number, number>
+  /** 레벨1 기본 HP (magicValue mode 17/18에 사용) */
+  baseHp: number
   /** 임시 HP (보호막 등) */
   tempHp: number
   imageId: string
@@ -76,6 +78,7 @@ export type BattleLogType =
   | 'dot_heal'
   | 'death'
   | 'revival'
+  | 'rebirth'
   | 'instead_death'
   | 'battle_end'
 

@@ -34,7 +34,9 @@ export interface BuffData {
   copyActionType: number
   /** 같은 groupCode끼리 중복 불가 (0=그룹 없음) */
   groupCode: number
-  linkedBuffs: number[] | null
+  linkedBuffs: { addBuff1: number; addBuff2: number } | null
+  /** 한글 버프 이름 (buff-names.json에서 병합) */
+  nameKr: string
   tooltipKr?: string
   tooltipEn?: string
   buffEffect?: string

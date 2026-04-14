@@ -92,9 +92,11 @@ export function isInitTurnIgnore(ignoreType: number): boolean {
   return (ignoreType >= 4 && ignoreType <= 10) || ignoreType === 9
 }
 
-/** 복사 면역: ignoreType 8 or 9 */
-export function isCopyIgnore(ignoreType: number): boolean {
-  return (ignoreType & ~3) === 8
+/** 복사 면역: ignoreType 8 or 9, 또는 actionType==1 && magicSource1==1 */
+export function isCopyIgnore(ignoreType: number, actionType = 0, magicSource1 = 0): boolean {
+  if ((ignoreType & ~3) === 8) return true
+  if (actionType === 1 && magicSource1 === 1) return true
+  return false
 }
 
 // ─── dupType 중복 관리 ────────────────────────────────────
@@ -104,6 +106,7 @@ export function isCopyIgnore(ignoreType: number): boolean {
  * 명세 §5.2 dupType 규칙 구현.
  * buffs.json에 dupType 필드가 없으므로 기본 동작(dupType=0) 적용:
  *   같은 creator + 같은 buffCode → 교체.
+ * overLap > 0이면 중첩 허용 (overLap 횟수까지 스택).
  *
  * @returns 제거할 기존 버프 (없으면 null)
  */
@@ -111,6 +114,17 @@ export function findDuplicateBuff(
   existing: BuffInstance[],
   newBuff: BuffInstance
 ): BuffInstance | null {
+  // overLap > 0: 같은 buffCode의 기존 스택 수 확인
+  const overLap = newBuff.data.overLap ?? 0
+  if (overLap > 0) {
+    const sameCodeCount = existing.filter(b => b.buffCode === newBuff.buffCode).length
+    if (sameCodeCount < overLap) return null  // 스택 여유 → 교체 없이 추가
+    // 스택 초과 → 가장 오래된 동일 코드 버프 교체
+    for (const b of existing) {
+      if (b.buffCode === newBuff.buffCode) return b
+    }
+  }
+
   // dupType=0: creator + buffCode 모두 일치해야 교체
   for (const b of existing) {
     if (b.creatorKey === newBuff.creatorKey && b.buffCode === newBuff.buffCode) return b
@@ -155,8 +169,13 @@ export function hasTaunt(buffs: BuffInstance[]): boolean {
   return buffs.some(b => b.data.subType === 0x09)
 }
 
-/** 혼란 보유 여부 (subType 0x1D) */
+/** 혼란 보유 여부 (subType 0x0A) */
 export function hasChaos(buffs: BuffInstance[]): boolean {
+  return buffs.some(b => b.data.subType === 0x0A)
+}
+
+/** 혼란 유도 보유 여부 (subType 0x1D) */
+export function hasInducingChaos(buffs: BuffInstance[]): boolean {
   return buffs.some(b => b.data.subType === 0x1D)
 }
 
@@ -274,6 +293,72 @@ export function getMagicValue(
   }
 }
 
+// ─── 버프 적용 헬퍼 ─────────────────────────────────────────
+
+/**
+ * 대상 캐릭터에 버프를 적용하는 통합 함수.
+ * 명세 §2.3 ProcessBuffList + CreateBuffProcess 흐름.
+ *
+ * @returns 적용된 BuffInstance (면역/중복 등으로 미적용 시 null)
+ */
+export function applyBuffToChar(
+  target: BattleCharacter,
+  data: BuffData,
+  creatorKey: string,
+  options: {
+    damageValue?: number
+    isDodgeHit?: boolean
+    isCritical?: boolean
+    overrideTurn?: number
+    creatorSource?: MagicValueSource
+    ownerSource?: MagicValueSource
+  } = {}
+): BuffInstance | null {
+  if (target.hp <= 0) return null
+
+  // groupCode 면역 체크
+  if (isGroupCodeImmune(target.activeBuffs, data.subType, data.subType, data.groupCode)) {
+    return null
+  }
+
+  // 버프 인스턴스 생성
+  const instance = createBuffInstance(data, target.key, creatorKey, {
+    damageValue: options.damageValue,
+    isDodgeHit: options.isDodgeHit,
+    isCritical: options.isCritical,
+    overrideTurn: options.overrideTurn,
+  })
+
+  // graze 적용
+  applyGrazeToNewBuff(instance)
+
+  // computedValue 계산
+  const ownerSrc = options.ownerSource ?? charToMagicSource(target)
+  const creatorSrc = options.creatorSource ?? ownerSrc
+  instance.computedValue = getMagicValue(
+    data.valueBaseType,
+    data.magicValue1,
+    ownerSrc,
+    creatorSrc,
+    options.damageValue ?? 0
+  )
+
+  // 중복 교체
+  const dup = findDuplicateBuff(target.activeBuffs, instance)
+  if (dup) {
+    target.activeBuffs = target.activeBuffs.filter(b => b !== dup)
+  }
+
+  target.activeBuffs.push(instance)
+
+  // EnergyGuard: computedValue를 tempHp에 추가
+  if (data.classType === 'EnergyGuard') {
+    target.tempHp += instance.computedValue
+  }
+
+  return instance
+}
+
 // ─── 버프 목록에서 특정 subType 스탯 합산 ─────────────────
 
 /** 특정 subType의 활성 버프 합산값 */
@@ -293,8 +378,8 @@ export function charToMagicSource(char: BattleCharacter): MagicValueSource {
     def: char.def / 100,
     critRate: char.critRate / 100,
     agility: char.agility / 100,
-    baseHp: char.maxHp,          // 단순화: baseLv1이 없으면 maxHp 사용
-    dodgeReduceRate: 0.35,       // 기본값 (버프로 변경 가능)
-    counterRate: 0,
+    baseHp: char.baseHp,
+    dodgeReduceRate: char.agility / 100 * 0.35,  // 회피 감쇠율 = 민첩성 비례
+    counterRate: char.patience / 100,             // 반격율 = 인내
   }
 }

@@ -50,6 +50,8 @@ function emptyChar(idx: number): GridChar {
     hasChaos: false,
     hasChaosBuff: false,
     hasTargetExcept: false,
+    hasIgnoreAggro: false,
+    hasMultiTargetException: false,
     searchTypeOverride: null,
   }
 }

@@ -3,8 +3,9 @@
 
 import { WELL512 } from './random'
 
-export const COL_COUNT = 6  // 각 진영 열 수
+export const COL_COUNT = 6  // 팀당 열 수 (3×6 그리드)
 export const ROW_COUNT = 3
+export const GRID_SIZE = ROW_COUNT * COL_COUNT  // 18
 
 // ─── 타입 ────────────────────────────────────────────────
 
@@ -18,6 +19,8 @@ export interface GridChar {
   hasChaos: boolean         // subType 0x0A (type=0)
   hasChaosBuff: boolean     // subType 0x1D (type=1) — 혼란 유도
   hasTargetExcept: boolean  // subType 0x3A — 타겟 제외
+  hasIgnoreAggro: boolean   // subType 0x18 — 어그로 무시
+  hasMultiTargetException: boolean  // subType 0x3D, 0x13, 0x1A — 범위 예외
   // 타겟 변환 버프
   searchTypeOverride: number | null  // 0x12→1, 0x34→2, 0x1C→7, 0x1D→8
 }
@@ -85,7 +88,11 @@ function searchTypeSkip(
  * SearchTypeLast: 최후방 생존자.
  * 명세 §2.4~2.5
  */
-function searchTypeLast(gridList: GridChar[], startGridId: number): number {
+function searchTypeLast(
+  gridList: GridChar[],
+  startGridId: number,
+  checkTargetExcept = true
+): number {
   const size = gridList.length
 
   function searchInCol(colId: number): number {
@@ -94,7 +101,7 @@ function searchTypeLast(gridList: GridChar[], startGridId: number): number {
     let col = colId
     while (col < size) {
       const char = gridList[col]
-      if (!char.isDead && !char.hasTargetExcept) {
+      if (!char.isDead && (!checkTargetExcept || !char.hasTargetExcept)) {
         lastFound = col
       }
       col += COL_COUNT
@@ -115,6 +122,11 @@ function searchTypeLast(gridList: GridChar[], startGridId: number): number {
     if (result !== -1) return result
   }
 
+  // 타겟 제외로 못 찾으면 무시하고 재시도 (명세 §2.4)
+  if (checkTargetExcept) {
+    return searchTypeLast(gridList, startGridId, false)
+  }
+
   return -1
 }
 
@@ -122,12 +134,22 @@ function searchTypeLast(gridList: GridChar[], startGridId: number): number {
  * SearchTypeRandom: 살아있는 캐릭터 중 랜덤.
  * 명세 §2.6
  */
-function searchTypeRandom(gridList: GridChar[], rng: WELL512): number {
+function searchTypeRandom(
+  gridList: GridChar[],
+  rng: WELL512,
+  checkTargetExcept = true
+): number {
   const candidates = gridList
-    .filter(c => !c.isDead && !c.hasTargetExcept)
+    .filter(c => !c.isDead && (!checkTargetExcept || !c.hasTargetExcept))
     .map(c => c.gridIndex)
 
-  if (candidates.length === 0) return -1
+  if (candidates.length === 0) {
+    // 타겟 제외로 못 찾으면 무시하고 재시도 (명세 §2.6)
+    if (checkTargetExcept) {
+      return searchTypeRandom(gridList, rng, false)
+    }
+    return -1
+  }
   return candidates[rng.getRandom(0, candidates.length)]
 }
 
@@ -149,7 +171,7 @@ export function searchTarget(
     case 2: return searchTypeLast(gridList, ownerCol)
     case 3: return searchTypeRandom(gridList, rng)
     case 4: return searchTypeSkip(gridList, ownerCol, 1)
-    case 5: return searchTypeSkip(gridList, ownerCol, 0)  // next_ally 간소화
+    case 5: return searchTypeSkip(gridList, ownerCol, 0)  // 간소화: 턴 순서 기반 → 전방 첫 번째
     case 7: return owner.gridIndex
     case 8: return searchTypeRandom(gridList, rng)
     case 9: return searchTypeSkip(gridList, ownerCol, 2)
@@ -185,10 +207,12 @@ export function searchEnemyTarget(
   }
   if (focusFireFallback !== -1) return focusFireFallback
 
-  // 3단계: 광역 어그로 (SubType 0x11)
-  for (const char of enemyList) {
-    if (char.isDead) continue
-    if (char.hasAggro) return char.gridIndex
+  // 3단계: 광역 어그로 (SubType 0x11) — 어그로 무시(0x18) 시 스킵
+  if (!owner.hasIgnoreAggro) {
+    for (const char of enemyList) {
+      if (char.isDead) continue
+      if (char.hasAggro) return char.gridIndex
+    }
   }
 
   // 4단계: 일반 searchType 폴백
@@ -206,7 +230,8 @@ export function searchMultiTarget(
   allChars: GridChar[],  // 전체 그리드 (적 진영)
   rangeType: number,
   rangeSize: number,
-  includeDead = false
+  includeDead = false,
+  checkException = true
 ): number[] {
   const result = new Set<number>([mainIdx])
   const size = allChars.length
@@ -315,24 +340,42 @@ export function searchMultiTarget(
       }
       break
 
-    case 10:
-      // small_cross — 상하좌우 1칸씩
-      for (const delta of [-COL_COUNT, COL_COUNT]) {
-        add(mainIdx + delta)
-      }
-      for (const delta of [-1, 1]) {
-        const pos = mainIdx + delta
-        if (gridRow(pos) === mainRow && pos >= 0) add(pos)
+    case 10: {
+      // small_cross — rangeSize * 2 기반 넓은 사각형 (명세 case 10)
+      const startPos10 = mainIdx - rangeSize * COL_COUNT
+      for (let rowStep = 0; rowStep < rangeSize * 2 + 1; rowStep++) {
+        const rowBase = startPos10 + rowStep * COL_COUNT
+        if (rowBase >= size) break
+        const innerRange = rangeSize * 2
+        for (let colStep = 0; colStep < innerRange + 3; colStep++) {
+          const pos = (rowBase - innerRange) + colStep
+          if (pos === mainIdx) continue
+          if (pos < 0 || pos >= size) continue
+          if (gridRow(pos) !== gridRow(rowBase)) continue
+          add(pos)
+        }
       }
       break
+    }
 
-    case 11:
-      // horizontal — 같은 열 내 전체 (세로 열 전체)
-      for (let r = 0; r < ROW_COUNT; r++) {
-        const pos = mainCol + r * COL_COUNT
+    case 11: {
+      // horizontal — 인접 위 행들 + 같은 행 나머지 칸 (명세 case 11)
+      // 1. 위 행들 (center - colCount 방향, 최대 2행)
+      let hPos = mainIdx - COL_COUNT
+      let hCount = 2
+      while (hCount > 0 && hPos >= 0) {
+        if (hPos !== mainIdx) add(hPos)
+        hPos += COL_COUNT
+        hCount--
+      }
+      // 2. 같은 행의 나머지 칸
+      const rowStart = mainRow * COL_COUNT
+      for (let c = 0; c < COL_COUNT; c++) {
+        const pos = rowStart + c
         if (pos !== mainIdx) add(pos)
       }
       break
+    }
 
     case 12:
       // chaining — 단일 타겟 (체이닝은 battle.ts에서 처리)
@@ -345,16 +388,29 @@ export function searchMultiTarget(
       }
       break
 
-    case 14:
-      // front_extend — 전방 확장
-      for (let i = 1; i <= rangeSize; i++) {
-        add(mainIdx + COL_COUNT * i)
-      }
-      // 같은 행 전방 확장
-      for (let c = mainCol + 1; c < COL_COUNT; c++) {
-        add(mainRow * COL_COUNT + c)
+    case 14: {
+      // front_extend — 전방 rangeSize+2칸 중 처음 2칸 건너뜀 (명세 case 14)
+      const totalRange = rangeSize + 2
+      for (let step = 0; step < totalRange; step++) {
+        if (step < 2) continue  // 처음 2칸 건너뜀
+        const pos = mainIdx + COL_COUNT * step
+        if (pos >= size) break
+        add(pos)
       }
       break
+    }
+  }
+
+  // 범위 예외 필터링: 서브 타겟 중 hasMultiTargetException 보유 시 제외 (메인 타겟은 제외 불가)
+  // 명세 §5.2
+  if (checkException) {
+    for (const idx of result) {
+      if (idx === mainIdx) continue  // 메인 타겟 제외 불가
+      const char = allChars[idx]
+      if (char && char.hasMultiTargetException) {
+        result.delete(idx)
+      }
+    }
   }
 
   return Array.from(result)

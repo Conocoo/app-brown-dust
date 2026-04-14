@@ -39,6 +39,7 @@ function makeChar(name: string, hp: number, maxHp: number): BattleCharacter {
     isCasting: false,
     skills: [],
     coolTimeCounters: {},
+    baseHp: maxHp,
     tempHp: 0,
     imageId: '',
     emoji: '',

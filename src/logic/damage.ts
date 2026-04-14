@@ -140,19 +140,21 @@ export function calcDamage(
   }
 
   // 5. 방어율 적용 (가변만)
-  // def가 % 정수(30 = 30%)이므로 0~1 범위로 변환하여 protectedRate에 곱연산
-  // protectedRate는 이미 버프 포함 계산값; 버프 없으면 기본 DEF만 반영
-  const defFraction = defender.def / 100  // 30% → 0.3
-  const baseProtected = Math.max(PROTECT_RATE_MAX_LIMIT, 1.0 - defFraction)
-  const finalProtected = effectiveDefRate(
-    Math.min(baseProtected, protectedRate),  // 더 낮은 rate (더 강한 방어) 사용
-    attacker.piercing / 100
-  )
+  // protectedRate는 피격률(통과율). 1.0=방어 없음, 0.3=최대 방어.
+  // def → 피격률: (1.0 - def/100) 예: 30%방어 → 0.7 통과
+  // 버프 → 곱연산 누적: protectedRate *= 각 버프값
+  const defFraction = defender.def / 100
+  const baseProtected = 1.0 - defFraction
+  const combinedProtected = Math.max(PROTECT_RATE_MAX_LIMIT, baseProtected * protectedRate)
+  const finalProtected = effectiveDefRate(combinedProtected, attacker.piercing / 100)
 
-  variableDamage = (variableDamage - variableDamage * finalProtected) * reciveDamageRate
+  // 명세 §5: variable = variable * protectedRate (통과율 적용)
+  variableDamage = variableDamage * finalProtected * reciveDamageRate
   variableDamage = Math.max(0, variableDamage)
 
-  const totalDamage = Math.round(variableDamage) + Math.round(fixedDamage)
+  // 명세 §3: 고정 데미지에도 피해증가 적용
+  const finalFixed = Math.round(fixedDamage) * reciveDamageRate
+  const totalDamage = Math.round(variableDamage) + Math.round(finalFixed)
 
   return {
     isCritical,
