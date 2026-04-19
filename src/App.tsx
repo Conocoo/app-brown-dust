@@ -13,7 +13,9 @@ import TargetingPanel from './components/test/TargetingPanel'
 import DeathPanel from './components/test/DeathPanel'
 import SkillPanel from './components/test/SkillPanel'
 import BattleSimPanel from './components/test/BattleSimPanel'
+import BattleBackground from './components/BattleBackground'
 import { getAllMercenaries } from './data/mercenaries'
+import { getBackgroundByMapIndex, getDefaultBackground, getAllMapIndices } from './data/backgrounds'
 import { simulateBattle, createBattleChar } from './logic/battle'
 import type { BattleCharacter, BattleLogEntry } from './types/battle'
 import './App.css'
@@ -97,6 +99,10 @@ export default function App() {
   const [tab, setTab] = useState<MainTab>('battle')
   const [dexTab, setDexTab] = useState<DexTab>('mercenary')
   const [testPanel, setTestPanel] = useState<TestPanel>('data')
+
+  // 배경 상태
+  const [mapIndex, setMapIndex] = useState(28)
+  const currentBg = getBackgroundByMapIndex(mapIndex) ?? getDefaultBackground()
 
   // 배치 상태
   const [phase, setPhase] = useState<GamePhase>('placing')
@@ -303,6 +309,19 @@ export default function App() {
                     <span style={{ color: '#888', fontSize: '0.85rem' }}>
                       A팀 {validA}명 vs B팀 {validB}명
                     </span>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginLeft: 'auto' }}>
+                      <label style={{ color: '#888', fontSize: '0.85rem' }}>배경:</label>
+                      <select
+                        value={mapIndex}
+                        onChange={e => setMapIndex(Number(e.target.value))}
+                        className="test-input"
+                        style={{ flex: 'none', width: '120px' }}
+                      >
+                        {getAllMapIndices().map(idx => (
+                          <option key={idx} value={idx}>맵 {idx}</option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -310,61 +329,64 @@ export default function App() {
 
             {/* 전투 단계 */}
             {(phase === 'battling' || phase === 'result') && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {/* 컨트롤 */}
-                {phase === 'battling' && (
-                  <BattleControls
-                    isPlaying={isPlaying}
-                    speed={speed}
-                    currentIdx={logIdx}
-                    totalSteps={battleLog.length}
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                    onStep={() => setLogIdx(prev => Math.min(prev + 1, battleLog.length))}
-                    onStepBack={() => { setIsPlaying(false); setLogIdx(prev => Math.max(prev - 1, 0)) }}
-                    onSpeedChange={setSpeed}
-                    onReset={() => { setIsPlaying(false); setLogIdx(0) }}
-                  />
-                )}
+              <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden' }}>
+                <BattleBackground bg={currentBg} />
+                <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '1rem' }}>
+                  {/* 컨트롤 */}
+                  {phase === 'battling' && (
+                    <BattleControls
+                      isPlaying={isPlaying}
+                      speed={speed}
+                      currentIdx={logIdx}
+                      totalSteps={battleLog.length}
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                      onStep={() => setLogIdx(prev => Math.min(prev + 1, battleLog.length))}
+                      onStepBack={() => { setIsPlaying(false); setLogIdx(prev => Math.max(prev - 1, 0)) }}
+                      onSpeedChange={setSpeed}
+                      onReset={() => { setIsPlaying(false); setLogIdx(0) }}
+                    />
+                  )}
 
-                {/* 결과 배너 */}
-                {phase === 'result' && (
-                  <div style={{
-                    background: '#16213e',
-                    borderRadius: '8px',
-                    padding: '1rem 2rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#e94560' }}>
-                      {winner}
+                  {/* 결과 배너 */}
+                  {phase === 'result' && (
+                    <div style={{
+                      background: 'rgba(22, 33, 62, 0.85)',
+                      borderRadius: '8px',
+                      padding: '1rem 2rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#e94560' }}>
+                        {winner}
+                      </div>
+                      <button className="test-btn" onClick={resetGame} style={{ fontSize: '0.9rem' }}>
+                        다시 하기
+                      </button>
                     </div>
-                    <button className="test-btn" onClick={resetGame} style={{ fontSize: '0.9rem' }}>
-                      다시 하기
-                    </button>
+                  )}
+
+                  {/* 보드 + 로그 */}
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    <Board
+                      label="A팀"
+                      chars={charsA}
+                      snapshot={currentSnapshot}
+                      mode="battle"
+                      currentKey={currentKey}
+                    />
+
+                    <BattleLog log={battleLog} currentIdx={logIdx} />
+
+                    <Board
+                      label="B팀"
+                      chars={charsB}
+                      snapshot={currentSnapshot}
+                      mode="battle"
+                      currentKey={currentKey}
+                    />
                   </div>
-                )}
-
-                {/* 보드 + 로그 */}
-                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <Board
-                    label="A팀"
-                    chars={charsA}
-                    snapshot={currentSnapshot}
-                    mode="battle"
-                    currentKey={currentKey}
-                  />
-
-                  <BattleLog log={battleLog} currentIdx={logIdx} />
-
-                  <Board
-                    label="B팀"
-                    chars={charsB}
-                    snapshot={currentSnapshot}
-                    mode="battle"
-                    currentKey={currentKey}
-                  />
                 </div>
               </div>
             )}

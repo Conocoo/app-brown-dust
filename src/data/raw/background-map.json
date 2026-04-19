@@ -1,0 +1,1613 @@
+[
+  {
+    "index": 1,
+    "playMapPath": "TiledMap1*map1a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.86*0.87*0.76*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI1*map1s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 2,
+    "playMapPath": "TiledMap2*map2a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.83*0.86*0.86*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI1*map2s",
+    "bgmSound": "bgm_battlecampaign06"
+  },
+  {
+    "index": 3,
+    "playMapPath": "TiledMap3*map3a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.9*0.77*0.68*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI1*map3s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 4,
+    "playMapPath": "TiledMap4*map4a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.77*0.85*0.93*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI1*map4s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 5,
+    "playMapPath": "TiledMap5*map5a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.63*0.73*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI1*map5s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 6,
+    "playMapPath": "TiledMap6*map6a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.84*0.87*0.76*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI1*map6s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 7,
+    "playMapPath": "TiledMap7*map7a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.72*0.61*0.5*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI2*map7s",
+    "bgmSound": "bgm_battleevent01"
+  },
+  {
+    "index": 8,
+    "playMapPath": "TiledMap8*map8a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.87*0.75*0.64*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI2*map8s",
+    "bgmSound": "bgm_prolog04"
+  },
+  {
+    "index": 9,
+    "playMapPath": "TiledMap9*map9a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.92*0.83*0.76*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI*map9s",
+    "bgmSound": "bgm_battlearena6p"
+  },
+  {
+    "index": 10,
+    "playMapPath": "TiledMap10*map10a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.97*0.95*0.88*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI2*map10s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 11,
+    "playMapPath": "TiledMap11*map11a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.9*0.89*0.82*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI3*map11s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 12,
+    "playMapPath": "TiledMap12*map12a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.83*0.6*0.43*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI3*map12s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 13,
+    "playMapPath": "TiledMap13*map13a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.63*0.76*0.85*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI3*map13s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 14,
+    "playMapPath": "TiledMap14*map14a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.89*0.92*0.93*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI3*map14s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 15,
+    "playMapPath": "TiledMap15*map15a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.87*0.74*0.65*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI3*map15s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 16,
+    "playMapPath": "TiledMap16*map16a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.77*0.87*0.93*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI4*map16s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 17,
+    "playMapPath": "TiledMap17*map17a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.71*0.74*0.94*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI4*map17s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 18,
+    "playMapPath": "TiledMap18*map18a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.69*0.75*0.74*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI4*map18s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 19,
+    "playMapPath": "TiledMap19*map19a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.6*0.62*0.9*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI4*map19s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 20,
+    "playMapPath": "TiledMap20*map20a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.69*0.71*0.66*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI4*map20s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 21,
+    "playMapPath": "TiledMap21*map21a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.82*0.77*0.65*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI4*map21s",
+    "bgmSound": "bgm_battle"
+  },
+  {
+    "index": 22,
+    "playMapPath": "TiledMap22*map22a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.77*0.78*0.65*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI5*map22s",
+    "bgmSound": "bgm_battlegold01"
+  },
+  {
+    "index": 23,
+    "playMapPath": "TiledMap23*map23a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.89*0.82*0.73*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI5*map23s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 24,
+    "playMapPath": "TiledMap24*map24a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.81*0.89*0.96*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI5*map24s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 25,
+    "playMapPath": "TiledMap25*map25a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.55*0.58*0.68*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI5*map25s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 26,
+    "playMapPath": "TiledMap26*map26a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.93*0.89*0.76*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI5*map26s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 27,
+    "playMapPath": "TiledMap27*map27a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.85*0.93*0.92*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI5*map27s",
+    "bgmSound": "bgm_battlecampaign06"
+  },
+  {
+    "index": 28,
+    "playMapPath": "TiledMap28*map28a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.87*0.85*0.81*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI6*map28s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 29,
+    "playMapPath": "TiledMap29*map29a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.6*0.62*0.7*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI6*map29s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 30,
+    "playMapPath": "TiledMap30*map30a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.77*0.82*0.91*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI6*map30s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 31,
+    "playMapPath": "TiledMap31*map31a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.88*0.79*0.78*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI6*map31s",
+    "bgmSound": "bgm_battlearena9p"
+  },
+  {
+    "index": 32,
+    "playMapPath": "TiledMap32*map32a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.79*0.7*0.57*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI6*map32s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 33,
+    "playMapPath": "TiledMap33*map33a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.7*0.79*0.9*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI6*map33s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 34,
+    "playMapPath": "TiledMap34*map34a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.56*0.7*0.84*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI7*map34s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 35,
+    "playMapPath": "TiledMap35*map35a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.73*0.74*0.85*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI7*map35s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 36,
+    "playMapPath": "TiledMap36*map36a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.74*0.71*0.87*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI7*map36s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 37,
+    "playMapPath": "TiledMap37*map37a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.9*0.89*0.91*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI7*map37s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 38,
+    "playMapPath": "TiledMap38*map38a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.85*0.89*0.74*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI7*map38s",
+    "bgmSound": "bgm_modeevent"
+  },
+  {
+    "index": 39,
+    "playMapPath": "TiledMap39*map39a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.95*0.76*0.72*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI7*map39s",
+    "bgmSound": "bgm_modegrowth"
+  },
+  {
+    "index": 40,
+    "playMapPath": "TiledMap40*map40a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.72*0.79*0.95*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map40s",
+    "bgmSound": "bgm_modegrowth"
+  },
+  {
+    "index": 41,
+    "playMapPath": "TiledMap41*map41a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.83*0.72*0.95*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map41s",
+    "bgmSound": "bgm_modegrowth"
+  },
+  {
+    "index": 42,
+    "playMapPath": "TiledMap42*map42a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map42s",
+    "bgmSound": "bgm_moderune"
+  },
+  {
+    "index": 43,
+    "playMapPath": "TiledMap42*map42a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map42s",
+    "bgmSound": "bgm_moderune"
+  },
+  {
+    "index": 44,
+    "playMapPath": "TiledMap42*map42a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map42s",
+    "bgmSound": "bgm_moderune"
+  },
+  {
+    "index": 45,
+    "playMapPath": "TiledMap42*map42a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map42s",
+    "bgmSound": "bgm_moderune"
+  },
+  {
+    "index": 46,
+    "playMapPath": "TiledMap42*map42a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map42s",
+    "bgmSound": "bgm_moderune"
+  },
+  {
+    "index": 47,
+    "playMapPath": "TiledMap42*map42a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map42s",
+    "bgmSound": "bgm_moderune"
+  },
+  {
+    "index": 48,
+    "playMapPath": "TiledMap43*map43a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map43s",
+    "bgmSound": "bgm_battlearenaai"
+  },
+  {
+    "index": 49,
+    "playMapPath": "TiledMap44*map44a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map44s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 50,
+    "playMapPath": "TiledMap50*map50a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI9*map50s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 51,
+    "playMapPath": "TiledMap51*map51a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI8*map51s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 52,
+    "playMapPath": "TiledMap52*map52a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI10*map52s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 53,
+    "playMapPath": "TiledMap53*map53a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI10*map53s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 54,
+    "playMapPath": "TiledMap54*map54a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI10*map54s",
+    "bgmSound": "bgm_battlecampaign08"
+  },
+  {
+    "index": 55,
+    "playMapPath": "TiledMap55*map55a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI10*map55s",
+    "bgmSound": "bgm_battlecampaign09"
+  },
+  {
+    "index": 56,
+    "playMapPath": "TiledMap56*map56a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI10*map56s",
+    "bgmSound": "bgm_battlecampaign10"
+  },
+  {
+    "index": 57,
+    "playMapPath": "TiledMap57*map57a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI11*map57s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 58,
+    "playMapPath": "TiledMap58*map58a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI11*map58s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 59,
+    "playMapPath": "TiledMap59*map59a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI11*map59s",
+    "bgmSound": "bgm_battlecampaign12"
+  },
+  {
+    "index": 60,
+    "playMapPath": "TiledMap60*map60a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI11*map60s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 61,
+    "playMapPath": "TiledMap61*map61a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI11*map61s",
+    "bgmSound": "bgm_battlecampaign11"
+  },
+  {
+    "index": 62,
+    "playMapPath": "TiledMap62*map62a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI11*map62s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 63,
+    "playMapPath": "TiledMap63*map63a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI9*map63s",
+    "bgmSound": "bgm_battlegold01"
+  },
+  {
+    "index": 64,
+    "playMapPath": "TiledMap64*map64a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI9*map64s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 65,
+    "playMapPath": "TiledMap65*map65a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI9*map65s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 66,
+    "playMapPath": "TiledMap66*map66a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI10*map66s",
+    "bgmSound": "bgm_battlegold01"
+  },
+  {
+    "index": 67,
+    "playMapPath": "TiledMap67*map67a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI12*map67s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 68,
+    "playMapPath": "TiledMap68*map68a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI12*map68s",
+    "bgmSound": "bgm_battlecampaign06"
+  },
+  {
+    "index": 69,
+    "playMapPath": "TiledMap69*map69a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI12*map69s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 70,
+    "playMapPath": "TiledMap70*map70a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI12*map70s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 71,
+    "playMapPath": "TiledMap71*map71a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI12*map71s",
+    "bgmSound": "bgm_battlegold01"
+  },
+  {
+    "index": 72,
+    "playMapPath": "TiledMap72*map72a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI12*map72s",
+    "bgmSound": "bgm_modegrowth"
+  },
+  {
+    "index": 73,
+    "playMapPath": "TiledMap73*map73a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI13*map73s",
+    "bgmSound": "bgm_battlecampaign09"
+  },
+  {
+    "index": 74,
+    "playMapPath": "TiledMap74*map74a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI13*map74s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 75,
+    "playMapPath": "TiledMap75*map75a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI13*map75s",
+    "bgmSound": "bgm_battlearena9p"
+  },
+  {
+    "index": 76,
+    "playMapPath": "TiledMap76*map76a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI13*map76s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 77,
+    "playMapPath": "TiledMap77*map77a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI13*map77s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 78,
+    "playMapPath": "TiledMap78*map78a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI13*map78s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 79,
+    "playMapPath": "TiledMap79*map79a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI14*map79s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 80,
+    "playMapPath": "TiledMap80*map80a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI14*map80s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 81,
+    "playMapPath": "TiledMap81*map81a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI14*map81s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 82,
+    "playMapPath": "TiledMap82*map82a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI14*map82s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 83,
+    "playMapPath": "TiledMap83*map83a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI14*map83s",
+    "bgmSound": "bgm_battlecampaign10"
+  },
+  {
+    "index": 84,
+    "playMapPath": "TiledMap84*map84a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI14*map84s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 85,
+    "playMapPath": "TiledMap85*map85a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI16*map85s",
+    "bgmSound": "bgm_battlecampaign08"
+  },
+  {
+    "index": 86,
+    "playMapPath": "TiledMap86*map86a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI16*map86s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 87,
+    "playMapPath": "TiledMap87*map87a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI16*map87s",
+    "bgmSound": "bgm_battlecampaign11"
+  },
+  {
+    "index": 88,
+    "playMapPath": "TiledMap88*map88a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI16*map88s",
+    "bgmSound": "bgm_battlecampaign12"
+  },
+  {
+    "index": 89,
+    "playMapPath": "TiledMap89*map89a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI16*map89s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 90,
+    "playMapPath": "TiledMap90*map90a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI18*map90s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 91,
+    "playMapPath": "TiledMap91*map91a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI18*map91s",
+    "bgmSound": "bgm_battlecampaign08"
+  },
+  {
+    "index": 92,
+    "playMapPath": "TiledMap92*map92a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI18*map92s",
+    "bgmSound": "bgm_battlecampaign09"
+  },
+  {
+    "index": 93,
+    "playMapPath": "TiledMap93*map93a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI18*map93s",
+    "bgmSound": "bgm_battlecampaign10"
+  },
+  {
+    "index": 94,
+    "playMapPath": "TiledMap94*map94a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI18*map94s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 95,
+    "playMapPath": "TiledMap95*map95a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI18*map95s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 96,
+    "playMapPath": "TiledMap96*map96a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI19*map96s",
+    "bgmSound": "bgm_battlecampaign12"
+  },
+  {
+    "index": 97,
+    "playMapPath": "TiledMap97*map97a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI19*map97s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 98,
+    "playMapPath": "TiledMap98*map98a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI19*map98s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 99,
+    "playMapPath": "TiledMap99*map99a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI19*map99s",
+    "bgmSound": "bgm_battlecampaign09"
+  },
+  {
+    "index": 100,
+    "playMapPath": "TiledMap100*map100a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI19*map100s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 101,
+    "playMapPath": "TiledMap101*map101a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI19*map101s",
+    "bgmSound": "bgm_battlegold01"
+  },
+  {
+    "index": 102,
+    "playMapPath": "TiledMap102*map102a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI20*map102s",
+    "bgmSound": "bgm_battlecampaign11"
+  },
+  {
+    "index": 103,
+    "playMapPath": "TiledMap103*map103a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI20*map103s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 104,
+    "playMapPath": "TiledMap104*map104a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI20*map104s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 105,
+    "playMapPath": "TiledMap105*map105a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI20*map105s",
+    "bgmSound": "bgm_battlecampaign08"
+  },
+  {
+    "index": 106,
+    "playMapPath": "TiledMap106*map106a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI20*map106s",
+    "bgmSound": "bgm_battlecampaign11"
+  },
+  {
+    "index": 107,
+    "playMapPath": "TiledMap107*map107a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI21*map107s",
+    "bgmSound": "bgm_battlecampaign04"
+  },
+  {
+    "index": 108,
+    "playMapPath": "TiledMap108*map108a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI21*map108s",
+    "bgmSound": "bgm_battlecampaign11"
+  },
+  {
+    "index": 109,
+    "playMapPath": "TiledMap109*map109a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI21*map109s",
+    "bgmSound": "bgm_battlecampaign08"
+  },
+  {
+    "index": 110,
+    "playMapPath": "TiledMap110*map110a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI21*map110s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 111,
+    "playMapPath": "TiledMap111*map111a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI21*map111s",
+    "bgmSound": "bgm_battlecampaign10"
+  },
+  {
+    "index": 112,
+    "playMapPath": "TiledMap112*map112a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI22*map112s",
+    "bgmSound": "bgm_Dargdron"
+  },
+  {
+    "index": 113,
+    "playMapPath": "TiledMap113*map113a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI22*map113s",
+    "bgmSound": "bgm_Gorgona"
+  },
+  {
+    "index": 114,
+    "playMapPath": "TiledMap114*map114a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI22*map114s",
+    "bgmSound": "bgm_battlecampaign01"
+  },
+  {
+    "index": 115,
+    "playMapPath": "TiledMap115*map115a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI22*map115s",
+    "bgmSound": "bgm_DevilCastle_Under_normal"
+  },
+  {
+    "index": 116,
+    "playMapPath": "TiledMap116*map116a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI22*map116s",
+    "bgmSound": "bgm_DevilCastle_Under_boss"
+  },
+  {
+    "index": 117,
+    "playMapPath": "TiledMap117*map117a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI22*map117s",
+    "bgmSound": "bgm_WorldArena_Duel"
+  },
+  {
+    "index": 118,
+    "playMapPath": "TiledMap118*map118a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI23*map118s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 119,
+    "playMapPath": "TiledMap119*map119a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI23*map119s",
+    "bgmSound": "bgm_battlecampaign11"
+  },
+  {
+    "index": 120,
+    "playMapPath": "TiledMap120*map120a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI23*map120s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 121,
+    "playMapPath": "TiledMap121*map121a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI23*map121s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 122,
+    "playMapPath": "TiledMap122*map122a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI23*map122s",
+    "bgmSound": "bgm_battlecampaign08"
+  },
+  {
+    "index": 123,
+    "playMapPath": "TiledMap123*map123a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI24*map123s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 124,
+    "playMapPath": "TiledMap124*map124a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI24*map124s",
+    "bgmSound": "bgm_summerevent01"
+  },
+  {
+    "index": 125,
+    "playMapPath": "TiledMap125*map125a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI24*map125s",
+    "bgmSound": "bgm_chaosgate01"
+  },
+  {
+    "index": 126,
+    "playMapPath": "TiledMap126*map126a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI24*map126s",
+    "bgmSound": "bgm_chaosgate02"
+  },
+  {
+    "index": 127,
+    "playMapPath": "TiledMap127*map127a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI24*map127s",
+    "bgmSound": "bgm_chaosgate02"
+  },
+  {
+    "index": 128,
+    "playMapPath": "TiledMap128*map128a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI24*map128s",
+    "bgmSound": "bgm_battlecampaign11"
+  },
+  {
+    "index": 129,
+    "playMapPath": "TiledMap129*map129a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI25*map129s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 130,
+    "playMapPath": "TiledMap130*map130a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI25*map130s",
+    "bgmSound": "bgm_battlecampaign14"
+  },
+  {
+    "index": 131,
+    "playMapPath": "TiledMap131*map131a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI25*map131s",
+    "bgmSound": "bgm_battlecampaign15"
+  },
+  {
+    "index": 132,
+    "playMapPath": "TiledMap132*map132a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI25*map132s",
+    "bgmSound": "bgm_battlecampaign16"
+  },
+  {
+    "index": 133,
+    "playMapPath": "TiledMap133*map133a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI25*map133s",
+    "bgmSound": "bgm_battlechristmas"
+  },
+  {
+    "index": 134,
+    "playMapPath": "TiledMap134*map134a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI26*map134s",
+    "bgmSound": "bgm_chaosgate02"
+  },
+  {
+    "index": 135,
+    "playMapPath": "TiledMap135*map135a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI26*map135s",
+    "bgmSound": "bgm_herolegendcollabo"
+  },
+  {
+    "index": 136,
+    "playMapPath": "TiledMap136*map136a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI26*map136s",
+    "bgmSound": "bgm_herolegendcollabo"
+  },
+  {
+    "index": 137,
+    "playMapPath": "TiledMap137*map137a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI26*map137s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 138,
+    "playMapPath": "TiledMap138*map138a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI27*map138s",
+    "bgmSound": "bgm_battlecampaign17"
+  },
+  {
+    "index": 139,
+    "playMapPath": "TiledMap139*map139a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI27*map139s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 140,
+    "playMapPath": "TiledMap140*map140a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI27*map140s",
+    "bgmSound": "bgm_battlecampaign15"
+  },
+  {
+    "index": 141,
+    "playMapPath": "TiledMap141*map141a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI27*map141s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 142,
+    "playMapPath": "TiledMap142*map142a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect142",
+    "uiMapPath": "BackgroundGUI28*map142s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 143,
+    "playMapPath": "TiledMap143*map143a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect143",
+    "uiMapPath": "BackgroundGUI28*map143s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 144,
+    "playMapPath": "TiledMap144*map144a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect144",
+    "uiMapPath": "BackgroundGUI28*map144s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 145,
+    "playMapPath": "TiledMap145*map145a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect145",
+    "uiMapPath": "BackgroundGUI28*map145s",
+    "bgmSound": "bgm_battlecampaign10"
+  },
+  {
+    "index": 146,
+    "playMapPath": "TiledMap146*map146a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI28*map146s",
+    "bgmSound": "bgm_modeescort"
+  },
+  {
+    "index": 147,
+    "playMapPath": "TiledMap147*map147a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI28*map147s",
+    "bgmSound": "bgm_battlecampaign03"
+  },
+  {
+    "index": 148,
+    "playMapPath": "TiledMap148*map148a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI29*map148s",
+    "bgmSound": "bgm_battlecampaign06"
+  },
+  {
+    "index": 149,
+    "playMapPath": "TiledMap149*map149a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI29*map149s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 150,
+    "playMapPath": "TiledMap150*map150a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI29*map150s",
+    "bgmSound": "bgm_battlecampaign10"
+  },
+  {
+    "index": 151,
+    "playMapPath": "TiledMap151*map151a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI29*map151s",
+    "bgmSound": "bgm_battlecampaign05"
+  },
+  {
+    "index": 152,
+    "playMapPath": "TiledMap152*map152a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI29*map152s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 153,
+    "playMapPath": "TiledMap153*map153a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI30*map153s",
+    "bgmSound": "bgm_battlecampaign07"
+  },
+  {
+    "index": 154,
+    "playMapPath": "TiledMap154*map154a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI30*map154s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 155,
+    "playMapPath": "TiledMap155*map155a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI30*map155s",
+    "bgmSound": "bgm_battlecampaign06"
+  },
+  {
+    "index": 156,
+    "playMapPath": "TiledMap156*map156a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI30*map156s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 157,
+    "playMapPath": "TiledMap157*map157a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI30*map157s",
+    "bgmSound": "bgm_chaosgate01"
+  },
+  {
+    "index": 158,
+    "playMapPath": "TiledMap158*map158a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect158",
+    "uiMapPath": "BackgroundGUI30*map158s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 159,
+    "playMapPath": "TiledMap159*map159a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect159",
+    "uiMapPath": "BackgroundGUI31*map159s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 160,
+    "playMapPath": "TiledMap160*map160a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect160",
+    "uiMapPath": "BackgroundGUI31*map160s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 161,
+    "playMapPath": "TiledMap161*map161a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect161",
+    "uiMapPath": "BackgroundGUI31*map161s",
+    "bgmSound": "bgm_battleSailBoss"
+  },
+  {
+    "index": 162,
+    "playMapPath": "TiledMap160*map160a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect162",
+    "uiMapPath": "BackgroundGUI31*map162s",
+    "bgmSound": "bgm_battleSailBoss"
+  },
+  {
+    "index": 163,
+    "playMapPath": "TiledMap163*map163a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI31*map163s",
+    "bgmSound": "bgm_modeescort"
+  },
+  {
+    "index": 164,
+    "playMapPath": "TiledMap164*map164a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI31*map164s",
+    "bgmSound": "bgm_battleSailBoss"
+  },
+  {
+    "index": 165,
+    "playMapPath": "TiledMap165*map165a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect158",
+    "uiMapPath": "BackgroundGUI32*map165s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 166,
+    "playMapPath": "TiledMap159*map159a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect158",
+    "uiMapPath": "BackgroundGUI31*map159s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 167,
+    "playMapPath": "TiledMap166*map166a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI32*map166s",
+    "bgmSound": "bgm_modeduelmain"
+  },
+  {
+    "index": 168,
+    "playMapPath": "TiledMap167*map167a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI32*map167s",
+    "bgmSound": "bgm_modeduelmain"
+  },
+  {
+    "index": 169,
+    "playMapPath": "TiledMap168*map168a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI32*map168s",
+    "bgmSound": "bgm_modeduelmain"
+  },
+  {
+    "index": 170,
+    "playMapPath": "TiledMap169*map169a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "TiledMapEffect169",
+    "uiMapPath": "BackgroundGUI32*map169s",
+    "bgmSound": "bgm_battlecampaign02"
+  },
+  {
+    "index": 171,
+    "playMapPath": "TiledMap170*map170a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI32*map170s",
+    "bgmSound": "bgm_battleSailBoss"
+  },
+  {
+    "index": 172,
+    "playMapPath": "TiledMap171*map171a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI33*map171s",
+    "bgmSound": "bgm_DJMAXbattle"
+  },
+  {
+    "index": 173,
+    "playMapPath": "TiledMap172*map172a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI33*map172s",
+    "bgmSound": "bgm_battlecampaign13"
+  },
+  {
+    "index": 174,
+    "playMapPath": "TiledMap173*map173a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI33*map173s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 175,
+    "playMapPath": "TiledMap174*map174a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI33*map174s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 176,
+    "playMapPath": "TiledMap175*map175a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI33*map175s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 177,
+    "playMapPath": "TiledMap177*map177a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI34*map177s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 178,
+    "playMapPath": "TiledMap176*map176a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI33*map176s",
+    "bgmSound": "bgm_battlearena12p"
+  },
+  {
+    "index": 179,
+    "playMapPath": "TiledMap178*map178a",
+    "playMapWidth": 990,
+    "playMapUIColor": "0.65*0.70*0.83*1.0",
+    "playExtendMapEffect": "none",
+    "uiMapPath": "BackgroundGUI34*map178s",
+    "bgmSound": "bgm_battlearena16p"
+  }
+]
